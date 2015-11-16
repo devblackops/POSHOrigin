@@ -1,0 +1,1 @@
+Import-DscResource -Module POSHOrigin_NetScaler
