@@ -55,8 +55,9 @@ process {
                     #Create knife/client .rb files
                     #$fqdn = $env:COMPUTERNAME.ToUpper() + '.' + $env:USERDNSDOMAIN.ToLower()
                     $fqdn = $provOptions.nodeName
-
+                    
                     # Ensure Chef node name is always lowercase
+                    $fqdnlower = $fqdn.ToLower()
                     
                     # This doesn't work
                     #$fqdn = $provOptions.nodeName.ToLower()
@@ -67,7 +68,7 @@ process {
 current_dir = File.dirname(__FILE__)
 log_level                :info
 log_location             STDOUT
-node_name                "$fqdn"
+node_name                "$fqdnlower"
 client_key               "c:\\chef\\client.pem"
 validation_client_name   "$validatorClientName"
 validation_key           "c:\\chef\\$validatorName"
@@ -79,6 +80,8 @@ cookbook_path            ["C:\\chef_cookbooks"]
 chef_server_url         "$url"
 validation_client_name  "$validatorClientName"
 validation_key          "c:\\chef\\$validatorName"
+client_key              "c:\\chef\\client.pem
+node_name               "$fqdnlower"
 "@
                     New-Item -Path "$HOME\.chef" -ItemType Directory -ErrorAction SilentlyContinue
                     $knifeRB | Out-File -FilePath "$HOME\.chef\knife.rb" -Encoding ascii
@@ -107,8 +110,8 @@ validation_key          "c:\\chef\\$validatorName"
                     }
                     $list = $list.TrimEnd(',')
                     $list = "'$list'"
-                    Write-Verbose -Message "node run_list add $fqdn $list"
-                    Start-Process -FilePath 'knife' -ArgumentList "node run_list add $fqdn $list" -NoNewWindow -Wait
+                    Write-Verbose -Message "node run_list add $fqdnlower $list"
+                    Start-Process -FilePath 'knife' -ArgumentList "node run_list add $fqdnlower $list" -NoNewWindow -Wait
 
                     # Cleanup
                     Remove-Item -Path "c:\chef\$validatorName" -Force
