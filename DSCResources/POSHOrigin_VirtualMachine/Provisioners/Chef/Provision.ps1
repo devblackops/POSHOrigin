@@ -22,7 +22,8 @@ process {
                     $options = $args[0]
                     $provOptions = $args[1].options
                     $source = $provOptions.source
-                    $sourceName = $source.split('/') | Select-Object -Last 1
+                    $sourceName = 'chef-client.msi'
+                    #$sourceName = $source.split('/') | Select-Object -Last 1
                     $clientKey = $provOptions.clientKey
                     $clientName = $clientKey.split('/') | Select-Object -Last 1
                     $validatorKey = $provOptions.validatorKey
@@ -35,7 +36,7 @@ process {
                     New-Item -Path "C:\Windows\Temp\ChefClient" -ItemType Directory -Force
                     Invoke-WebRequest -Uri $source -OutFile "c:\windows\temp\ChefClient\$sourceName"
                     #Invoke-WebRequest -Uri $clientKey -OutFile "c:\windows\temp\ChefClient\$clientName"
-                    Invoke-WebRequest -Uri $validatorKey -OutFile "c:\windows\temp\ChefClient\$validatorName"
+                    Invoke-WebRequest -Uri $validatorKey -OutFile "c:\windows\temp\ChefClient\validator.pem"
                     Invoke-WebRequest -Uri $cert -OutFile "c:\windows\temp\ChefClient\$certName"
 
                     # Install Chef
@@ -71,7 +72,7 @@ log_location             STDOUT
 node_name                "$fqdnlower"
 client_key               "c:\\chef\\client.pem"
 validation_client_name   "$validatorClientName"
-validation_key           "c:\\chef\\$validatorName"
+validation_key           "c:\\chef\\validator.pem"
 chef_server_url          "$url"
 cookbook_path            ["C:\\chef_cookbooks"]
 "@
@@ -79,23 +80,23 @@ cookbook_path            ["C:\\chef_cookbooks"]
                         $clientRB = @"
 chef_server_url         "$url"
 validation_client_name  "$validatorClientName"
-validation_key          "c:\\chef\\$validatorName"
-client_key              "c:\\chef\\client.pem
-node_name               "$fqdnlower"
+validation_key          "c:\\chef\\validator.pem"
+client_key              "c:\\chef\\client.pem"
+node_name               '$fqdnlower'
 "@
-                    New-Item -Path "$HOME\.chef" -ItemType Directory -ErrorAction SilentlyContinue
-                    $knifeRB | Out-File -FilePath "$HOME\.chef\knife.rb" -Encoding ascii
-                    $clientRB | Out-File -FilePath 'c:\chef\client.rb' -Encoding ascii
+                    New-Item -Path "$HOME\.chef" -ItemType Directory -ErrorAction SilentlyContinue -Force
+                    $knifeRB | Out-File -FilePath "$HOME\.chef\knife.rb" -Encoding ascii -Force
+                    $clientRB | Out-File -FilePath 'c:\chef\client.rb' -Encoding ascii -Force
 
                     # Copy certs
                     New-Item -Path "$HOME\.chef\trusted_certs" -ItemType Directory -ErrorAction SilentlyContinue
                     New-Item -Path 'c:\chef\trusted_certs' -Type Directory -Force -ErrorAction SilentlyContinue
                     Copy-Item -Path "c:\windows\temp\ChefClient\$certName" -Destination 'c:\chef\trusted_certs' -Force
                     Copy-Item -Path "c:\windows\temp\ChefClient\$certName" -Destination "$HOME\.chef\trusted_certs" -Force
-                    Copy-Item -Path "c:\windows\temp\ChefClient\$validatorName" -Destination 'c:\chef' -Force
+                    Copy-Item -Path "c:\windows\temp\ChefClient\validator.pem" -Destination 'c:\chef' -Force
                     #Copy-Item -Path "c:\windows\temp\ChefClient\$clientName" -Destination 'c:\chef' -Force
 
-                    Start-Process -FilePath 'chef-client' -Wait
+                    Start-Process -FilePath 'chef-client' -NoNewWindow -Wait
 
                     # Start Chef as service
                     Start-Process -FilePath 'chef-service-manager' -ArgumentList '-a install' -NoNewWindow -Wait
@@ -114,7 +115,7 @@ node_name               "$fqdnlower"
                     Start-Process -FilePath 'knife' -ArgumentList "node run_list add $fqdnlower $list" -NoNewWindow -Wait
 
                     # Cleanup
-                    Remove-Item -Path "c:\chef\$validatorName" -Force
+                    #Remove-Item -Path "c:\chef\$validatorName" -Force
                     #Remove-Item -Path "c:\chef\$clientName"
                     Remove-Item -Path 'c:\windows\temp\chefclient\' -Recurse -Force
                 } catch {
