@@ -115,7 +115,7 @@ node_name               '$fqdnlower'
                     Start-Process -FilePath 'knife' -ArgumentList "node run_list add $fqdnlower $list" -NoNewWindow -Wait
 
                     # Cleanup
-                    Remove-Item -Path "c:\chef\$validatorName" -Force
+                    #Remove-Item -Path "c:\chef\$validatorName" -Force
                     #Remove-Item -Path "c:\chef\$clientName"
                     Remove-Item -Path 'c:\windows\temp\chefclient\' -Recurse -Force
                 } catch {
