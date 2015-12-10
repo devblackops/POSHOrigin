@@ -124,43 +124,47 @@ node_name               '$fqdnlower'
                     $node = $json | ConvertFrom-Json
 
                     # Verify run list matches
-                    if (@($node.run_list).Count -ne @($provOptions.runlist).Count) {
-                        # Current run list
-                        $currList = @($node.run_list) | Sort
-                        if ($null -eq $currList) { $currList = @()}
+                    if ($provOptions.runlist) {
+                        if (@($node.run_list).Count -ne @($provOptions.runlist).Count) {
+                            # Current run list
+                            $currList = @($node.run_list) | Sort
+                            if ($null -eq $currList) { $currList = @()}
 
-                        # Desired run list
-                        $configList = @($provOptions.runlist) | ForEach-Object {
-                            if ($_.recipe) {
-                                "recipe[$($_.recipe)]"
-                            } elseif ($_.role) {
-                                "role[$($_.role)]"
+                            # Desired run list
+                            $configList = @($provOptions.runlist) | ForEach-Object {
+                                if ($_.recipe) {
+                                    "recipe[$($_.recipe)]"
+                                } elseif ($_.role) {
+                                    "role[$($_.role)]"
+                                }
                             }
-                        }
-                        if ($null -eq $configList) { $configList = @()}
-                        $configList = $configList | sort
+                            if ($null -eq $configList) { $configList = @()}
+                            $configList = $configList | sort
                         
-                        if (Compare-Object -ReferenceObject $configList -DifferenceObject $currList) {
-                            Write-Verbose -Message "Chef run list does not match"
+                            if (Compare-Object -ReferenceObject $configList -DifferenceObject $currList) {
+                                Write-Verbose -Message "Chef run list does not match"
                             
-                            # Set run list
-                            $list = ''
-                            $runlist | ForEach-Object {
-                                $propName = $_ | Get-Member -Type NoteProperty
-                                $value = $_."$($propName.Name)"
-                                $list += "$($propName.Name)[$value],"
+                                # Set run list
+                                $list = ''
+                                $runlist | ForEach-Object {
+                                    $propName = $_ | Get-Member -Type NoteProperty
+                                    $value = $_."$($propName.Name)"
+                                    $list += "$($propName.Name)[$value],"
+                                }
+                                $list = $list.TrimEnd(',')
+                                $list = "'$list'"
+                                Write-Verbose -Message "Assigning run list: $fqdnlower $($list | Format-List | Out-String)"
+                                Start-Process -FilePath 'knife' -ArgumentList "node run_list set $fqdnlower $list" -NoNewWindow -Wait
                             }
-                            $list = $list.TrimEnd(',')
-                            $list = "'$list'"
-                            Write-Verbose -Message "Assigning run list: $fqdnlower $($list | Format-List | Out-String)"
-                            Start-Process -FilePath 'knife' -ArgumentList "node run_list set $fqdnlower $list" -NoNewWindow -Wait
                         }
                     }
 
                      # Verify environment
-                    if ($node.chef_environment.ToLower() -ne $provOptions.environment.ToLower()) {
-                        Write-Verbose -Message "Assigning Chef environment: $($provOptions.environment)"
-                        Start-Process -FilePath 'knife' -ArgumentList "node environment set $fqdnlower $($provOptions.environment.ToLower())" -NoNewWindow -Wait
+                    if ($provOptions.environment) {
+                        if ($node.chef_environment.ToLower() -ne $provOptions.environment.ToLower()) {
+                            Write-Verbose -Message "Assigning Chef environment: $($provOptions.environment)"
+                            Start-Process -FilePath 'knife' -ArgumentList "node environment set $fqdnlower $($provOptions.environment.ToLower())" -NoNewWindow -Wait
+                        }
                     }
 
                     # Assign attributes if needed
