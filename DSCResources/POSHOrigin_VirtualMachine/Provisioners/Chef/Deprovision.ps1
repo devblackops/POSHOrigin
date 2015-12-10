@@ -19,7 +19,7 @@ process {
             OrgUri = $chefOptions.url
             Path = "/nodes/$($chefOptions.NodeName)"
             UserItem = ($chefOptions.clientKey.split('/') | Select-Object -Last 1).Split('.')[0] 
-            KeyPath = $chefOptions.clientKey            
+            KeyPath = $chefOptions.clientKey
         }
         
         # Delete the "node"

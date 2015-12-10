@@ -24,7 +24,7 @@ process {
                     Force = $true
                 }
                 Write-Verbose -Message "Removing computer from domain [$($args[1])]"
-                Remove-Computer @params
+                Remove-Computer @params | Out-Null
             } catch {
                 Write-Error -Message 'There was a problem running the Chef provisioner'
                 Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"

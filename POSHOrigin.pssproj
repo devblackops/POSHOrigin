@@ -32,6 +32,7 @@
     <Folder Include="DSCResources\POSHOrigin_VirtualMachine\Helpers\" />
     <Folder Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\" />
     <Folder Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\" />
+    <Folder Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\" />
     <Folder Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\DomainJoin\" />
     <Folder Include="Functions\" />
     <Folder Include="Internal\" />
@@ -77,6 +78,15 @@
     <Compile Include="DSCResources\POSHOrigin_VirtualMachine\POSHOrigin_VirtualMachine.psm1" />
     <Compile Include="DSCResources\POSHOrigin_VirtualMachine\POSHOrigin_VirtualMachine.schema.mof" />
     <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\Deprovision.ps1" />
+    <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\BouncyCastle.Crypto.dll" />
+    <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\_GetBase64.ps1" />
+    <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\_GetChecksum.ps1" />
+    <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\_GetKeyPairFromPem.ps1" />
+    <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\_InitializeBouncyCastle.ps1" />
+    <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\_InvokeChefQuery.ps1" />
+    <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\_InvokeChefRestMethod.ps1" />
+    <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\_InvokeEncrypt.ps1" />
+    <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\_SetHeaders.ps1" />
     <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\Provision.ps1" />
     <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\Test.ps1" />
     <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\DomainJoin\Deprovision.ps1" />

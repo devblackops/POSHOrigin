@@ -25,7 +25,7 @@ function _SetVMDisks {
             try {
                 $datastore = $vm | Get-Datastore -Verbose:$false | Select-Object -first 1
                 Write-Verbose -Message "Creating disk [$($disk.Name) - $($disk.SizeGB) GB] on datastore [$($datastore.Name)]"
-                New-Harddisk -vm $vm -capacitygb $disk.SizeGB -DiskType $disk.Type -storageformat $disk.format -datastore $datastore -verbose:$false -confirm:$false                
+                New-Harddisk -vm $vm -capacitygb $disk.SizeGB -DiskType $disk.Type -storageformat $disk.format -datastore $datastore -verbose:$false -confirm:$false
                 $changed = $true
             } catch {
                 Write-Error -Message 'There was a problem creating the disk.'

@@ -28,7 +28,7 @@ process {
                 $str = $params | ConvertTo-Json
                 Write-Debug -Message "DomainJoin options:`n$str"
                 Write-Verbose -Message "Joining domain [$($args[1])]"
-                Add-Computer @params
+                Add-Computer @params | Out-Null
                 return $true
             } catch {
                 Write-Error -Message 'There was a problem running the DomainJoin provisioner'
