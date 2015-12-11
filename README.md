@@ -48,19 +48,17 @@ resource 'vsphere:vm' 'VM01' @{
     )
     secrets = @{            
         vCenter = @{
-            resolver = 'passwordstate'
+            resolver = 'pscredential'
             options = @{
-                endpoint = 'https://passwordstate/api'
-                credApiKey = '28bd4c9a3756ef37c2fbd6a59e84dab5'
-                passwordId = 8321
+                username = '<your vcenter username>'
+                password = '<your password here>'
             }
         }
         guest = @{
-            resolver = 'passwordstate'
+            resolver = 'pscredential'
             options = @{
-                endpoint = 'https://passwordstate/api'
-                credApiKey = '28bd4c9a3756ef37c2fbd6a59e84dab5'
-                passwordId = 8472
+                username = 'administrator'
+                password = '<your password here>'
             }
         }
     }
