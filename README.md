@@ -1,8 +1,85 @@
 # POSHOrigin
-PowerShell DSC resources for managing your infrastructure as code.
+POSHOrigin is a PowerShell 5 based framework for creating / managing infrastructure objects via custom DSC resources.
 
 ## Overview
-PowerShell DSC resources for managing your infrastructure as code.
+Infrastructure as Code, or Programmable Infrastructure as some people call it, is meant to describe your infrastructure as an executable configuration in the form of code and is an important concept when thinking about DevOps. Once your infrastructure is described in this way, it can be version controlled, allowing you to see changes over time (this can also serve as a form of backup for your infrastructure).
+
+The configuration files and code that describes your infrastructure has the added benefit as acting as documentation. We all know that traditional documentation in the form of Visio diagrams and Word documents are essentially obsolete the minute that new server or application enters production. Inevitably something in the environment is manually changed and nobody bothers or remembers to update the documentation. With Infrastructure as Code, you make changes to the environment by CHANGING THE DOCUMENTATION. Manually making changes to infrastructure is counter to the Infrastructure as Code concept.
+
+## How does it work?
+POSHOrigin is a framework to read and execute the desired configuration of your infrastructure resources. POSHOrigin uses PowerShell DSC as the engine to test and remediate your infrastructure via custom DSC modules/resources that do the heavy lifting to bring your Infrastructure into the desired state.
+
+## What does a configuration file look like?
+A typical configuration to create a VM in VMware vSphere would look like the code below. When executed, POSHOrigin will use a custom DSC resource to test that a VM exists with the name 'VM01' and if not, will use PowerCLI to provision the VM with the parameters provided. If a VM named 'VM01' already exists, the DSC resource will bring it into the desired state specified in the configuration (vCPU, vRAM, disk).
+
+###### vm_config.ps1
+```PowerShell
+resource 'vsphere:vm' 'VM01' @{
+    ensure = 'present'
+    description = 'Test VM'
+    vCenter = 'vcenter01.local'
+    datacenter = 'datacenter01'
+    cluster = 'cluster01'
+    vmTemplate = 'W2K12_R2_Std'
+    customizationSpec = 'W2K12_R2'
+    powerOnAfterCreation = $true
+    totalvCPU = 2
+    coresPerSocket = 1
+    vRAM = 4
+    initialDatastore = 'datastore01'
+    networks = @{
+        portGroup = 'VLAN_500'
+        ipAssignment = 'Static'
+        ipAddress = '192.168.100.100'
+        subnetMask = '255.255.255.0'
+        defaultGateway = '192.168.100.1'
+        dnsServers = @('192.168.50.50','192.168.50.60')
+    }
+    disks = @(
+        @{
+            name = 'Hard disk 1'
+            sizeGB = 50
+            type = 'flat'
+            format = 'Thick'
+            volumeName = 'C'
+            volumeLabel = 'NOS'
+            blockSize = 4096
+        }
+    )
+    secrets = @{            
+        vCenter = @{
+            resolver = 'passwordstate'
+            options = @{
+                endpoint = 'https://passwordstate/api'
+                credApiKey = '28bd4c9a3756ef37c2fbd6a59e84dab5'
+                passwordId = 8321
+            }
+        }
+        guest = @{
+            resolver = 'passwordstate'
+            options = @{
+                endpoint = 'https://passwordstate/api'
+                credApiKey = '28bd4c9a3756ef37c2fbd6a59e84dab5'
+                passwordId = 8472
+            }
+        }
+    }
+}
+```
+
+## How do I execute a configuration?
+Once you have written the configuration for the type of resource you would like to provision, you can read, test, and execute it with the commands below.
+
+```PowerShell
+# Read the configuration into a variable
+$x = Get-POSHOriginConfiguration -Path .\vm_config.ps1 -Verbose
+
+# Test the configuration
+$x | Invoke-POSHOriginConfiguration -Verbose -WhatIf
+
+# Invoke the configuration
+$x | Invoke-POSHOriginConfiguration -Verbose
+```
 
 ## More Information
-Please check out [http://devblackops.io](http://devblackops.io) for examples and further information.
+Please check out the [Wiki](https://github.com/devblackops/POSHOrigin/wiki) for further information.
