@@ -59,9 +59,11 @@ process {
                     }
 
                     # Verify attributes
-                    if (Compare-Object -ReferenceObject $chefOptions.attributes -DifferenceObject $node.normal) {
-                        Write-Verbose -Message "Chef attributes do not match"
-                        $match = $false
+                    if ($chefOptions.attributes) {
+                        if (Compare-Object -ReferenceObject $chefOptions.attributes -DifferenceObject $node.normal) {
+                            Write-Verbose -Message "Chef attributes do not match"
+                            $match = $false
+                        }
                     }
                 } else {
                     Write-Verbose -Message 'Chef client not found'

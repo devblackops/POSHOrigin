@@ -140,21 +140,23 @@ node_name               '$fqdnlower'
                             }
                             if ($null -eq $configList) { $configList = @()}
                             $configList = $configList | sort
-                        
-                            if (Compare-Object -ReferenceObject $configList -DifferenceObject $currList) {
-                                Write-Verbose -Message "Chef run list does not match"
                             
-                                # Set run list
-                                $list = ''
-                                $runlist | ForEach-Object {
-                                    $propName = $_ | Get-Member -Type NoteProperty
-                                    $value = $_."$($propName.Name)"
-                                    $list += "$($propName.Name)[$value],"
+                            if ($configList -ne @()) {
+                                if (Compare-Object -ReferenceObject $configList -DifferenceObject $currList) {
+                                    Write-Verbose -Message "Chef run list does not match"
+                            
+                                    # Set run list
+                                    $list = ''
+                                    $runlist | ForEach-Object {
+                                        $propName = $_ | Get-Member -Type NoteProperty
+                                        $value = $_."$($propName.Name)"
+                                        $list += "$($propName.Name)[$value],"
+                                    }
+                                    $list = $list.TrimEnd(',')
+                                    $list = "'$list'"
+                                    Write-Verbose -Message "Assigning run list: $fqdnlower $($list | Format-List | Out-String)"
+                                    Start-Process -FilePath 'knife' -ArgumentList "node run_list set $fqdnlower $list" -NoNewWindow -Wait
                                 }
-                                $list = $list.TrimEnd(',')
-                                $list = "'$list'"
-                                Write-Verbose -Message "Assigning run list: $fqdnlower $($list | Format-List | Out-String)"
-                                Start-Process -FilePath 'knife' -ArgumentList "node run_list set $fqdnlower $list" -NoNewWindow -Wait
                             }
                         }
                     }

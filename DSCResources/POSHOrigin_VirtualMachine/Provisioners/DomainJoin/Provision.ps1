@@ -17,6 +17,7 @@ process {
     $ip = $t.Guest.IPAddress | Where-Object { ($_ -notlike '169.*') -and ( $_ -notlike '*:*') } | Select-Object -First 1
     if ($null -ne $ip -and $ip -ne [string]::Empty) {
         $cmd = {
+            $VerbosePreference = 'Continue'
             try {
                 $params = @{
                     Credential = $args[0]
@@ -62,6 +63,10 @@ process {
                     if ($vmView.Guest.IpAddress -and $vmView.Guest.IpAddress -notlike '169.*') {
                         $p = Invoke-Command -ComputerName $vmView.Guest.IpAddress -Credential $Options.GuestCredentials -ScriptBlock { Get-Process } -ErrorAction SilentlyContinue
                         if ($null -ne $p) {
+
+                            Write-Verbose -Message 'Running gpupdate /force...'
+                            Invoke-Command -ComputerName $vmView.Guest.IpAddress -Credential $Options.GuestCredentials -ScriptBlock { gpupdate /force } -ErrorAction SilentlyContinue
+
                             break
                         }
                     }
