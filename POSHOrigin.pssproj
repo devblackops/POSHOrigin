@@ -125,10 +125,12 @@
     <Compile Include="Internal\_ParsePsd1.ps1" />
     <Compile Include="Internal\_SetupLCM.ps1" />
     <Compile Include="Internal\_ValidateConfigSchema.ps1" />
+    <Compile Include="LICENSE" />
     <Compile Include="picard.txt" />
     <Compile Include="POSHOrigin.psd1" />
     <Compile Include="POSHOrigin.psm1" />
     <Compile Include="POSHOrigin.test.ps1" />
+    <Compile Include="README.md" />
     <Compile Include="Resolvers\PasswordState\Resolve.ps1" />
     <Compile Include="Resolvers\ProtectedData\Resolve.ps1" />
     <Compile Include="Resolvers\PSCredential\Resolve.ps1" />
