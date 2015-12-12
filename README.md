@@ -65,7 +65,7 @@ resource 'vsphere:vm' 'VM01' @{
 }
 ```
 
-Here is another type of configuration that will provision a Citrix NetScaler server resource, as well as a VIP. Notice that you can define more than one resource in the same file.
+Here is another type of configuration that will provision a Citrix NetScaler server resource, as well as a VIP. Notice that you can define more than one resource in the same file. You denote the type of resource you would like to provision as the first parameter to the **resource** function. Below we are specifying that we are creating a **LBServer** resource from the POSHOrigin_**NetScaler** DSC module and giving it a name of 'VM01' with the provided parameters.
 
 ###### ns_config.ps1
 
@@ -107,14 +107,14 @@ resource 'NetScaler:LBVirtualServer' 'VM01_VIP' @{
 ## How do I execute a configuration?
 Once you have written the configuration for the type of resource you would like to provision, you can read, test, and execute it with the commands below.
 
-This will read in the ***vm_config.ps1*** file and process the contents. This includes creating PS credential objects from any options defined under the ***secrets*** section. What is returned is a PowerShell custom object (or array of custom objects if you specified more than one resource in the file) will all the options and credentials required that will later be passed to DSC to compile a configuration.
+This will read in the **vm_config.ps1** file and process the contents. This includes creating PS credential objects from any options defined under the **secrets** section. What is returned is a PowerShell custom object (or array of custom objects if you specified more than one resource in the file) will all the options and credentials required that will later be passed to DSC to compile a configuration.
 
 ```PowerShell
 # Read the configuration into a variable
 $x = Get-POSHOriginConfiguration -Path .\vm_config.ps1 -Verbose
 ```
 
-Here we are passing the variable that was created from the code above and compiling a DSC configuration that will be applied to the local machine. In this case we are just going to ***test*** the configuration (run the Test function of DSC). No changes will be applied to infrastructure.
+Here we are passing the variable that was created from the code above and compiling a DSC configuration that will be applied to the local machine. In this case we are just going to **test** the configuration (run the Test function of DSC). No changes will be applied to infrastructure.
 
 ```PowerShell
 # Test the configuration
