@@ -65,16 +65,64 @@ resource 'vsphere:vm' 'VM01' @{
 }
 ```
 
+Here is another type of configuration that will provision a Citrix NetScaler server resource, as well as a VIP. Notice that you can define more than one resource in the same file.
+
+###### ns_config.ps1
+
+```PowerShell
+resource 'NetScaler:LBServer' 'VM01' @{
+    description = 'this is a comment'
+    ipAddress = '192.168.100.200'
+    netScalerFQDN = '<NetScaler FQDN>'
+    secrets = @{
+        adminUser = @{
+            resolver = 'pscredential'
+            options = @{
+                username = 'admin'
+                password = '<your password>'
+            }
+        }
+    }
+}
+
+resource 'NetScaler:LBVirtualServer' 'VM01_VIP' @{
+    description = 'this is a comment'    
+    ipAddress = '192.168.100.100'
+    port = 80
+    serviceType = 'HTTP'
+    lbMethod = 'ROUNDROBIN'
+    netScalerFQDN = '<NetScaler FQDN>'
+    secrets = @{
+        adminUser = @{
+            resolver = 'pscredential'
+            options = @{
+                username = 'admin'
+                password = '<your password>'
+            }
+        }
+    }
+}
+```
+
 ## How do I execute a configuration?
 Once you have written the configuration for the type of resource you would like to provision, you can read, test, and execute it with the commands below.
+
+This will read in the ***vm_config.ps1*** file and process the contents. This includes creating PS credential objects from any options defined under the ***secrets*** section. What is returned is a PowerShell custom object (or array of custom objects if you specified more than one resource in the file) will all the options and credentials required that will later be passed to DSC to compile a configuration.
 
 ```PowerShell
 # Read the configuration into a variable
 $x = Get-POSHOriginConfiguration -Path .\vm_config.ps1 -Verbose
+```
 
+Here we are passing the variable that was created from the code above and compiling a DSC configuration that will be applied to the local machine. In this case we are just going to ***test*** the configuration (run the Test function of DSC). No changes will be applied to infrastructure.
+
+```PowerShell
 # Test the configuration
 $x | Invoke-POSHOriginConfiguration -Verbose -WhatIf
+```
 
+Here we are going to test that the infrastructure resources are in the desired state, modify them if they already exist but don't match, or create any resources that don't exist.
+```PowerShell
 # Invoke the configuration
 $x | Invoke-POSHOriginConfiguration -Verbose
 ```
