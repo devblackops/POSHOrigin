@@ -31,6 +31,10 @@ function _SetupLCM {
     Set-DSCLocalConfigurationManager -Path $dir.Directory -Verbose:$false
     Remove-Item -Path $dir -Force
 
+    # Enable PS remoting
+    Write-Verbose -Message 'Configuration WSMAN...'
+    Set-WSManQuickConfig -Force | Out-Null
+
     # Configure trusted hosts
     # This will allow PS remoting to IP address rather than name
     # We can't be sure that DNS resolution is working right after the VM is built
