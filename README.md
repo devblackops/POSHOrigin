@@ -48,20 +48,20 @@ This will read in the **vm_config.ps1** file and process the contents. What is r
 
 ```PowerShell
 # Read the configuration into a variable
-$x = Get-POSHOriginConfiguration -Path .\vm_config.ps1 -Verbose
+$x = Get-POSHOriginConfig -Path .\vm_config.ps1 -Verbose
 ```
 
 Here we are passing the variable that was created from the code above and compiling a DSC configuration that will be applied to the local machine. In this case we are just going to **test** the configuration (run the Test function of DSC). No changes will be applied to infrastructure.
 
 ```PowerShell
 # Test the configuration
-$x | Invoke-POSHOriginConfiguration -Verbose -WhatIf
+$x | Invoke-POSHOrigin -Verbose -WhatIf
 ```
 
 Here we are going to test that the infrastructure resources are in the desired state, modify them if they already exist but don't match, or create any resources that don't exist.
 ```PowerShell
 # Invoke the configuration
-$x | Invoke-POSHOriginConfiguration -Verbose
+$x | Invoke-POSHOrigin -Verbose
 ```
 
 ## More Information
