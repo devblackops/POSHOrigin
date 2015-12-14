@@ -10,7 +10,7 @@ The configuration files and code that describes your infrastructure has the adde
 POSHOrigin is a framework to read and execute the desired configuration of your infrastructure resources. POSHOrigin uses PowerShell DSC as the engine to test and remediate your infrastructure via custom DSC modules/resources that do the heavy lifting to bring your Infrastructure into the desired state.
 
 ## What does a configuration file look like?
-A typical configuration to create a VM in VMware vSphere would look like the code below. When executed, POSHOrigin will use a custom DSC resource to test that a VM exists with the name 'VM01' and if not, will use PowerCLI to provision the VM with the parameters provided. If a VM named 'VM01' already exists, the DSC resource will bring it into the desired state specified in the configuration (vCPU, vRAM, disk).
+A typical configuration to create a VM in VMware vSphere would look like the code below. When executed, POSHOrigin will use a custom DSC resource to test that a VM exists with the name 'VM01' and if not, will use PowerCLI to provision the VM with the parameters provided. If a VM named 'VM01' already exists, then DSC resource will bring it into the desired state specified in the configuration (vCPU, vRAM, disk).
 
 ###### vm_config.ps1
 ```PowerShell
@@ -46,7 +46,7 @@ resource 'vsphere:vm' 'VM01' @{
             blockSize = 4096
         }
     )
-    secrets = @{            
+    secrets = @{
         vCenter = @{
             resolver = 'pscredential'
             options = @{
@@ -107,7 +107,7 @@ resource 'NetScaler:LBVirtualServer' 'VM01_VIP' @{
 ## How do I execute a configuration?
 Once you have written the configuration for the type of resource you would like to provision, you can read, test, and execute it with the commands below.
 
-This will read in the **vm_config.ps1** file and process the contents. This includes creating PS credential objects from any options defined under the **secrets** section. What is returned is a PowerShell custom object (or array of custom objects if you specified more than one resource in the file) will all the options and credentials required that will later be passed to DSC to compile a configuration.
+This will read in the **vm_config.ps1** file and process the contents. What is returned is a PowerShell custom object (or array of custom objects if you specified more than one resource in the file) will all the options and credentials required that will later be passed to DSC to compile a configuration.
 
 ```PowerShell
 # Read the configuration into a variable
