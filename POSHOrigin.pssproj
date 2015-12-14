@@ -34,6 +34,7 @@
     <Folder Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\" />
     <Folder Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\Chef\helpers\" />
     <Folder Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\DomainJoin\" />
+    <Folder Include="Examples\" />
     <Folder Include="Functions\" />
     <Folder Include="Internal\" />
     <Folder Include="Internal\resources\" />
@@ -92,6 +93,11 @@
     <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\DomainJoin\Deprovision.ps1" />
     <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\DomainJoin\Provision.ps1" />
     <Compile Include="DSCResources\POSHOrigin_VirtualMachine\Provisioners\DomainJoin\Test.ps1" />
+    <Compile Include="Examples\file_defaults.psd1" />
+    <Compile Include="Examples\folder_defaults.psd1" />
+    <Compile Include="Examples\multiple_resources.ps1" />
+    <Compile Include="Examples\single_resource.ps1" />
+    <Compile Include="Examples\using_defaults.ps1" />
     <Compile Include="Functions\Export-PoshOriginConfig.ps1" />
     <Compile Include="Functions\Get-POSHDefault.ps1" />
     <Compile Include="Functions\Get-POSHOriginConfig-NEW.ps1" />
