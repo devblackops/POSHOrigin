@@ -15,53 +15,8 @@ A typical configuration to create a VM in VMware vSphere would look like the cod
 ###### vm_config.ps1
 ```PowerShell
 resource 'vsphere:vm' 'VM01' @{
-    ensure = 'present'
     description = 'Test VM'
-    vCenter = 'vcenter01.local'
-    datacenter = 'datacenter01'
-    cluster = 'cluster01'
-    vmTemplate = 'W2K12_R2_Std'
-    customizationSpec = 'W2K12_R2'
-    powerOnAfterCreation = $true
-    totalvCPU = 2
-    coresPerSocket = 1
-    vRAM = 4
-    initialDatastore = 'datastore01'
-    networks = @{
-        portGroup = 'VLAN_500'
-        ipAssignment = 'Static'
-        ipAddress = '192.168.100.100'
-        subnetMask = '255.255.255.0'
-        defaultGateway = '192.168.100.1'
-        dnsServers = @('192.168.50.50','192.168.50.60')
-    }
-    disks = @(
-        @{
-            name = 'Hard disk 1'
-            sizeGB = 50
-            type = 'flat'
-            format = 'Thick'
-            volumeName = 'C'
-            volumeLabel = 'NOS'
-            blockSize = 4096
-        }
-    )
-    secrets = @{
-        vCenter = @{
-            resolver = 'pscredential'
-            options = @{
-                username = '<your vcenter username>'
-                password = '<your password here>'
-            }
-        }
-        guest = @{
-            resolver = 'pscredential'
-            options = @{
-                username = 'administrator'
-                password = '<your password here>'
-            }
-        }
-    }
+    defaults = '.\my_vm_defaults.psd1'
 }
 ```
 
@@ -72,35 +27,17 @@ Here is another type of configuration that will provision a Citrix NetScaler ser
 ```PowerShell
 resource 'NetScaler:LBServer' 'VM01' @{
     description = 'this is a comment'
+    defaults = '.\my_ns_defaults.psd1'
     ipAddress = '192.168.100.200'
-    netScalerFQDN = '<NetScaler FQDN>'
-    secrets = @{
-        adminUser = @{
-            resolver = 'pscredential'
-            options = @{
-                username = 'admin'
-                password = '<your password>'
-            }
-        }
-    }
 }
 
 resource 'NetScaler:LBVirtualServer' 'VM01_VIP' @{
-    description = 'this is a comment'    
+    description = 'this is a comment'
+    defaults = '.\my_ns_defaults.psd1'
     ipAddress = '192.168.100.100'
     port = 80
     serviceType = 'HTTP'
     lbMethod = 'ROUNDROBIN'
-    netScalerFQDN = '<NetScaler FQDN>'
-    secrets = @{
-        adminUser = @{
-            resolver = 'pscredential'
-            options = @{
-                username = 'admin'
-                password = '<your password>'
-            }
-        }
-    }
 }
 ```
 
