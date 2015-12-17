@@ -3,7 +3,7 @@ function _SetupLCM {
     param()
 
     #[DSCLocalConfigurationManager()]
-    Configuration LCMPush {	
+    Configuration LCMPush {
         param(
             [string]$Computer = 'localhost'
         )
@@ -16,6 +16,7 @@ function _SetupLCM {
                 ConfigurationModeFrequencyMins = 30
                 RefreshFrequencyMins = 30
                 RebootNodeIfNeeded = $false
+                DebugMode = 'None'
             }
 	    }
     }

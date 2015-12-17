@@ -1,0 +1,13 @@
+
+[ClassVersion("1.0"), FriendlyName("POSHFile")]
+class POSHOrigin_POSHFile : OMI_BaseResource
+{
+	[Key] String Name;
+	[Required, ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+	[Required] String Path;
+	[Write] String Contents;
+	[Read] String FullPath;
+	[Read] Boolean Exists;
+	[Read] String CurrentContents;
+	[Read] Boolean ContentsMatch;
+};

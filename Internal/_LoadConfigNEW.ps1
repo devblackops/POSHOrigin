@@ -29,7 +29,7 @@ function _LoadConfigNEW {
             foreach ($resource in $config) {
                 #$copy = _CopyObject -DeepCopyObject $resource
                 Write-Verbose -Message "Processing resource [ $($resource.Name) ]"
-                Write-Debug -Message ($resource.Options | Format-List | Out-String)
+                Write-Debug -Message "Resource options: $($resource.Options | Format-List | Out-String)"
 
                 # Inspect the secrets
                 $secrets = $resource.options.secrets

@@ -19,14 +19,14 @@ function _CompileConfig {
         Write-Debug -Message '_CompileConfig(): beginning'
     }
 
-    process {  
+    process {
         $DSCConfigData = @{
             AllNodes = @(
-                @{     
+                @{
                     NodeName = "*"
                     #CertificateFile = "$repo\$($ProvisioningServer.Split('.')[0]).cer"
                     #Thumbprint = '6B63F5A78E990B04F2240874476CF45C8FBB19CA'
-                    PSDscAllowPlainTextPassword = $true 
+                    PSDscAllowPlainTextPassword = $true
                     PSDscAllowDomainUser = $true
                 }
                 @{
@@ -37,9 +37,9 @@ function _CompileConfig {
         }
 
         Configuration POSHOriginCompile {
-
+            Import-DscResource -ModuleName PSDesiredStateConfiguration
             Import-DscResource -ModuleName POSHOrigin
-            Import-DscResource -ModuleName POSHOrigin_NetScaler
+            #Import-DscResource -ModuleName POSHOrigin_NetScaler
 
             #$x = { Import-DscResource -ModuleName POSHOrigin
             #    Import-DscResource -ModuleName POSHOrigin_NetScaler
@@ -62,6 +62,7 @@ function _CompileConfig {
 
             Node $AllNodes.NodeName {
                 $Node.Config | ForEach {
+
                     # Validate we have a valid 'Ensure' settings
                     if ($null -eq $_.options.Ensure) {
                         $_.options | Add-Member -Type NoteProperty -Name 'Ensure' -Value 'Present'
@@ -71,12 +72,42 @@ function _CompileConfig {
                         }
                     }
 
-                    Write-Verbose "Generating config for: $($_.driver)($($_.Name))"
+                    Write-Verbose "Generating config for: $($_.Resource)($($_.Name))"
                     Write-Debug -Message ($_ | Select-Object -ExpandProperty options | Format-List -Property * | Out-String)
 
-                    $module = $_.Driver.Split(':')[0]
-                    $resource = $_.Driver.Split(':')[1]
-                    _InvokeResource -Type ($module + "_" + $resource) -Options $_
+                    $mod = $_.Resource.Split(':')[0]
+                    $res = $_.Resource.Split(':')[1]
+
+                    _InvokeResource -Module $mod -Resource $res -Options $_
+
+
+
+                    ## Try to find the DSC resource
+                    #$dscResource = Get-DscResource -Name $res -Module $mod -ErrorAction SilentlyContinue
+                    #if (-Not $dscResource) {
+                    #    $dscResource = Get-DscResource -Name $res -Module "POSHOrigin_$mod" -ErrorAction SilentlyContinue
+                    #}
+
+                    #if ($dscResource) {
+                    #    Write-Debug -Message $dscResource.ParentPath
+                    #    $invokePath = Join-Path -Path $dscResource.ParentPath -ChildPath 'Invoke.ps1'
+                    #    Write-Debug -Message "Calling: $invokePath"
+                    #    if (Test-Path -Path $invokePath) {
+                    #        & $invokePath -x $Options
+                    #        #. $InvokePath $options
+                    #        #Invoke-POSHResource $options
+                    #    } else {
+                    #        Write-Error -Message "Could not find 'Invoke.ps1' in DSC module: $($dscResource.ParentPath)"
+                    #    }
+                    #} else {
+                    #    throw "Could not find the required DSC resource for type: $Module`:$Resource"
+                    #}
+
+
+
+                    #$type = $mod + "_" + $res
+                    #$resourceFile = "$moduleRoot\Internal\resources\$Type.ps1"
+
                     #_InvokeResource -Type $x.Driver -Options $_
                 }
             }
@@ -87,7 +118,7 @@ function _CompileConfig {
 
         # Create MOF file
         $repo = (Join-Path -path $env:USERPROFILE -ChildPath '.poshorigin')
-        $source = POSHOriginCompile -ConfigurationData $DSCConfigData -OutputPath $repo -Verbose:$false
+        $source = POSHOriginCompile -ConfigurationData $DSCConfigData -OutputPath $repo -Verbose:$VerbosePreference
 
         return $source
     }
@@ -95,7 +126,7 @@ function _CompileConfig {
     end {
         Write-Debug -Message '_CompileConfig(): ending'
     }
-    
+
     # Publish MOF file
     #$target = "\\$DSCServer\C$\Program Files\WindowsPowerShell\DscService\Configuration\$Guid.mof"
     #Write-Verbose "Publishing MOF to [$target]"

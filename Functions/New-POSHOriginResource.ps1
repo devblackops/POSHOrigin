@@ -34,7 +34,7 @@ function New-POSHOriginResource {
     $wrapper = @{
         Name = "$ResourceId"
         Description = $merged.Description
-        Driver = $ResourceType
+        Resource = $ResourceType
         Options = $merged
     }
     return $wrapper

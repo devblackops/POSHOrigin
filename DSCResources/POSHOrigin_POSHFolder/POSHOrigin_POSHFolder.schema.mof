@@ -1,0 +1,10 @@
+
+[ClassVersion("1.0"), FriendlyName("POSHFolder")]
+class POSHOrigin_POSHFolder : OMI_BaseResource
+{
+	[Key] String Name;
+	[Required, ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+	[Required] String Path;
+	[Read] String FullPath;
+	[Read] Boolean Exists;
+};
