@@ -12,13 +12,21 @@ function Invoke-POSHOrigin {
         [Parameter(Mandatory, ValueFromPipeline)]
         [Alias('InputObject')]
         [psobject[]]$ConfigData,
+
+        [switch]$PassThru,
         
-        [switch]$MakeItSo
+        [switch]$MakeItSo,
+
+        [switch]$KeepMOF
     )
 
     begin {
         Write-Debug -Message 'Invoke-POSHOrigin(): beginning'
         $data = @()
+
+        # Temporarilly disable the PowerShell progress bar
+        $oldProgPref = $ProgressPreference
+        $ProgressPreference = 'SilentlyContinue'
     }
 
     process {
@@ -28,6 +36,8 @@ function Invoke-POSHOrigin {
     }
 
     end {
+        $testResults = $null
+
         if ($PSBoundParameters.ContainsKey('MakeItSo')) {
             Write-Verbose "Making it so!`n" 
             $picard = Get-Content -Path "$moduleRoot\picard.txt" -Raw
@@ -37,23 +47,40 @@ function Invoke-POSHOrigin {
         # Create MOF
         $mofPath = _CompileConfig -ConfigData $data -ProvisioningServer $ProvisioningServer -DscServer $DscServer -WhatIf:$false
 
-        # Publish MOF to provisioning server if not local.
-        # Otherwise, start DSC configuration locally
-        if ($ProvisioningServer -ne 'localhost' -and $ProvisioningServer -ne '.' -and $ProvisioningServer -ne $env:COMPUTERNAME) {
-            if ($PSCmdlet.ShouldProcess('POSHOrigin configuration')) {
-                Publish-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -ComputerName $env:COMPUTERNAME -Confirm:$false
-            }
-        } else {
-            if ($PSCmdlet.ShouldProcess('POSHOrigin configuration')) {
-                Start-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -Force -Wait
+        if (Test-Path -Path $mofPath) {
+            Write-Verbose "MOF file generated at $($MofPath.FullName)"
+
+            # Publish MOF to provisioning server if not local.
+            # Otherwise, start DSC configuration locally
+            if ($ProvisioningServer -ne 'localhost' -and $ProvisioningServer -ne '.' -and $ProvisioningServer -ne $env:COMPUTERNAME) {
+                if ($PSCmdlet.ShouldProcess('POSHOrigin configuration')) {
+                    Publish-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -ComputerName $env:COMPUTERNAME -Confirm:$false
+                }
             } else {
-                Test-DscConfiguration -Path (Split-Path -Path $mofPath -Parent)
+                if ($PSCmdlet.ShouldProcess('POSHOrigin configuration')) {
+                    Start-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -Force -Wait
+                } else {
+                    $testResults = Test-DscConfiguration -Path (Split-Path -Path $mofPath -Parent)
+                }
             }
+
+            # Cleanup
+            if (-Not $PSBoundParameters.ContainsKey('KeepMOF')) {
+                Remove-Item -Path $mofPath -Force -Confirm:$false -WhatIf:$false
+            }
+            Remove-DscConfigurationDocument -Stage Current, Pending -Force -Confirm:$false
+
+            # Reset the progress bar preference
+            $ProgressPreference = $oldProgPref
+
+            Write-Debug -Message 'Invoke-POSHOrigin(): ending'
+        } else {
+            Write-Error -Message 'Failed to create MOF file.'
         }
 
-        Write-Debug -Message 'Invoke-POSHOrigin(): ending'
-        Remove-Item -Path $mofPath -Force -Confirm:$false -WhatIf:$false
-        Remove-DscConfigurationDocument -Stage Current, Pending -Force -Confirm:$false
+        if ($PSBoundParameters.ContainsKey('PassThru')) {
+            return $testResults
+        }
     }
 
     #Remove-DSCConfigurationDocument -Stage Current;

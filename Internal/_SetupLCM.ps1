@@ -16,7 +16,6 @@ function _SetupLCM {
                 ConfigurationModeFrequencyMins = 30
                 RefreshFrequencyMins = 30
                 RebootNodeIfNeeded = $false
-                DebugMode = 'None'
             }
 	    }
     }

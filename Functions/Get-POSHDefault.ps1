@@ -1,4 +1,4 @@
-function Get-POSHDefault {    
+function Get-POSHDefault {
     [cmdletbinding()]
     param(
         [Parameter(Mandatory, Position=0)]

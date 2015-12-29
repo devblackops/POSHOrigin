@@ -36,79 +36,53 @@ function _CompileConfig {
             )
         }
 
-        Configuration POSHOriginCompile {
+        # Validate we have a valid 'Ensure' settings
+        foreach ($item in $ConfigData) {
+            if (-not $item.options.Ensure) {
+                $item.options | Add-Member -Type NoteProperty -Name Ensure -Value Present
+            } else {
+                if (($item.Options.Ensure -ne 'Present') -and ($item.Options.Ensure -ne 'absent')) {
+                    $item.Options.Ensure -eq 'Present'
+                }
+            }
+        }
+
+        # Dot source any needed configurations based on the configData
+        $ConfigData | ForEach-Object {
+
+            # Derive the resource type and module from the options passed in
+            # and try to find the DSC resource
+            $module = $_.Resource.Split(':')[0]
+            $resource = $_.Resource.Split(':')[1]
+            $dscResource = Get-DscResource -Name $resource -Module $module -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+            if (-Not $dscResource) {
+                $dscResource = Get-DscResource -Name $resource -Module "POSHOrigin_$module" -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+            }
+            if (-Not $dscResource) {
+                $dscResource = Get-DscResource -Name $resource -Module 'POSHOrigin' -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+            }
+
+            # Dot source the configuration
+            if ($dscResource) {
+                $invokePath = Join-Path -Path $dscResource.ParentPath -ChildPath 'Invoke.ps1'
+                Write-Verbose -Message "Dot sourcing [$($dscResource.Name)] configuration from [$invokePath]"
+                . $invokePath -Options $_ -Direct:$false
+            }
+        }
+
+        Configuration POSHOrigin {
             Import-DscResource -ModuleName PSDesiredStateConfiguration
-            Import-DscResource -ModuleName POSHOrigin
-            #Import-DscResource -ModuleName POSHOrigin_NetScaler
-
-            #$x = { Import-DscResource -ModuleName POSHOrigin
-            #    Import-DscResource -ModuleName POSHOrigin_NetScaler
-            #}
-            #Invoke-Command $x
-
-            #foreach ($item in $DSCConfigData.AllNodes[1].Config) {
-            #    $mod = $_.Driver.Split(':')[0]
-            #    $loadMod = "POSHOrigin_$mod" + "_Load"
-            #    $resourceFile = "$moduleRoot\Internal\resources\$loadMod.ps1"
-            #    #Write-Verbose $resourceFile
-            #    #& $resourceFile
-            #    . $resourceFile
-            #    $c = "Import-DscResource -ModuleName $mod"
-            #    & $c
-            #}
-
-            Write-Verbose -Message "`n`nStarting DSC MOF compilation..."
-            Write-Debug -Message ($Node.Config | Format-List -Property '*' | Out-String)
 
             Node $AllNodes.NodeName {
                 $Node.Config | ForEach {
+                    
+                    Write-Verbose "Generating config for: [$($_.Resource)]($($_.Name))"
+                    Write-Debug -Message ($_.Options | Format-List -Property * | Out-String)
 
-                    # Validate we have a valid 'Ensure' settings
-                    if ($null -eq $_.options.Ensure) {
-                        $_.options | Add-Member -Type NoteProperty -Name 'Ensure' -Value 'Present'
-                    } else {
-                        if (($_.Options.Ensure -ne 'Present') -and ($_.Options.Ensure -ne 'absent')) {
-                            $_.Options.Ensure -eq 'Present'
-                        }
-                    }
-
-                    Write-Verbose "Generating config for: $($_.Resource)($($_.Name))"
-                    Write-Debug -Message ($_ | Select-Object -ExpandProperty options | Format-List -Property * | Out-String)
-
-                    $mod = $_.Resource.Split(':')[0]
-                    $res = $_.Resource.Split(':')[1]
-
-                    _InvokeResource -Module $mod -Resource $res -Options $_
-
-
-
-                    ## Try to find the DSC resource
-                    #$dscResource = Get-DscResource -Name $res -Module $mod -ErrorAction SilentlyContinue
-                    #if (-Not $dscResource) {
-                    #    $dscResource = Get-DscResource -Name $res -Module "POSHOrigin_$mod" -ErrorAction SilentlyContinue
-                    #}
-
-                    #if ($dscResource) {
-                    #    Write-Debug -Message $dscResource.ParentPath
-                    #    $invokePath = Join-Path -Path $dscResource.ParentPath -ChildPath 'Invoke.ps1'
-                    #    Write-Debug -Message "Calling: $invokePath"
-                    #    if (Test-Path -Path $invokePath) {
-                    #        & $invokePath -x $Options
-                    #        #. $InvokePath $options
-                    #        #Invoke-POSHResource $options
-                    #    } else {
-                    #        Write-Error -Message "Could not find 'Invoke.ps1' in DSC module: $($dscResource.ParentPath)"
-                    #    }
-                    #} else {
-                    #    throw "Could not find the required DSC resource for type: $Module`:$Resource"
-                    #}
-
-
-
-                    #$type = $mod + "_" + $res
-                    #$resourceFile = "$moduleRoot\Internal\resources\$Type.ps1"
-
-                    #_InvokeResource -Type $x.Driver -Options $_
+                    # Call the appropriate resource configuration
+                    $resourceName = $_.Resource.Split(':')[1]
+                    $confName = "$resourceName" + '_' + $_.Name
+                    . $confName -ResourceOptions $_
                 }
             }
         }
@@ -118,7 +92,7 @@ function _CompileConfig {
 
         # Create MOF file
         $repo = (Join-Path -path $env:USERPROFILE -ChildPath '.poshorigin')
-        $source = POSHOriginCompile -ConfigurationData $DSCConfigData -OutputPath $repo -Verbose:$VerbosePreference
+        $source = POSHOrigin -ConfigurationData $DSCConfigData -OutputPath $repo -Verbose:$VerbosePreference
 
         return $source
     }

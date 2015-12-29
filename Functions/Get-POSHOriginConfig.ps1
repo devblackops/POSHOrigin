@@ -1,7 +1,7 @@
 function Get-POSHOriginConfig {
     [cmdletbinding()]
     param(
-        [parameter(mandatory, ValueFromPipeline)]
+        [parameter(ValueFromPipeline)]
         [string[]]$Path = (Get-Location).Path,
 
         [switch]$Recurse
@@ -12,8 +12,9 @@ function Get-POSHOriginConfig {
             # Load in the configurations
             $item = Resolve-Path $item
             if (Test-Path -Path $item) {
-                $configData = @(_LoadConfigNEW -Path $item -Recurse:$Recurse)
-                return $configData
+                $configData = @(_LoadConfig -Path $item -Recurse:$Recurse)
+                #return $configData
+                return _SortByDependency -Objects $configData
             } else {
                 Write-Error -Message "Invalid path [$Path]"
             }

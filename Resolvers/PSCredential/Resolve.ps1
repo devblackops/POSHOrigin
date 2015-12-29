@@ -11,7 +11,7 @@ begin {
 process {
     $keySecure = $options.password | ConvertTo-SecureString -AsPlainText -Force
     $cred = New-Object System.Management.Automation.PSCredential -ArgumentList ($options.userName, $keySecure) 
-    write-verbose "Got credential for [$($options.userName)] - [$($cred.Username)) - ********]"
+    write-verbose "Got credential for [$($options.userName)] - ********]"
     return $cred
 }
 
