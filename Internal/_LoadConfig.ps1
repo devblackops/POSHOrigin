@@ -1,4 +1,4 @@
-function _LoadConfigNEW {
+function _LoadConfig {
     [cmdletbinding()]
     param(
         [parameter(Mandatory)]
