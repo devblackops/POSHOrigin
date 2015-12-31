@@ -34,6 +34,7 @@
     <Folder Include="Functions\" />
     <Folder Include="Internal\" />
     <Folder Include="Internal\resources\" />
+    <Folder Include="Tests\" />
     <Folder Include="obj\" />
     <Folder Include="obj\Debug\" />
     <Folder Include="Resolvers\" />
@@ -89,8 +90,10 @@
     <Compile Include="Resolvers\PasswordState\Resolve.ps1" />
     <Compile Include="Resolvers\ProtectedData\Resolve.ps1" />
     <Compile Include="Resolvers\PSCredential\Resolve.ps1" />
+    <Compile Include="Tests\AppVeyor.Pester.ps1" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="appveyor.yml" />
     <Content Include="DSCResources\POSHOrigin_POSHFile\POSHOrigin_POSHFile.schema.mof" />
     <Content Include="DSCResources\POSHOrigin_POSHFolder\POSHOrigin_POSHFolder.schema.mof" />
   </ItemGroup>
