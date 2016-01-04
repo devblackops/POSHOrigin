@@ -46,7 +46,7 @@ switch ($type) {
                 POSHFolder $ResourceOptions.Name {
                     Ensure = $ResourceOptions.options.Ensure
                     Name = $ResourceOptions.Name
-                    Path = $ResourceOptions.Name
+                    Path = $ResourceOptions.Path
                 }
             }
         }
