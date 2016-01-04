@@ -22,12 +22,15 @@ $type = $Options.Resource.split(':')[1]
 $type = $Options.Resource.split(':')[1]
 
 switch ($type) {
-    'poshfolder' {
+    'poshfile' {
         if ($Direct) {
             $hash = @{
                 Name = $Options.Name
                 Ensure = $Options.options.Ensure
                 Path = $Options.options.Path
+            }
+            if ($Options.options.contents) {
+                $hash.contents = $Options.options.contents
             }
             return $hash
         } else {
@@ -41,7 +44,7 @@ switch ($type) {
                     [psobject]$ResourceOptions
                 )
 
-                Import-DscResource -Name POSHFolder -ModuleName POSHOrigin
+                Import-DscResource -Name POSHFile -ModuleName POSHOrigin
 
                 POSHFolder $ResourceOptions.Name {
                     Ensure = $ResourceOptions.options.Ensure

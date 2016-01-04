@@ -1,6 +1,6 @@
 @{
 # Version number of this module.
-ModuleVersion = '1.5.2'
+ModuleVersion = '1.5.3'
 
 # Root module
 RootModule = 'POSHOrigin.psm1'
