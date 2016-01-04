@@ -46,7 +46,7 @@ switch ($type) {
 
                 Import-DscResource -Name POSHFile -ModuleName POSHOrigin
 
-                POSHFolder $ResourceOptions.Name {
+                POSHFile $ResourceOptions.Name {
                     Ensure = $ResourceOptions.options.Ensure
                     Name = $ResourceOptions.Name
                     Path = $ResourceOptions.Path
