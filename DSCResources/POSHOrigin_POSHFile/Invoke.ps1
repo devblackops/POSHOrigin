@@ -18,9 +18,6 @@ if ($null -eq $Options.options.Ensure) {
 # Get the resource type
 $type = $Options.Resource.split(':')[1]
 
-# Get the resource type
-$type = $Options.Resource.split(':')[1]
-
 switch ($type) {
     'poshfile' {
         if ($Direct) {
@@ -48,8 +45,8 @@ switch ($type) {
 
                 POSHFile $ResourceOptions.Name {
                     Ensure = $ResourceOptions.options.Ensure
-                    Name = $ResourceOptions.Name
-                    Path = $ResourceOptions.Path
+                    Name = $ResourceOptions.options.Name
+                    Path = $ResourceOptions.options.Path
                 }
             }
         }
