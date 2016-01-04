@@ -51,7 +51,12 @@ function New-POSHOriginResource {
         $merged.DependsOn = @()
     }
     
-    $merged.Name = $Name
+    # Set the 'Name' parameter to the name given in the resource declaration
+    # only if the resource options don't explicitly have a name parameter
+    if (-Not $merged.ContainsKey('Name')) {
+        $merged.Name = $Name
+    }
+
     $wrapper = @{
         Name = $Name
         FullName = "[" + $ResourceType.Split(':')[1] + "]" + $Name
