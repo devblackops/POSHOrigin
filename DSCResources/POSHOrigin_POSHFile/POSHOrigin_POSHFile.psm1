@@ -57,7 +57,7 @@ function Set-TargetResource {
                 Write-Verbose -Message "Creating file: $($file.FullPath)"
                 New-Item -Path $file.FullPath -ItemType File -Force
                 Write-Verbose -Message "Setting content on file: ($file.FullPath)"
-                Set-Content -Path $file.FullPath -Value $file.Contents -Force
+                Set-Content -Path $file.FullPath -Value $file.Contents -Force -NoNewline
             }
         }
         'Absent' {
