@@ -62,6 +62,7 @@ function Set-TargetResource {
         }
         'Absent' {
             if ($file.Exists) {
+                Write-Verbose -Message "Removing file: $($file.FullPath)"
                 Remove-Item -Path $file.FullPath -Force -Confirm:$false
             }
         }
@@ -129,6 +130,7 @@ function Get-FileStatus {
         FullPath = (Join-Path -Path $Path -ChildPath $Name)
         Contents = $Contents
     }
+
     if (Test-Path -Path $returnValue.FullPath) {
         $returnValue.Exists = $true
         $returnValue.CurrentContents = Get-Content -Path $returnValue.FullPath -Raw
@@ -142,6 +144,19 @@ function Get-FileStatus {
         $returnValue.CurrentContents = [string]::Empty
         $returnValue.ContentsMatch = $false
     }
+
+    if ($returnValue.Exists) {
+        Write-Verbose -Message "File: $($returnValue.FullPath) exists"
+    } else {
+        Write-Verbose -Message "File: $($returnValue.FullPath) does not exist"
+    }
+
+    if ($returnValue.ContentsMatch) {
+        Write-Verbose -Message "Contents match"
+    } else {
+        Write-Verbose -Message "Contents do not match"
+    }
+
 
     return $returnValue
 }

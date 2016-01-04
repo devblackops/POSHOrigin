@@ -49,6 +49,7 @@ function Set-TargetResource {
         }
         'Absent' {
             if ($folder.Exists) {
+                Write-Verbose -Message "Removing folder: $($folder.FullPath)"
                 Remove-Item -Path $folder.FullPath -Force -Confirm:$false
             }
         }
@@ -85,6 +86,7 @@ function Test-TargetResource {
 }
 
 function Get-FolderStatus {
+    [cmdletbinding()]
     [OutputType([System.Collections.Hashtable])]
     param(
         [parameter(Mandatory)]
@@ -103,6 +105,12 @@ function Get-FolderStatus {
         Ensure = $Ensure
         FullPath = (Join-Path -Path $Path -ChildPath $Name)
         Exists = Test-Path -Path (Join-Path -Path $Path -ChildPath $Name)
+    }
+
+    if ($returnValue.Exists) {
+        Write-Verbose -Message "Folder: $($returnValue.FullPath) exists"
+    } else {
+        Write-Verbose -Message "Folder: $($returnValue.FullPath) does not exist"
     }
 
     return $returnValue
