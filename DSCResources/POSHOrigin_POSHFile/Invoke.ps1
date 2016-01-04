@@ -59,6 +59,7 @@ switch ($type) {
                     Name = $name
                     Ensure = $ResourceOptions.options.Ensure
                     Path = $ResourceOptions.options.Path
+                    Contents = $ResourceOptions.options.Contents
                 }
             }
         }
