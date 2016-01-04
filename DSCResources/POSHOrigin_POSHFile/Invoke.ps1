@@ -22,10 +22,16 @@ switch ($type) {
     'poshfile' {
         if ($Direct) {
             $hash = @{
-                Name = $Options.Name
                 Ensure = $Options.options.Ensure
                 Path = $Options.options.Path
             }
+
+            if ($Options.options.Name) {
+                $hash.Name = $options.options.name
+            } else {
+                $hash.Name = $options.name
+            }
+
             if ($Options.options.contents) {
                 $hash.contents = $Options.options.contents
             }
@@ -43,9 +49,15 @@ switch ($type) {
 
                 Import-DscResource -Name POSHFile -ModuleName POSHOrigin
 
+                if ($ResourceOptions.options.Name) {
+                    $name = $ResourceOptions.options.name
+                } else {
+                    $name = $ResourceOptions.name
+                }
+
                 POSHFile $ResourceOptions.Name {
+                    Name = $name
                     Ensure = $ResourceOptions.options.Ensure
-                    Name = $ResourceOptions.options.Name
                     Path = $ResourceOptions.options.Path
                 }
             }
