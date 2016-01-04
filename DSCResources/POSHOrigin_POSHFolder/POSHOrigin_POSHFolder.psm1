@@ -49,7 +49,7 @@ function Set-TargetResource {
         }
         'Absent' {
             if ($folder.Exists) {
-                Remove-Item -Path $file.FullPath -Force -Confirm:$false
+                Remove-Item -Path $folder.FullPath -Force -Confirm:$false
             }
         }
     }
