@@ -51,7 +51,7 @@ function Set-TargetResource {
             if ($file.Exists) {
                 if (-Not $file.ContentsMatch) {
                     Write-Verbose -Message "Setting content on file: $($file.FullPath)"
-                    Set-Content -Path $file.FullPath -Value $file.Contents
+                    Set-Content -Path $file.FullPath -Value $file.Contents -Force -NoNewline
                 }
             } else {
                 Write-Verbose -Message "Creating file: $($file.FullPath)"
