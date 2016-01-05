@@ -16,7 +16,7 @@ A typical configuration to create a VM in VMware vSphere would look like the cod
 
 ###### vm_config.ps1
 ```PowerShell
-resource 'vsphere:vm' 'VM01' @{
+resource 'poshorigin_vsphere:vm' 'VM01' @{
     description = 'Test VM'
     defaults = '.\my_vm_defaults.psd1'
 }
