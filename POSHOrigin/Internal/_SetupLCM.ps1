@@ -8,7 +8,7 @@ function _SetupLCM {
             [string]$Computer = 'localhost'
         )
 
-	    Node $Computer {
+        Node $Computer {
             LocalConfigurationManager {
                 RefreshMode = 'Push'
                 ConfigurationMode = 'ApplyAndAutoCorrect'
@@ -17,7 +17,7 @@ function _SetupLCM {
                 RefreshFrequencyMins = 30
                 RebootNodeIfNeeded = $false
             }
-	    }
+        }
     }
 
     $tempDir = (Join-Path -Path $env:SystemDrive -ChildPath "Temp")
