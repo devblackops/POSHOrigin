@@ -1,6 +1,6 @@
 @{
 # Version number of this module.
-ModuleVersion = '1.5.5'
+ModuleVersion = '1.5.6'
 
 # Root module
 RootModule = 'POSHOrigin.psm1'
@@ -38,6 +38,11 @@ AliasesToExport = @(
     'gpd',
     'ipo',
     'resource'
+)
+
+DscResourcesToExport = @(
+    'POSHFile',
+    'POSHFolder'
 )
 
 PrivateData = @{

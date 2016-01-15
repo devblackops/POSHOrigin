@@ -1,14 +1,14 @@
 
-function Export-POSHOriginConfig {
-    [cmdletbinding()]
-    param(
-        [parameter(Mandatory)]
-        [psobject]$InputObject
-    )
+#function Export-POSHOriginConfig {
+#    [cmdletbinding()]
+#    param(
+#        [parameter(Mandatory)]
+#        [psobject]$InputObject
+#    )
 
-    begin {}
+#    begin {}
 
-    process {}
+#    process {}
 
-    end {}
-}
+#    end {}
+#}
