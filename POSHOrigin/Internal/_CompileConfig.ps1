@@ -1,10 +1,8 @@
 function _CompileConfig {
     [cmdletbinding(SupportsShouldProcess)]
     param(
-        #[Parameter(Mandatory)]
         [string]$ProvisioningServer = (_GetOption -Option 'provisioning_server'),
 
-        #[Parameter(Mandatory)]
         [string]$DscServer = (_GetOption -Option 'dsc_server'),
 
         [Parameter(Mandatory)]
@@ -16,7 +14,7 @@ function _CompileConfig {
     )
 
     begin {
-        Write-Debug -Message '_CompileConfig(): beginning'
+        Write-Debug -Message $msgs.cc_begin
     }
 
     process {
@@ -65,7 +63,7 @@ function _CompileConfig {
             # Dot source the configuration
             if ($dscResource) {
                 $invokePath = Join-Path -Path $dscResource.ParentPath -ChildPath 'Invoke.ps1'
-                Write-Verbose -Message "Dot sourcing [$($dscResource.Name)] configuration from [$invokePath]"
+                Write-Verbose -Message ($msgs.cc_dot_sourcing_config -f $dscResource.Name, $invokePath)
                 . $invokePath -Options $_ -Direct:$false
             }
         }
@@ -75,8 +73,8 @@ function _CompileConfig {
 
             Node $AllNodes.NodeName {
                 $Node.Config | ForEach {
-                    
-                    Write-Verbose "Generating config for: [$($_.Resource)]($($_.Name))"
+
+                    Write-Verbose -Message ( $msgs.cc_generating_config -f $_.Resource, $_.Name)
                     Write-Debug -Message ($_.Options | Format-List -Property * | Out-String)
 
                     # Call the appropriate resource configuration
@@ -88,9 +86,6 @@ function _CompileConfig {
             }
         }
 
-        # This is our GUID for the provisioning server
-        #$guid = [guid]::Parse($ProvisioningServerGuid)
-
         # Create MOF file
         $repo = (Join-Path -path $env:USERPROFILE -ChildPath '.poshorigin')
         $source = POSHOrigin -ConfigurationData $DSCConfigData -OutputPath $repo -Verbose:$VerbosePreference
@@ -99,13 +94,6 @@ function _CompileConfig {
     }
 
     end {
-        Write-Debug -Message '_CompileConfig(): ending'
+        Write-Debug -Message $msgs.cc_end
     }
-
-    # Publish MOF file
-    #$target = "\\$DSCServer\C$\Program Files\WindowsPowerShell\DscService\Configuration\$Guid.mof"
-    #Write-Verbose "Publishing MOF to [$target]"
-    #Copy-Item -Path $source -Destination $target -Force -Verbose:$false
-    #Remove-Item -Path $source -Force -Verbose:$false
-    #New-DSCCheckSum $target -Force -Verbose:$false
 }

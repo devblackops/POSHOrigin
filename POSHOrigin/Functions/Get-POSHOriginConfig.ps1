@@ -13,10 +13,9 @@ function Get-POSHOriginConfig {
             $item = Resolve-Path $item
             if (Test-Path -Path $item) {
                 $configData = @(_LoadConfig -Path $item -Recurse:$Recurse)
-                #return $configData
                 return _SortByDependency -Objects $configData
             } else {
-                Write-Error -Message "Invalid path [$Path]"
+                Write-Error -Message ($msgs.invalid_path -f $path)
             }
         }
     }

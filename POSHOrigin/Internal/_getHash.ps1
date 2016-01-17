@@ -53,17 +53,14 @@ Original post: http://dbadailystuff.com/2013/03/11/get-hash-a-powershell-hash-fu
 function _getHash {
      Param (
           [parameter(Mandatory=$true, ValueFromPipeline=$true, ParameterSetName="set1")]
-          [String]
-          $text,
+          [String]$text,
 
           [parameter(Position=0, Mandatory=$true, ValueFromPipeline=$false, ParameterSetName="set2")]
-          [String]
-          $file = "",
+          [String]$file = "",
 
           [parameter(Mandatory=$false, ValueFromPipeline=$false)]
           [ValidateSet("MD5", "SHA", "SHA1", "SHA-256", "SHA-384", "SHA-512")]
-          [String]
-          $algorithm = "SHA1"
+          [String]$algorithm = "SHA1"
      )
 
      begin {
@@ -71,24 +68,25 @@ function _getHash {
      }
 
      process {
-          $md5StringBuilder = New-Object System.Text.StringBuilder 50
-          $ue = New-Object System.Text.UTF8Encoding
+          $md5StringBuilder = New-Object -TypeName System.Text.StringBuilder -ArgumentList 50
+          $ue = New-Object -TypeName System.Text.UTF8Encoding
  
           if ($file){
-
                try {
-                    if (!(Test-Path -literalpath $file)){
-                         throw 'Test-Path returned false.'
+                    if (!(Test-Path -LiteralPath $file)){
+                         throw $msgs.cc_file_not_found
                     }
                } catch {
-                    throw "_getHash - File not found or without permisions: [$file]. $_"
+                   throw $msgs.gh_file_read_error -f $file, $_
                }
 
                try {
                     [System.IO.FileStream]$fileStream = [System.IO.File]::Open($file, [System.IO.FileMode]::Open);
-                    $hashAlgorithm.ComputeHash($fileStream) | % { [void] $md5StringBuilder.Append($_.ToString("x2")) }
+                    $hashAlgorithm.ComputeHash($fileStream) | ForEach-Object { 
+                        [void] $md5StringBuilder.Append($_.ToString("x2"))
+                    }
                } catch {
-                    throw "Get-Hash - Error reading or hashing the file: [$file]"
+                    throw $msgs.gh_file_hash_error
                }
                finally {
                     $fileStream.Close()
@@ -96,7 +94,9 @@ function _getHash {
                }
           }
           else {
-               $hashAlgorithm.ComputeHash($ue.GetBytes($text)) | % { [void] $md5StringBuilder.Append($_.ToString("x2")) }
+               $hashAlgorithm.ComputeHash($ue.GetBytes($text)) | ForEach-Object {
+                   [void] $md5StringBuilder.Append($_.ToString("x2"))
+               }
           }
  
           return $md5StringBuilder.ToString()

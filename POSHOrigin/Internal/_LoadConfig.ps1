@@ -19,33 +19,23 @@ function _LoadConfig {
     if ($files.Count -gt 0) {
         foreach ($file in $files) {
             $filePath = $file.FullName
-            Write-Verbose -Message "Processing file $filePath"
+            Write-Verbose -Message ($msgs.lc_processing_file -f $filePath)
             $config = @(. $filePath)
 
             # The file could have returned multiple resources
             # let's loop through them all and process them
             foreach ($resource in $config) {
                 #$copy = _CopyObject -DeepCopyObject $resource
-                Write-Verbose -Message "Processing resource $($resource.FullName)"
+                Write-Verbose -Message ($msgs.lc_processing_resource -f $resource.FullName)
                 Write-Debug -Message "Resource options: $($resource.Options | Format-List | Out-String)"
 
                 # Inspect the secrets
                 $secrets = $resource.options.secrets
                 foreach ($key in $secrets.keys) {
-                    Write-Debug -Message "Processing secret $($resource.FullName).$key"
+                    Write-Debug -Message ($msgs.lc_processing_secret -f $resource.FullName, $key)
                     $secret = $secrets.$key
                     $resolver = $secret.resolver
                     $options = $secret.options
-
-                    #if ($key -eq 'guest') {
-                    #    if ($options.ContainsKey('username')) {
-                    #        # if the guest credential doesn't have a domain or computer name
-                    #        # as part of the username, make sure to add it
-                    #        if ($options.username -notcontains '\') {
-                    #            $options.username = "$($mergedConfig.name)`\$($options.username)"
-                    #        }
-                    #    }
-                    #}
 
                     $resolverPath = "$moduleRoot\Resolvers\$resolver"
                     if (Test-Path -Path $resolverPath) {
@@ -56,7 +46,7 @@ function _LoadConfig {
                         $hash = _getHash -Text $json
                         if ($script:credentialCache.ContainsKey($hash)) {
                             $cred = $script:credentialCache.$hash
-                            Write-Verbose -Message "Found credential [$hash] in cache"
+                            Write-Verbose -Message ($msgs.lc_cache_hit -f $hash)
                         } else {
                             $cred = & $resolverPath\Resolve.ps1 -options $options
                             $script:credentialCache.$hash = $cred
@@ -77,7 +67,6 @@ function _LoadConfig {
 
                 $obj = _ConvertFrom-Hashtable -hashtable $resource -combine -recurse
                 $configs += $obj
-                #$configs += $resource
             }
         }
     }
