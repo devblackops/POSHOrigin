@@ -28,6 +28,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Media\" />
+    <Folder Include="POSHOrigin\DSCResources\POSHOrigin_POSHFile\en-US\" />
+    <Folder Include="POSHOrigin\DSCResources\POSHOrigin_POSHFolder\en-US\" />
+    <Folder Include="POSHOrigin\en-US\" />
     <Folder Include="Tests\" />
     <Folder Include="POSHOrigin\" />
     <Folder Include="POSHOrigin\DSCResources\" />
@@ -43,10 +46,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CONTRIBUTING.md" />
+    <Compile Include="POSHOrigin\DSCResources\POSHOrigin_POSHFile\en-US\messages.psd1" />
     <Compile Include="POSHOrigin\DSCResources\POSHOrigin_POSHFile\Invoke.ps1" />
     <Compile Include="POSHOrigin\DSCResources\POSHOrigin_POSHFile\POSHOrigin_POSHFile.psm1" />
+    <Compile Include="POSHOrigin\DSCResources\POSHOrigin_POSHFolder\en-US\messages.psd1" />
     <Compile Include="POSHOrigin\DSCResources\POSHOrigin_POSHFolder\Invoke.ps1" />
     <Compile Include="POSHOrigin\DSCResources\POSHOrigin_POSHFolder\POSHOrigin_POSHFolder.psm1" />
+    <Compile Include="POSHOrigin\en-US\messages.psd1" />
     <Compile Include="POSHOrigin\Examples\file_defaults.psd1" />
     <Compile Include="POSHOrigin\Examples\folder_defaults.psd1" />
     <Compile Include="POSHOrigin\Examples\multiple_resources.ps1" />
