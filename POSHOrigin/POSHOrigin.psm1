@@ -1,11 +1,14 @@
 #Requires -Version 5.0
 #Requires -RunAsAdministrator
 
+# Messages
+$msgs = Import-LocalizedData -FileName messages.psd1
+
+# Our credential cache
 $script:credentialCache = @{}
 
-$moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
-
 # Load functions
+$moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
 "$moduleRoot\Functions\*.ps1", "$moduleRoot\Internal\*.ps1" |
     Resolve-Path |
     Where-Object { -not ($_.ProviderPath.ToLower().Contains(".tests.")) } |

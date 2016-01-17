@@ -10,9 +10,6 @@ function New-POSHOriginResource {
         [hashtable]$Options
     )
 
-    #$stub = _GetBlankResource -Type $ResourceType
-    #$merged = _MergeHashtables -primary $Options -secondary $stub -Verbose
-
     $defaults = @{}
     if ($Options.ContainsKey('Defaults')) {
 
@@ -21,7 +18,8 @@ function New-POSHOriginResource {
         $parentDir = Split-Path -Path $MyInvocation.PSCommandPath -Parent
         $resolvedPath = Join-Path -Path $parentDir -ChildPath $options.Defaults
         $resolvedPath = Resolve-Path -Path $resolvedPath
-        Write-Verbose "Resolved defaults to [$resolvedPath]"
+        $resourceName = "[$ResourceType]$Name"
+        Write-Verbose -Message ($msgs.npor_resolved_defaults -f $resourceName, $resolvedPath)
 
         # Load defaults file
         $item = Get-Item -Path $resolvedPath

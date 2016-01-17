@@ -1,4 +1,6 @@
 
+$msgs = Import-LocalizedData -FileName messages.psd1
+
 function Get-TargetResource {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
@@ -43,13 +45,13 @@ function Set-TargetResource {
     switch ($Ensure) {
         'Present' {
             if (-Not $folder.Exists) {
-                Write-Verbose -Message "Creating folder: $($folder.FullPath)"
+                Write-Verbose -Message ($msgs.str_creating_folder -f $folder.FullPath)
                 New-Item -ItemType Directory -Path $folder.FullPath -Force
             }
         }
         'Absent' {
             if ($folder.Exists) {
-                Write-Verbose -Message "Removing folder: $($folder.FullPath)"
+                Write-Verbose -Message ($msgs.str_removing_folder -f $folder.FullPath)
                 Remove-Item -Path $folder.FullPath -Force -Confirm:$false
             }
         }
@@ -108,9 +110,9 @@ function Get-FolderStatus {
     }
 
     if ($returnValue.Exists) {
-        Write-Verbose -Message "Folder: $($returnValue.FullPath) exists"
+        Write-Verbose -Message ($msgs.gfs_folder_exists -f $returnValue.FullPath )
     } else {
-        Write-Verbose -Message "Folder: $($returnValue.FullPath) does not exist"
+        Write-Verbose -Message ($msgs.gfs_folder_not_exists -f $returnValue.FullPath )
     }
 
     return $returnValue

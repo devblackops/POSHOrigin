@@ -13,8 +13,6 @@ function _SortByDependency {
         $edgeList.Add($_.FullName, $_)
     }
 
-    #Write-Host ($edgeList | Format-Table * | Out-String)
-
     # Make sure we can use HashSet
     Add-Type -AssemblyName System.Core
 
@@ -76,7 +74,7 @@ function _SortByDependency {
     }
 
     if($currentEdgeList.Count -gt 0) {
-        throw "Cyclic dependency found! Adjust resource dependencies via the 'DependsOn' property"
+        throw $msgs.sbd_cyclic_error
     }
 
     $result = @()

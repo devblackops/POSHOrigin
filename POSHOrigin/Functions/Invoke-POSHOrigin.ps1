@@ -21,7 +21,7 @@ function Invoke-POSHOrigin {
     )
 
     begin {
-        Write-Debug -Message 'Invoke-POSHOrigin(): beginning'
+        Write-Debug -Message $msgs.ipo_begin
         $data = @()
 
         # Temporarilly disable the PowerShell progress bar
@@ -39,7 +39,7 @@ function Invoke-POSHOrigin {
         $testResults = $null
 
         if ($PSBoundParameters.ContainsKey('MakeItSo')) {
-            Write-Verbose "Making it so!`n" 
+            Write-Verbose -Message $msgs.ipo_makeitso
             $picard = Get-Content -Path "$moduleRoot\picard.txt" -Raw
             Write-Verbose -Message "`n$picard"
         }
@@ -48,16 +48,18 @@ function Invoke-POSHOrigin {
         $mofPath = _CompileConfig -ConfigData $data -ProvisioningServer $ProvisioningServer -DscServer $DscServer -WhatIf:$false
 
         if (Test-Path -Path $mofPath) {
-            Write-Verbose "MOF file generated at $($MofPath.FullName)"
+            Write-Verbose -Message ($msgs.ipo_mof_generated -f $mofPath.FullName)
+
 
             # Publish MOF to provisioning server if not local.
             # Otherwise, start DSC configuration locally
             if ($ProvisioningServer -ne 'localhost' -and $ProvisioningServer -ne '.' -and $ProvisioningServer -ne $env:COMPUTERNAME) {
-                if ($PSCmdlet.ShouldProcess('POSHOrigin configuration')) {
-                    Publish-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -ComputerName $env:COMPUTERNAME -Confirm:$false
+                if ($PSCmdlet.ShouldProcess($msgs.ipo_should_msg)) {
+                    Publish-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -ComputerName $ProvisioningServer -Confirm:$false
+                    Start-DscConfiguration -ComputerName $ProvisioningServer -Confirm:$false -Force -Wait
                 }
             } else {
-                if ($PSCmdlet.ShouldProcess('POSHOrigin configuration')) {
+                if ($PSCmdlet.ShouldProcess($msgs.ipo_should_msg)) {
                     Start-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -Force -Wait
                 } else {
                     $testResults = Test-DscConfiguration -Path (Split-Path -Path $mofPath -Parent)
@@ -73,9 +75,9 @@ function Invoke-POSHOrigin {
             # Reset the progress bar preference
             $ProgressPreference = $oldProgPref
 
-            Write-Debug -Message 'Invoke-POSHOrigin(): ending'
+            Write-Debug -Message $msgs.ipo_end
         } else {
-            Write-Error -Message 'Failed to create MOF file.'
+            Write-Error -Message $msgs.ipo_mof_failure
         }
 
         if ($PSBoundParameters.ContainsKey('PassThru')) {

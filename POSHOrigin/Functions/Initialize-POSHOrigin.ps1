@@ -17,7 +17,7 @@ function Initialize-POSHOrigin {
     )
 
     begin {
-        Write-Debug -Message 'Initialize-POSHOrigin(): beginning'
+        Write-Debug -Message $msgs.init_begin
     }
 
     process {
@@ -28,7 +28,8 @@ function Initialize-POSHOrigin {
         }
 
         if (-not (Test-Path -Path $Repository -Verbose:$false)) {
-            Write-Verbose "Creating POSHOrigin configuration repository: $Repository"
+            Write-Verbose -Message $msgs.init_create_repo -f $Repository
+
             New-Item -ItemType Directory -Path $Repository -Verbose:$false | Out-Null
             New-Item -ItemType Directory -Path (Join-Path -Path $Repository -ChildPath 'configs') | Out-Null
             New-Item -ItemType Directory -Path (Join-Path -Path $Repository -ChildPath 'configs\common') | Out-Null
@@ -39,13 +40,13 @@ function Initialize-POSHOrigin {
                 provisioning_server = $ProvisioningServer
                 provisioning_server_cert_path = $ProvisioningServerCertPath
                 smtp_server = $SmtpServer
-                smtp_port = $SmtpPort                
+                smtp_port = $SmtpPort
             }
             $json = $options | ConvertTo-Json -Verbose:$false
             $json | Out-File -FilePath $optionsPath -Force -Confirm:$false -Verbose:$false
 
         } else {
-            Write-Verbose "POSH origin configuration repository appears to already be created at [$Repository]"
+            Write-Verbose -Message ($msgs.init_repo_already_exists -f $Repository)
 
             if (Test-Path -Path $optionsPath) {
                 $currOptions = (Get-Content -Path $optionsPath -Raw) | ConvertFrom-Json
@@ -75,14 +76,12 @@ function Initialize-POSHOrigin {
                     provisioning_server = $ProvisioningServer
                     provisioning_server_cert_path = $ProvisioningServerCertPath
                     smtp_server = $SmtpServer
-                    smtp_port = $SmtpPort                
+                    smtp_port = $SmtpPort
                 }
                 $json = $options | ConvertTo-Json -Verbose:$false
                 $json | Out-File -FilePath $optionsPath -Force -Confirm:$false -Verbose:$false       
             }
         }
-
-        #$moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
 
         if (-Not (_IsSessionElevated)) {
             [string[]]$argList = @('-NoProfile', '-NoExit', '-File', "$moduleRoot\Internal\_SetupLCM.ps1")
@@ -93,11 +92,9 @@ function Initialize-POSHOrigin {
         } else {
             _SetupLCM
         }
-
-        #return Get-Item -Path $Repository
     }
 
     end {
-        Write-Debug -Message 'Initialize-POSHOrigin(): ending'
+        Write-Debug -Message $msgs.init_end
     }
 }
