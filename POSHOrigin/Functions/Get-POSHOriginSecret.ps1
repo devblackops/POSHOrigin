@@ -8,23 +8,17 @@ function Get-POSHOriginSecret {
         [hashtable]$Options
     )
 
-    # Create a global variable to hold our credential cache
-    # so when we call this functions multiple times
-    # the cache is persistent
-    #if (-Not (Get-Variable -Name credentialCache -Scope Global -ErrorAction SilentlyContinue)) {
-    #    $global:credentialCache = @{}
-    #}
+    # Let's avoid repeatadly calling the resolver if we're getting the same credential
+    # Instead, we'll compute a checksum of the options and store the credential in a cache
+    # We'll lookup the credential by the checksum in the cache first before we go out to the resolver
 
     $resolverPath = "$moduleRoot\Resolvers\$resolver"
     if (Test-Path -Path $resolverPath) {
-        # Let's avoid repeatadly calling the resolver if we're getting the same credential
-        # Instead, we'll compute a checksum of the options and store the credential in a cache
-        # We'll lookup the credential by the checksum in the cache first before we go out to the resolver
         $json = ConvertTo-Json -InputObject $options
         $hash = _getHash -Text $json
         if ($script:credentialCache.ContainsKey($hash)) {
             $cred = $script:credentialCache.$hash
-            Write-Verbose -Message "Found credential [$hash] in cache"
+            Write-Verbose -Message ($msgs.gpos_cache_hit -f $hash)
         } else {
             $cred = & "$resolverPath\Resolve.ps1" -Options $options
             $script:credentialCache.Add($hash, $cred)
@@ -33,6 +27,6 @@ function Get-POSHOriginSecret {
     } else {
         $knownResolvers = Get-ChildItem -Path "$moduleRoot\Resolvers\" -Directory | Select-Object -ExpandProperty Name
         $knownResolversTxt = $knownResolvers -join ', '
-        throw "Unknown resolver [$resolver]. Known resolvers are [$knownResolversTxt]"
+        throw ($msgs.gpos_unknown_resolver -f $resolver, $knownResolvers)
     }
 }

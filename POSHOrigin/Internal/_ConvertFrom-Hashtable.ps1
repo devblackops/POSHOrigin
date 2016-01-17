@@ -11,14 +11,12 @@ function _ConvertFrom-Hashtable {
     )
 
     begin {
-        #Write-Debug -Message '_ConvertFrom-Hashtable(): beginning'
         $output = @()
     }
 
     process {
         if ($recurse) {
             $keys = $hashtable.Keys | ForEach-Object { $_ }
-            #Write-Verbose "Recursing $($Keys.Count) keys"
             foreach ($key in $keys) {
                 if ($hashtable.$key -is [HashTable]) {
                     $hashtable.$key = _ConvertFrom-Hashtable $hashtable.$key -Recurse -Combine:$combine
@@ -40,7 +38,6 @@ function _ConvertFrom-Hashtable {
 
         if($combine) {
             $output += @(New-Object -TypeName PSObject -Property $hashtable)
-            #Write-Verbose "Combining Output = $($Output.Count) so far"
         } else {
             New-Object -TypeName PSObject -Property $hashtable -Strict
         }
@@ -48,11 +45,9 @@ function _ConvertFrom-Hashtable {
 
     end {
         if($combine -and $output.Count -gt 1) {
-            #Write-Verbose "Combining $($Output.Count) cached outputs"
             $output | Join-Object
         } else {
             $output
         }
-        #Write-Debug -Message '_ConvertFrom-Hashtable(): ending'
     }
 }

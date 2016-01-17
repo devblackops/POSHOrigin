@@ -5,19 +5,17 @@ param(
 )
 
 begin {
-    Write-Debug -Message 'PasswordState resolver: beginning'
+    Write-Debug -Message $msgs.rslv_passwordstate_begin
 }
 
 process {
-    # Do something with the passed in options
-    # and return a [pscredential]
+    # Do something with the passed in options and return a [pscredential]
     if ($null -ne $Options) {
 
         if (Get-Module -ListAvailable -Name 'PasswordState' -Verbose:$false) {
             try {
                 Import-Module -Name 'PasswordState' -Verbose:$false
-
-                Write-Debug -Message "Resolving credential for $($options.passwordId)"
+                Write-Debug -Message ($msgs.rslv_passwordstate_resolving -f $options.passwordId)
 
                 # PasswordState module expects APIKey to be a pscredential
                 $keySecure = $options.credApiKey | ConvertTo-SecureString -AsPlainText -Force
@@ -33,27 +31,27 @@ process {
                 if ($null -ne $entry) {
                     $cred = $null
                     $pass = $entry.Password | ConvertTo-SecureString -AsPlainText -Force
-                    $cred = New-Object System.Management.Automation.PSCredential -ArgumentList ($entry.UserName, $pass)    
+                    $cred = New-Object System.Management.Automation.PSCredential -ArgumentList ($entry.UserName, $pass)
                     if ($null -ne $cred) {
-                        write-verbose "Got credential for [$($options.passwordId)] - [$($entry.Username)) - ********]"
+                        Write-Debug -Message ($msgs.rslv_passwordstate_got_cred -f $options.passwordId, $entry.Username )
                         return $cred
                     }
                 } else {
-                    Write-Error -Message "Unable to resolve credential for password Id [$($options.passwordId)] and API key [$($options.credApiKey)]"
-                }    
+                    Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
+                }
             } catch {
-                Write-Error -Message "Unable to resolve credential for password Id [$($options.passwordId)] and API key [$($options.credApiKey)]"
+                Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
                 Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"
                 write-Error $_
             }
         } else {
-            Write-Error -Message 'Unable to find required module [PasswordState] on system'
+            Write-Debug -Message $msgs.rslv_passwordstate_mod_missing
         }
     } else {
         return $null
     }
 }
 
-end {    
-    Write-Debug -Message 'PasswordState resolver: ending'
+end {
+    Write-Debug -Message $msgs.rslv_passwordstate_end
 }

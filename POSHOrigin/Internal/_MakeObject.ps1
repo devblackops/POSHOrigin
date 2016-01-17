@@ -22,7 +22,7 @@ function _MakeObject {
                  }
                  $output
              } else {
-                 Write-Warning -Message "Index $i is not of type [hashtable]"
+                 Write-Warning -Message ($msgs.mo_index_not_hashtable -f $i)
              }
              $i += 1
          }

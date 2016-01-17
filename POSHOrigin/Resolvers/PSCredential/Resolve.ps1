@@ -5,16 +5,16 @@ param(
 )
 
 begin {
-    Write-Debug -Message 'PSCredential resolver: beginning'
+    Write-Debug -Message $msgs.rslv_pscredential_begin
 }
 
 process {
     $keySecure = $options.password | ConvertTo-SecureString -AsPlainText -Force
     $cred = New-Object System.Management.Automation.PSCredential -ArgumentList ($options.userName, $keySecure) 
-    write-verbose "Got credential for [$($options.userName)] - ********]"
+    Write-Verbose -Message ($msgs.rslv_pscredential_got_cred -f $options.userName)
     return $cred
 }
 
 end {
-    Write-Debug -Message 'PSCredential resolver: ending'
+    Write-Debug -Message $msgs.rslv_pscredential_end
 }

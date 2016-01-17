@@ -5,7 +5,7 @@ param(
 )
 
 begin {
-    Write-Debug -Message 'ProtectedData resolver: beginning'
+    Write-Debug -Message $msgs.rslv_protecteddata_begin
 }
 
 process {
@@ -13,5 +13,5 @@ process {
 }
 
 end {
-    Write-Debug -Message 'ProtectedData resolver: ending'
+    Write-Debug -Message $msgs.rslv_protecteddata_end
 }

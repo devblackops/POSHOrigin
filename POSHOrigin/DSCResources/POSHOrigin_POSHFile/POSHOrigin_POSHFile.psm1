@@ -1,4 +1,6 @@
 
+$msgs = Import-LocalizedData -FileName messages.psd1
+
 function Get-TargetResource {
     [CmdletBinding()]
     [OutputType([System.Collections.Hashtable])]
@@ -50,19 +52,19 @@ function Set-TargetResource {
         'Present' {
             if ($file.Exists) {
                 if (-Not $file.ContentsMatch) {
-                    Write-Verbose -Message "Setting content on file: $($file.FullPath)"
+                    Write-Verbose -Message ($msgs.str_set_file_content -f $file.FullPath)
                     Set-Content -Path $file.FullPath -Value $file.Contents -Force -NoNewline
                 }
             } else {
-                Write-Verbose -Message "Creating file: $($file.FullPath)"
+                Write-Verbose -Message $msgs.str_create_file
                 New-Item -Path $file.FullPath -ItemType File -Force
-                Write-Verbose -Message "Setting content on file: ($file.FullPath)"
+                Write-Verbose -Message ($msgs.str_set_file_content -f $file.FullPath)
                 Set-Content -Path $file.FullPath -Value $file.Contents -Force -NoNewline
             }
         }
         'Absent' {
             if ($file.Exists) {
-                Write-Verbose -Message "Removing file: $($file.FullPath)"
+                Write-Verbose -Message ($msgs.str_remove_file -f $file.FullPath)
                 Remove-Item -Path $file.FullPath -Force -Confirm:$false
             }
         }
@@ -146,15 +148,15 @@ function Get-FileStatus {
     }
 
     if ($returnValue.Exists) {
-        Write-Verbose -Message "File: $($returnValue.FullPath) exists"
+        Write-Verbose -Message ($msgs.gfs_file_exists -f $returnValue.FullPath)
     } else {
-        Write-Verbose -Message "File: $($returnValue.FullPath) does not exist"
+        Write-Verbose -Message ($msgs.gfs_file_not_exists -f $returnValue.FullPath)
     }
 
     if ($returnValue.ContentsMatch) {
-        Write-Verbose -Message "Contents match"
-    } else {
-        Write-Verbose -Message "Contents do not match"
+        Write-Verbose -Message $msgs.gfs_content_match
+    } elseif ($returnValue.Exists -and -not $returnValue.ContentsMatch) {
+        Write-Verbose -Message $msgs.gfs_content_mismatch
     }
 
 
