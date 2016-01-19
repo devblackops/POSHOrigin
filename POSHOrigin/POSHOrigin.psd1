@@ -59,10 +59,12 @@ PrivateData = @{
         Tags = 'Desired State Configuration', 'DSC', 'POSHOrigin', 'Infrastructure as Code', 'IaC'
 
         # A URL to the license for this module.
-        LicenseUri = 'http://www.apache.org/licenses/LICENSE-2.0'
+        LicenseUri = 'https://raw.githubusercontent.com/devblackops/POSHOrigin/master/LICENSE'
 
         # A URL to the main website for this project.
         ProjectUri = 'https://github.com/devblackops/POSHOrigin'
+
+        IconUri = 'https://github.com/devblackops/POSHOrigin/blob/master/Media/POSHOrigin_256.png'
     }
 }
 }
