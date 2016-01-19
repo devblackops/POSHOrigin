@@ -64,7 +64,7 @@ PrivateData = @{
         # A URL to the main website for this project.
         ProjectUri = 'https://github.com/devblackops/POSHOrigin'
 
-        IconUri = 'https://github.com/devblackops/POSHOrigin/blob/master/Media/POSHOrigin_256.png'
+        IconUri = 'https://raw.githubusercontent.com/devblackops/POSHOrigin/master/Media/POSHOrigin_256.png'
     }
 }
 }
