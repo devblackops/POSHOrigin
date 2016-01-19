@@ -1,6 +1,6 @@
 @{
 # Version number of this module.
-ModuleVersion = '1.5.7'
+ModuleVersion = '1.5.8'
 
 # Root module
 RootModule = 'POSHOrigin.psm1'
@@ -29,7 +29,8 @@ FunctionsToExport = @(
     'Get-POSHOriginSecret',
     'Initialize-POSHOrigin',
     'Invoke-POSHOrigin',
-    'New-POSHOriginResource'
+    'New-POSHOriginResource',
+    'New-POSHOriginResourceFromModule'
 )
 
 AliasesToExport = @(
@@ -37,13 +38,20 @@ AliasesToExport = @(
     'gpos',
     'gpd',
     'ipo',
-    'resource'
+    'resource',
+    'module'
 )
 
 DscResourcesToExport = @(
     'POSHFile',
     'POSHFolder'
 )
+
+# Type files (.ps1xml) to be loaded when importing this module
+TypesToProcess = @('POSHOrigin.Resource.ps1xml')
+
+# Format files (.ps1xml) to be loaded when importing this module
+FormatsToProcess = @('POSHOrigin.Resource.format.ps1xml')
 
 PrivateData = @{
     PSData = @{

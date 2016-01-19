@@ -7,16 +7,30 @@ function Get-POSHOriginConfig {
         [switch]$Recurse
     )
 
+    begin {
+        $script:credentialCache = @{}
+        $script:modulesToProcess = @{}
+        $script:resourceCache = @{}
+    }
+
     process {
         foreach ($item in $Path) {
             # Load in the configurations
             $item = Resolve-Path $item
             if (Test-Path -Path $item) {
                 $configData = @(_LoadConfig -Path $item -Recurse:$Recurse)
+                Write-Verbose -Message ([string]::Empty)
+                Write-Verbose -Message ("Created $($configData.Count) resource objects")
                 return _SortByDependency -Objects $configData
             } else {
                 Write-Error -Message ($msgs.invalid_path -f $path)
             }
         }
+    }
+
+    end {
+        $script:credentialCache = @{}
+        $script:modulesToProcess = @{}
+        $script:resourceCache = @{}
     }
 }

@@ -37,9 +37,9 @@ function _ConvertFrom-Hashtable {
         }
 
         if($combine) {
-            $output += @(New-Object -TypeName PSObject -Property $hashtable)
+            $output += @(New-Object -TypeName PSCustomObject -Property $hashtable)
         } else {
-            New-Object -TypeName PSObject -Property $hashtable -Strict
+            New-Object -TypeName PSCustomObject -Property $hashtable -Strict
         }
     }
 

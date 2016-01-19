@@ -15,24 +15,27 @@ function _LoadConfig {
         $files = $item
     }
 
-    Write-Verbose -Message "$($Path): $($files.Count)"
+    #Write-Verbose -Message "$($Path): $($files.Count)"
     if ($files.Count -gt 0) {
         foreach ($file in $files) {
             $filePath = $file.FullName
             Write-Verbose -Message ($msgs.lc_processing_file -f $filePath)
             $config = @(. $filePath)
+            Write-Verbose -Message ([string]::Empty)
+            Write-Verbose -Message "Processing resources"
 
             # The file could have returned multiple resources
             # let's loop through them all and process them
             foreach ($resource in $config) {
                 #$copy = _CopyObject -DeepCopyObject $resource
-                Write-Verbose -Message ($msgs.lc_processing_resource -f $resource.FullName)
+                #Write-Verbose -Message ($msgs.lc_processing_resource -f $resource.FullName)
+                Write-Verbose -Message "  $($resource.FullName)"
                 Write-Debug -Message "Resource options: $($resource.Options | Format-List | Out-String)"
 
                 # Inspect the secrets
                 $secrets = $resource.options.secrets
                 foreach ($key in $secrets.keys) {
-                    Write-Debug -Message ($msgs.lc_processing_secret -f $resource.FullName, $key)
+                    Write-Verbose -Message ("    " + $msgs.lc_processing_secret -f $resource.FullName, $key)
                     $secret = $secrets.$key
                     $resolver = $secret.resolver
                     $options = $secret.options
@@ -46,7 +49,7 @@ function _LoadConfig {
                         $hash = _getHash -Text $json
                         if ($script:credentialCache.ContainsKey($hash)) {
                             $cred = $script:credentialCache.$hash
-                            Write-Verbose -Message ($msgs.lc_cache_hit -f $hash)
+                            Write-Verbose -Message ("      " + $msgs.lc_cache_hit -f $hash)
                         } else {
                             $cred = & $resolverPath\Resolve.ps1 -options $options
                             $script:credentialCache.$hash = $cred
@@ -66,9 +69,13 @@ function _LoadConfig {
                 }
 
                 $obj = _ConvertFrom-Hashtable -hashtable $resource -combine -recurse
+                $obj.PSObject.TypeNames.Insert(0,'POSHOrigin.Resource')
+                $obj.Options.PSObject.TypeNames.Insert(0,'POSHOrigin.Resource.Options')
+
                 $configs += $obj
             }
         }
+        Write-Verbose -Message ([string]::Empty)
     }
     $configs
 }
