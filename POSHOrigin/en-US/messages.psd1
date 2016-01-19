@@ -24,6 +24,9 @@ ipo_end = Invoke-POSHOrigin(): ending
 
 npor_resolved_defaults = {0} - Resolved defaults to [{1}]
 
+nporff_module_not_found = Unable to find module: {0}
+nporff_no_source = Module does not contain a source property
+
 cc_begin = _CompileConfig(): beginning
 cc_end = _CompileConfig(): ending
 cc_dot_sourcing_config = Dot sourcing [{0}] configuration from [{1}]

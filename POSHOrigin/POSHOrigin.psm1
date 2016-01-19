@@ -7,6 +7,12 @@ $msgs = Import-LocalizedData -FileName messages.psd1
 # Our credential cache
 $script:credentialCache = @{}
 
+# cache of modules to process
+$script:modulesToProcess = @{}
+
+# cache of resource names 
+$script:resourceCache = @{}
+
 # Load functions
 $moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
 "$moduleRoot\Functions\*.ps1", "$moduleRoot\Internal\*.ps1" |
@@ -21,6 +27,7 @@ New-Alias -Name gpd -Value Get-POSHDefault
 New-Alias -Name ipo -Value Invoke-POSHOrigin
 New-Alias -Name iponew -Value Invoke-POSHOriginNEW
 New-Alias -Name resource -Value New-POSHOriginResource
+New-Alias -Name module -Value New-POSHOriginResourceFromModule
 #Export-ModuleMember -Alias gpoc
 #Export-ModuleMember -Alias gpos
 #Export-ModuleMember -Alias gpd

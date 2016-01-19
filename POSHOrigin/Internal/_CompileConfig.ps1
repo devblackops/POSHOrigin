@@ -63,7 +63,8 @@ function _CompileConfig {
             # Dot source the configuration
             if ($dscResource) {
                 $invokePath = Join-Path -Path $dscResource.ParentPath -ChildPath 'Invoke.ps1'
-                Write-Verbose -Message ($msgs.cc_dot_sourcing_config -f $dscResource.Name, $invokePath)
+                Write-Verbose -Message ( $msgs.cc_generating_config -f $_.Resource, $_.Name)
+                #Write-Verbose -Message ($msgs.cc_dot_sourcing_config -f $dscResource.Name, $invokePath)
                 . $invokePath -Options $_ -Direct:$false
             }
         }
@@ -73,8 +74,7 @@ function _CompileConfig {
 
             Node $AllNodes.NodeName {
                 $Node.Config | ForEach {
-
-                    Write-Verbose -Message ( $msgs.cc_generating_config -f $_.Resource, $_.Name)
+                       
                     Write-Debug -Message ($_.Options | Format-List -Property * | Out-String)
 
                     # Call the appropriate resource configuration

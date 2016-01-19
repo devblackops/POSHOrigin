@@ -66,6 +66,7 @@
     <Compile Include="POSHOrigin\Functions\Invoke-POSHOrigin.ps1" />
     <Compile Include="POSHOrigin\Functions\Invoke-POSHOriginNEW.ps1" />
     <Compile Include="POSHOrigin\Functions\New-POSHOriginResource.ps1" />
+    <Compile Include="POSHOrigin\Functions\New-POSHOriginResourceFromModule.ps1" />
     <Compile Include="POSHOrigin\Internal\_CompileConfig.ps1" />
     <Compile Include="POSHOrigin\Internal\_ConvertFrom-Hashtable.ps1" />
     <Compile Include="POSHOrigin\Internal\_CopyObject.ps1" />
@@ -79,6 +80,8 @@
     <Compile Include="POSHOrigin\Internal\_SetupLCM.ps1" />
     <Compile Include="POSHOrigin\Internal\_SortByDependency.ps1" />
     <Compile Include="LICENSE" />
+    <Compile Include="POSHOrigin\Internal\_WriteHost.ps1" />
+    <Compile Include="POSHOrigin\Internal\_WriteScreen.ps1" />
     <Compile Include="POSHOrigin\picard.txt" />
     <Compile Include="POSHOrigin\POSHOrigin.psd1" />
     <Compile Include="POSHOrigin\POSHOrigin.psm1" />
@@ -94,8 +97,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="appveyor.yml" />
+    <Content Include="CHANGELOG.md" />
     <Content Include="POSHOrigin\DSCResources\POSHOrigin_POSHFile\POSHOrigin_POSHFile.schema.mof" />
     <Content Include="POSHOrigin\DSCResources\POSHOrigin_POSHFolder\POSHOrigin_POSHFolder.schema.mof" />
+    <Content Include="POSHOrigin\POSHOrigin.Resource.format.ps1xml" />
+    <Content Include="POSHOrigin\POSHOrigin.Resource.ps1xml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />

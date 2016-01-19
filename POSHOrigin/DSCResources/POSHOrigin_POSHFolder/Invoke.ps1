@@ -31,7 +31,7 @@ switch ($type) {
             # Dashes (-) are not allowed in DSC configurations names
             $itemName = $Options.Name.Replace('-', '_')
             $confName = "$type" + '_' + $itemName
-            Write-Verbose -Message "Returning configuration function for resource: $confName"
+            #Write-Verbose -Message "Returning configuration function for resource: $confName"
 
             Configuration $confName {
                 Param (
