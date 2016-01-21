@@ -1,5 +1,7 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/n6x8uxguk8tj72bw?svg=true)](https://ci.appveyor.com/project/devblackops/poshorigin)
 
+>Please check out the [Wiki](https://github.com/devblackops/POSHOrigin/wiki) for further information.
+
 # POSHOrigin
 POSHOrigin is a PowerShell 5 based framework for creating / managing infrastructure objects via custom DSC resources.
 
