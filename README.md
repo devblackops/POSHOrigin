@@ -1,9 +1,9 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/n6x8uxguk8tj72bw?svg=true)](https://ci.appveyor.com/project/devblackops/poshorigin)
 
->Please check out the [Wiki](https://github.com/devblackops/POSHOrigin/wiki) for further information.
-
 # POSHOrigin
 POSHOrigin is a PowerShell 5 based framework for creating / managing infrastructure objects via custom DSC resources.
+
+>Please check out the [Wiki](https://github.com/devblackops/POSHOrigin/wiki) for further information.
 
 ## Overview
 Infrastructure as Code, or Programmable Infrastructure as some people call it, is meant to describe your infrastructure as an executable configuration in the form of code and is an important concept when thinking about DevOps. Once your infrastructure is described in this way, it can be version controlled, allowing you to see changes over time (this can also serve as a form of backup for your infrastructure).
