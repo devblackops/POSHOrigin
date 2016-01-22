@@ -17,7 +17,7 @@ init_end = Initialize-POSHOrigin(): ending
 
 ipo_begin = Invoke-POSHOrigin(): beginning
 ipo_makeitso = Making it so!`n
-ipo_mof_generated = "MOF file generated at {0}
+ipo_mof_generated = MOF file generated at {0}
 ipo_should_msg = POSHOrigin configuration
 ipo_mof_failure = Failed to create MOF file
 ipo_end = Invoke-POSHOrigin(): ending

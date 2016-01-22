@@ -79,7 +79,7 @@ function _CompileConfig {
 
                     # Call the appropriate resource configuration
                     $resourceName = $_.Resource.Split(':')[1]
-                    $configName = $_.Name.Replace('-', '_')
+                    $configName = $_.Name.Replace('-', '')
                     $confName = "$resourceName" + '_' + $configName
                     . $confName -ResourceOptions $_
                 }
