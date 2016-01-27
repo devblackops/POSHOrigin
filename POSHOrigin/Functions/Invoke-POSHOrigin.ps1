@@ -23,10 +23,6 @@ function Invoke-POSHOrigin {
     begin {
         Write-Debug -Message $msgs.ipo_begin
         $data = @()
-
-        # Temporarilly disable the PowerShell progress bar
-        $oldProgPref = $ProgressPreference
-        $ProgressPreference = 'SilentlyContinue'
     }
 
     process {
@@ -36,6 +32,10 @@ function Invoke-POSHOrigin {
     }
 
     end {
+        # Temporarilly disable the PowerShell progress bar
+        $oldProgPref = $global:ProgressPreference
+        $global:ProgressPreference = 'SilentlyContinue'
+
         $testResults = $null
 
         if ($PSBoundParameters.ContainsKey('MakeItSo')) {
@@ -50,7 +50,6 @@ function Invoke-POSHOrigin {
         if (Test-Path -Path $mofPath) {
             Write-Verbose -Message ($msgs.ipo_mof_generated -f $mofPath.FullName)
 
-
             # Publish MOF to provisioning server if not local.
             # Otherwise, start DSC configuration locally
             if ($ProvisioningServer -ne 'localhost' -and $ProvisioningServer -ne '.' -and $ProvisioningServer -ne $env:COMPUTERNAME) {
@@ -60,7 +59,7 @@ function Invoke-POSHOrigin {
                 }
             } else {
                 if ($PSCmdlet.ShouldProcess($msgs.ipo_should_msg)) {
-                    Start-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -Force -Wait
+                    $testResults = Start-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -Force -Wait
                 } else {
                     $testResults = Test-DscConfiguration -Path (Split-Path -Path $mofPath -Parent)
                 }
@@ -73,7 +72,7 @@ function Invoke-POSHOrigin {
             Remove-DscConfigurationDocument -Stage Current, Pending -Force -Confirm:$false
 
             # Reset the progress bar preference
-            $ProgressPreference = $oldProgPref
+            $global:ProgressPreference = $oldProgPref
 
             Write-Debug -Message $msgs.ipo_end
         } else {
