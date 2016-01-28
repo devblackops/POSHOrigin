@@ -36,7 +36,7 @@ PrivateData = @{
         LicenseUri = 'https://raw.githubusercontent.com/devblackops/POSHOrigin/master/LICENSE'
         ProjectUri = 'https://github.com/devblackops/POSHOrigin'
         IconUri = 'https://raw.githubusercontent.com/devblackops/POSHOrigin/master/Media/POSHOrigin_256.png'
-        ReleaseNotes = 'Added experimental support for resuable modules'
+        ReleaseNotes = 'Added experimental support for reusable modules'
     }
 }
 }
