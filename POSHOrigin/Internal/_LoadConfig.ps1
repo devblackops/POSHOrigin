@@ -51,13 +51,14 @@ function _LoadConfig {
                             $cred = $script:credentialCache.$hash
                             Write-Verbose -Message ("      " + $msgs.lc_cache_hit -f $hash)
                         } else {
-                            $cred = & $resolverPath\Resolve.ps1 -options $options
+                            $cred = . $resolverPath\Resolve.ps1 -options $options
                             $script:credentialCache.$hash = $cred
                         }
                         $secrets.$key.credential = $cred
 
                         # If the guest credential doesn't have a domain or computer name
                         # as part of the username, make sure to add it
+                        # THIS SHOULD MOVED INTO THE POSHORIGIN_VSPHERE MODULE
                         if ($key -eq 'guest') {
                             if ($cred.UserName -notcontains '\') {
                                 $userName = "$($resource.Name)`\$($cred.UserName)"
