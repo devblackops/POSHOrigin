@@ -53,18 +53,22 @@ function Set-TargetResource {
             if ($file.Exists) {
                 if (-Not $file.ContentsMatch) {
                     Write-Verbose -Message ($msgs.str_set_file_content -f $file.FullPath)
+                    #Write-POSHScreen -Message ($msgs.str_set_file_content -f $file.FullPath)
                     Set-Content -Path $file.FullPath -Value $file.Contents -Force -NoNewline
                 }
             } else {
                 Write-Verbose -Message $msgs.str_create_file
+                #Write-POSHScreen -Message $msgs.str_create_file
                 New-Item -Path $file.FullPath -ItemType File -Force
                 Write-Verbose -Message ($msgs.str_set_file_content -f $file.FullPath)
+                #Write-POSHScreen -Message ($msgs.str_set_file_content -f $file.FullPath)
                 Set-Content -Path $file.FullPath -Value $file.Contents -Force -NoNewline
             }
         }
         'Absent' {
             if ($file.Exists) {
                 Write-Verbose -Message ($msgs.str_remove_file -f $file.FullPath)
+                #Write-POSHScreen -Message ($msgs.str_remove_file -f $file.FullPath)
                 Remove-Item -Path $file.FullPath -Force -Confirm:$false
             }
         }
@@ -148,15 +152,19 @@ function Get-FileStatus {
     }
 
     if ($returnValue.Exists) {
+        #Write-POSHScreen -Message($msgs.gfs_file_exists -f $returnValue.FullPath)
         Write-Verbose -Message ($msgs.gfs_file_exists -f $returnValue.FullPath)
     } else {
         Write-Verbose -Message ($msgs.gfs_file_not_exists -f $returnValue.FullPath)
+        #Write-POSHScreen -Message ($msgs.gfs_file_not_exists -f $returnValue.FullPath)
     }
 
     if ($returnValue.ContentsMatch) {
         Write-Verbose -Message $msgs.gfs_content_match
+        #Write-POSHScreen -Message $msgs.gfs_content_match
     } elseif ($returnValue.Exists -and -not $returnValue.ContentsMatch) {
         Write-Verbose -Message $msgs.gfs_content_mismatch
+        #Write-POSHScreen -Message $msgs.gfs_content_mismatch
     }
 
 
