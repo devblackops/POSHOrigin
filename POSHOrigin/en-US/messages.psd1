@@ -64,5 +64,6 @@ rslv_pscredential_got_cred = Got credential for [{0}] - ********]
 rslv_pscredential_end = PSCredential resolver: ending
 
 rslv_protecteddata_begin = ProtectedData resolver: beginning
+rslv_protecteddata_got_cred = Resolved credential from [{0}]
 rslv_protecteddata_end = PSCredential resolver: ending
 '@
