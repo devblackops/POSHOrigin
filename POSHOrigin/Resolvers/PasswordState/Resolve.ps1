@@ -10,45 +10,40 @@ begin {
 
 process {
     # Do something with the passed in options and return a [pscredential]
-    if ($null -ne $Options) {
+    if (Get-Module -ListAvailable -Name 'PasswordState' -Verbose:$false) {
+        try {
+            Import-Module -Name 'PasswordState' -Verbose:$false
+            Write-Debug -Message ($msgs.rslv_passwordstate_resolving -f $options.passwordId)
 
-        if (Get-Module -ListAvailable -Name 'PasswordState' -Verbose:$false) {
-            try {
-                Import-Module -Name 'PasswordState' -Verbose:$false
-                Write-Debug -Message ($msgs.rslv_passwordstate_resolving -f $options.passwordId)
-
-                # PasswordState module expects APIKey to be a pscredential
-                $keySecure = $options.credApiKey | ConvertTo-SecureString -AsPlainText -Force
-                $apiKeyCred = New-Object System.Management.Automation.PSCredential -ArgumentList ('SecretAPIkey', $keySecure) 
-                $params = @{
-                    ApiKey = $apiKeyCred
-                    PasswordId = $options.passwordId
-                    Endpoint = $options.Endpoint
-                    UseV6Api = $true
-                    Verbose = $false
-                }
-                $entry = Get-PasswordStatePassword @params
-                if ($null -ne $entry) {
-                    $cred = $null
-                    $pass = $entry.Password | ConvertTo-SecureString -AsPlainText -Force
-                    $cred = New-Object System.Management.Automation.PSCredential -ArgumentList ($entry.UserName, $pass)
-                    if ($null -ne $cred) {
-                        Write-Debug -Message ($msgs.rslv_passwordstate_got_cred -f $options.passwordId, $entry.Username )
-                        return $cred
-                    }
-                } else {
-                    Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
-                }
-            } catch {
-                Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
-                Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"
-                write-Error $_
+            # PasswordState module expects APIKey to be a pscredential
+            $keySecure = $options.credApiKey | ConvertTo-SecureString -AsPlainText -Force
+            $apiKeyCred = New-Object System.Management.Automation.PSCredential -ArgumentList ('SecretAPIkey', $keySecure) 
+            $params = @{
+                ApiKey = $apiKeyCred
+                PasswordId = $options.passwordId
+                Endpoint = $options.Endpoint
+                UseV6Api = $true
+                Verbose = $false
             }
-        } else {
-            Write-Debug -Message $msgs.rslv_passwordstate_mod_missing
+            $entry = Get-PasswordStatePassword @params
+            if ($null -ne $entry) {
+                $cred = $null
+                $pass = $entry.Password | ConvertTo-SecureString -AsPlainText -Force
+                $cred = New-Object System.Management.Automation.PSCredential -ArgumentList ($entry.UserName, $pass)
+                if ($null -ne $cred) {
+                    Write-Debug -Message ($msgs.rslv_passwordstate_got_cred -f $options.passwordId, $entry.Username )
+                    return $cred
+                }
+            } else {
+                Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
+            }
+        } catch {
+            Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
+            Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"
+            write-Error $_
         }
     } else {
-        return $null
+        Write-Debug -Message $msgs.rslv_passwordstate_mod_missing
     }
 }
 
