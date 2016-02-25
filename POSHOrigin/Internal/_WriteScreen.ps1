@@ -1,21 +1,28 @@
 
 function _WriteScreen {
-    #wraps the Write-Host cmdlet to control if the output is written to screen from one place
+    #wraps the Write-Verbose cmdlet to control colors
+    [cmdletbinding()]
     param(
-        #Write-Host parameters
-        [Parameter(Position=0, ValueFromPipeline=$true, ValueFromRemainingArguments=$true)]
-        [Object] $Object,
-        [Switch] $NoNewline,
-        [Object] $Separator,
-        [String] $OutputType = 'Standard'
+        [Object]$Object,
+        [Switch]$NoNewline,
+        #[Object]$Separator,
+        #[Switch]$Quiet = ($VerbosePreference -eq 'SilentlyContinue'),
+        [Switch]$Quiet = $false,
+        [ValidateSet('Standard', 'File', 'Module', 'Resource', 'ResourceDetail')]
+        [String]$OutputType = 'Standard'
     )
 
     begin {
 
+        # If we're not -Verbose, do nothing
+        if ($Quiet) { return }
+
+        # Make the bound parameters compatible with Write-Host
+        if ($PSBoundParameters.ContainsKey('Quiet')) { $PSBoundParameters.Remove('Quiet') | Out-Null }
         if ($PSBoundParameters.ContainsKey('OutputType')) { $PSBoundParameters.Remove('OutputType') | Out-Null}
 
         if ($OutputType -ne 'Standard') {
-            #create the key first to make it work in strict mode
+            # Create the key first to make it work in strict mode
             if (-not $PSBoundParameters.ContainsKey('ForegroundColor')) {
                 $PSBoundParameters.Add('ForegroundColor', $null)
             }
@@ -25,12 +32,13 @@ function _WriteScreen {
 
         try {
             $outBuffer = $null
-            if ($PSBoundParameters.TryGetValue('OutBuffer', [ref]$outBuffer))
-            {
+            if ($PSBoundParameters.TryGetValue('OutBuffer', [ref]$outBuffer)) {
                 $PSBoundParameters['OutBuffer'] = 1
             }
             $wrappedCmd = $ExecutionContext.InvokeCommand.GetCommand('Write-Host', [System.Management.Automation.CommandTypes]::Cmdlet)
-            $scriptCmd = {& $wrappedCmd @PSBoundParameters }
+            $scriptCmd = {& $wrappedCmd @PSBoundParameters}
+            #$scriptCmd = { & $wrappedCmd -Message $Object -Verbose } 
+            #$scriptCmd = { & $wrappedCmd -Object $Object -ForegroundColor $PSBoundParameters.ForegroundColor }
             $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
             $steppablePipeline.Begin($PSCmdlet)
         } catch {
@@ -39,6 +47,8 @@ function _WriteScreen {
     }
 
     process {
+        if ($Quiet) { return }
+
         try {
             $steppablePipeline.Process($_)
         } catch {
@@ -47,6 +57,8 @@ function _WriteScreen {
     }
 
     end {
+        if ($Quiet) { return }
+
         try {
             $steppablePipeline.End()
         } catch {

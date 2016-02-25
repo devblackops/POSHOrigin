@@ -13,16 +13,20 @@ FunctionsToExport = @(
     'Get-POSHOriginSecret',
     'Initialize-POSHOrigin',
     'Invoke-POSHOrigin',
+    'Invoke-POSHOriginNew',
     'New-POSHOriginResource',
-    'New-POSHOriginResourceFromModule'
+    'New-POSHOriginResourceFromModule',
+    'Write-POSHScreen'
 )
 AliasesToExport = @(
     'gpoc',
     'gpos',
     'gpd',
     'ipo',
+    'iponew',
     'resource',
-    'module'
+    'module',
+    'wps'
 )
 DscResourcesToExport = @(
     'POSHFile',

@@ -110,8 +110,10 @@ function Get-FolderStatus {
     }
 
     if ($returnValue.Exists) {
+        #Write-POSHScreen -Message ($msgs.gfs_folder_exists -f $returnValue.FullPath )
         Write-Verbose -Message ($msgs.gfs_folder_exists -f $returnValue.FullPath )
     } else {
+        #Write-POSHScreen -Message ($msgs.gfs_folder_not_exists -f $returnValue.FullPath )
         Write-Verbose -Message ($msgs.gfs_folder_not_exists -f $returnValue.FullPath )
     }
 

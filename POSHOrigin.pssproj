@@ -67,9 +67,12 @@
     <Compile Include="POSHOrigin\Functions\Invoke-POSHOriginNEW.ps1" />
     <Compile Include="POSHOrigin\Functions\New-POSHOriginResource.ps1" />
     <Compile Include="POSHOrigin\Functions\New-POSHOriginResourceFromModule.ps1" />
+    <Compile Include="POSHOrigin\Functions\Write-POSHScreen.ps1" />
     <Compile Include="POSHOrigin\Internal\_CompileConfig.ps1" />
     <Compile Include="POSHOrigin\Internal\_ConvertFrom-Hashtable.ps1" />
     <Compile Include="POSHOrigin\Internal\_CopyObject.ps1" />
+    <Compile Include="POSHOrigin\Internal\_GetDSCResource.ps1" />
+    <Compile Include="POSHOrigin\Internal\_GetDSCResourcePropertyHash.ps1" />
     <Compile Include="POSHOrigin\Internal\_getHash.ps1" />
     <Compile Include="POSHOrigin\Internal\_GetOption.ps1" />
     <Compile Include="POSHOrigin\Internal\_IsSessionElevated.ps1" />
