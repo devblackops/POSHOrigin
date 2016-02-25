@@ -1,3 +1,6 @@
+## 1.5.9 (Feb 24, 2016)
+
+ - Change LCM inititialization to use v5 syntax
 
 ## 1.5.8 (Jan 18, 2016)
 

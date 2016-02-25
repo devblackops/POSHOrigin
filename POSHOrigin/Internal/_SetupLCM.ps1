@@ -2,14 +2,14 @@ function _SetupLCM {
     [cmdletbinding()]
     param()
 
-    #[DSCLocalConfigurationManager()]
-    Configuration LCMPush {
-        param(
-            [string]$Computer = 'localhost'
+    [DscLocalConfigurationManager()]
+    configuration LCMPush {
+        param (
+            [string] $Computer = 'localhost'
         )
 
-        Node $Computer {
-            LocalConfigurationManager {
+        node $Computer {
+            Settings {
                 RefreshMode = 'Push'
                 ConfigurationMode = 'ApplyAndAutoCorrect'
                 AllowModuleOverwrite = $true
