@@ -1,5 +1,5 @@
 @{
-ModuleVersion = '1.5.9'
+ModuleVersion = '1.5.10'
 RootModule = 'POSHOrigin.psm1'
 GUID = '4eb54734-8088-46bb-bddf-f0eb2e437970'
 Author = 'Brandon Olin'
@@ -24,6 +24,7 @@ AliasesToExport = @(
     'gpd',
     'ipo',
     'iponew',
+    'secret'
     'resource',
     'module',
     'wps'

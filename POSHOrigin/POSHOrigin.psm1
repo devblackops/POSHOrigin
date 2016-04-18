@@ -22,6 +22,7 @@ $moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
 
 #Export-ModuleMember -Function *POSH*
 New-Alias -Name gpoc -Value Get-POSHOriginConfig
+New-Alias -Name secret -Value Get-POSHOriginSecret
 New-Alias -Name gpos -Value Get-POSHOriginSecret
 New-Alias -Name gpd -Value Get-POSHDefault
 New-Alias -Name ipo -Value Invoke-POSHOrigin

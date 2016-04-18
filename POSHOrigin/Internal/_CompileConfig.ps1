@@ -1,9 +1,7 @@
 function _CompileConfig {
-    [cmdletbinding(SupportsShouldProcess)]
+    #[cmdletbinding(SupportsShouldProcess)]
     param(
         [string]$ProvisioningServer = (_GetOption -Option 'provisioning_server'),
-
-        [string]$DscServer = (_GetOption -Option 'dsc_server'),
 
         [Parameter(Mandatory)]
         $ConfigData
@@ -24,7 +22,11 @@ function _CompileConfig {
                     NodeName = "*"
                     #CertificateFile = "$repo\$($ProvisioningServer.Split('.')[0]).cer"
                     #Thumbprint = '6B63F5A78E990B04F2240874476CF45C8FBB19CA'
+                    
+                    # This is bad and should be removed at some point. We'll probably 
+                    # want to require a valid certificate be setup to encrypt the MOF.
                     PSDscAllowPlainTextPassword = $true
+                    
                     PSDscAllowDomainUser = $true
                 }
                 @{

@@ -11,7 +11,7 @@ function _SetupLCM {
         node $Computer {
             Settings {
                 RefreshMode = 'Push'
-                ConfigurationMode = 'ApplyAndAutoCorrect'
+                ConfigurationMode = 'ApplyOnly'
                 AllowModuleOverwrite = $true
                 ConfigurationModeFrequencyMins = 30
                 RefreshFrequencyMins = 30
