@@ -1,3 +1,6 @@
+## 1.5.11 (May 10, 2016)
+  - Fix bug dealing with -WhatIf support in `Invoke-POSHOrigin`
+
 ## 1.5.10 (April 17, 2016)
   - Add new ```secret``` alias to ```Get-POSHOriginSecret```
   - Remove some old code

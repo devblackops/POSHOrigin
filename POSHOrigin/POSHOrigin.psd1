@@ -1,5 +1,5 @@
 @{
-ModuleVersion = '1.5.10'
+ModuleVersion = '1.5.11'
 RootModule = 'POSHOrigin.psm1'
 GUID = '4eb54734-8088-46bb-bddf-f0eb2e437970'
 Author = 'Brandon Olin'
@@ -41,7 +41,7 @@ PrivateData = @{
         LicenseUri = 'https://raw.githubusercontent.com/devblackops/POSHOrigin/master/LICENSE'
         ProjectUri = 'https://github.com/devblackops/POSHOrigin'
         IconUri = 'https://raw.githubusercontent.com/devblackops/POSHOrigin/master/Media/POSHOrigin_256.png'
-        ReleaseNotes = 'Change LCM inititialization to use v5 syntax'
+        ReleaseNotes = 'Fix bug dealing with -WhatIf support in Invoke-POSHOrigin'
     }
 }
 }
