@@ -1,5 +1,29 @@
 
 function New-POSHOriginResourceFromModule {
+    <#
+        .SYNOPSIS
+            Returns POSHOrigin resource(s) defined in a given folder.
+        .DESCRIPTION
+            Returns POSHOrigin resource(s) defined in a given folder. If a .ps1 script with the same name as the module folder is found, only that 
+            script will be invoked. That script (the module entry point) is responsible for containing logic to process and return any needed
+            POSHOrigin resources defined in the module. If Additionaly options are specified for the module, those options will be passed to the 
+            module entry point script.
+        .PARAMETER Name
+            The name of the POSHOrigin module
+        .PARAMETER Options
+            Hashtable of options to pass to POSHOrigin module.
+        .EXAMPLE
+            Returns all POSHOrigin resources defined in the module 'compute_xl_gold' at location '.\modules\compute\xl_gold'. The POSHOrigin module
+            contains a script with the same name as the folder 'xl_gold.ps1' which is responsible for returning the actual POSHOrigin resources for
+            the module.
+            
+            The alias 'module' is usually used instead of the full cmdlet name New-POSHOriginResourceFromModule.
+            
+            module 'compute_xl_gold' @{
+                source = '.\modules\compute\xl_gold'
+                name = "server$_"
+            }
+    #>
     param(
         [parameter(mandatory, position = 0)]
         $Name,
