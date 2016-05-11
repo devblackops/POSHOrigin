@@ -29,7 +29,6 @@ New-Alias -Name ipo -Value Invoke-POSHOrigin
 New-Alias -Name iponew -Value Invoke-POSHOriginNEW
 New-Alias -Name resource -Value New-POSHOriginResource
 New-Alias -Name module -Value New-POSHOriginResourceFromModule
-New-Alias -Name wps -Value Write-POSHScreen
 #Export-ModuleMember -Alias gpoc
 #Export-ModuleMember -Alias gpos
 #Export-ModuleMember -Alias gpd
