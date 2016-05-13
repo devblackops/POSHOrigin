@@ -142,7 +142,10 @@ try
                     # Using ErrorAction SilentlyContinue not to cause it to fail due to parse errors caused by unresolved resources.
                     # Many of our examples try to import different modules which may not be present on the machine and PSScriptAnalyzer throws parse exceptions even though examples are valid.
                     # Errors will still be returned as expected.
-                    $PSScriptAnalyzerErrors = Invoke-ScriptAnalyzer -path $RepoRoot -Severity Error -Recurse -ErrorAction SilentlyContinue
+                    $excludedRules = (
+                        'PSAvoidUsingConvertToSecureStringWithPlainText'
+                    )
+                    $PSScriptAnalyzerErrors = Invoke-ScriptAnalyzer -path $RepoRoot -Severity Error -Recurse -ErrorAction SilentlyContinue -ExcludeRule $excludedRules
                     if ($PSScriptAnalyzerErrors -ne $null) {
                         Write-Warning -Message 'There are PSScriptAnalyzer errors that need to be fixed:'
                         @($PSScriptAnalyzerErrors).Foreach( { Write-Warning -Message "$($_.Scriptname) (Line $($_.Line)): $($_.Message)" } )
