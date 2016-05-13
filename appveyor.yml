@@ -8,7 +8,7 @@ skip_commits:
 os: WMF 5
 
 install:
-  - cinst -y pester --version 3.3.13
+  - cinst -y pester
 
 build: false
 
