@@ -27,7 +27,12 @@ function Get-POSHOriginConfig {
     #>
     [cmdletbinding(HelpUri='https://github.com/devblackops/POSHOrigin/wiki/Get-POSHOriginConfig')]
     param(
-        [parameter(ValueFromPipeline)]
+        [parameter(
+            ValueFromPipeline,
+            ValueFromPipelineByPropertyName
+        )]
+        [Alias('FullName')]
+        [ValidateScript({Test-Path $_})]
         [string[]]$Path = (Get-Location).Path,
 
         [switch]$Recurse
@@ -45,9 +50,13 @@ function Get-POSHOriginConfig {
             $item = Resolve-Path $item
             if (Test-Path -Path $item) {
                 $configData = @(_LoadConfig -Path $item -Recurse:$Recurse)
-                Write-Verbose -Message ([string]::Empty)
-                Write-Verbose -Message ("Created $($configData.Count) resource objects")
-                return _SortByDependency -Objects $configData
+                
+                if ($configData) {
+                    Write-Verbose -Message ([string]::Empty)
+                    Write-Verbose -Message ("Created $($configData.Count) resource objects")
+                    Write-Verbose -Message ([string]::Empty)
+                    return _SortByDependency -Objects $configData    
+                }
             } else {
                 Write-Error -Message ($msgs.invalid_path -f $path)
             }
