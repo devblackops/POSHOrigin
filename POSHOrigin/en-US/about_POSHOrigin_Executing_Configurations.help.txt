@@ -1,0 +1,38 @@
+TOPIC
+    about_POSHOrigin_Executing_Configurations
+    
+SHORT DESCRIPTION
+    You can execute your POSHOrigin configuration by calling the Invoke-POSHOrigin function
+    
+LONG DESCRIPTION
+    You can execute your POSHOrigin configuration by calling the Invoke-POSHOrigin function. Internally, POSHOrigin will execute the
+    Start-DscConfiguration DSC cmdlet against the MOF file that is compiled.
+
+    RESOURCES WILL BE CREATED, DELETED, OR MODIFIED. You should run Invoke-POSHOrigin with the -WhatIf prior to this in order to get an idea of
+    changes will occur.
+    
+EXAMPLES
+    $myConfig = Get-POSHOriginConfig -Path '.\vm_config.ps1' -Verbose
+    Invoke-POSHOrigin -ConfigData $myConfig -Verbose
+
+    Get-POSHOriginConfig -Path '.\vm_config.ps1' -Verbose | Invoke-POSHOrigin -Verbose
+
+    gpoc . -Verbose | ipo -Verbose
+    
+KEYWORDS
+    POSHOrigin
+
+SEE ALSO
+    about_POSHOrigin
+    about_POSHOrigin_Configuration_File
+    about_POSHOrigin_Defaults_File
+    about_POSHOrigin_Loading_Configurations
+    about_POSHOrigin_Resolver_PSCredential
+    about_POSHOrigin_Resolver_PasswordState
+    about_POSHOrigin_Resolver_ProtectedData
+    about_POSHOrigin_Sharing_Configurations
+    about_POSHOrigin_Testing_Configurations
+    about_POSHOrigin_Using_Credentials
+    aboot_POSHOrigin_Using_Resolvers
+    https://github.com/devblackops/POSHOrigin/wiki
+    

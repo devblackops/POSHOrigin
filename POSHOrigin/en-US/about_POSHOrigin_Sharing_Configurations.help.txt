@@ -1,0 +1,68 @@
+TOPIC
+    about_POSHOrigin_Testing_Configurations
+    
+SHORT DESCRIPTION
+    Some resource definitions inside your configuration file may have a large number of options associated with them and you may find yourself
+    repeating common configuration options across your resources.
+    
+LONG DESCRIPTION
+    Some resource definitions inside your configuration file may have a large number of options associated with them and you may find yourself
+    repeating common configuration options across your resources. For this reason, configuration snippets can be created that will be loaded into
+    your resource configuration when Get-POSHOriginConfig is executed. These options are stored inside a file with the .psd1 extension. This is best
+    used when the option for the resource is expecting a hashtable or an array. You could use this with simple strings or integers but it will be
+    less useful. You reference the name of this configuration snippet (minus the .psd1 extension) using the Get-POSHDefault function.
+    
+EXAMPLES    
+    standard_disks.psd1
+    ===================
+    
+    @(
+        @{
+            name = 'Hard disk 1'
+            sizeGB = 50
+            type = 'flat'
+            format = 'Thick'
+            volumeName = 'C'
+            volumeLabel = 'NOS'
+            blockSize = 4096
+        },
+        @{
+            name = 'Hard disk 2'
+            sizeGB = 100
+            type = 'flat'
+            format = 'Thick'
+            volumeName = 'D'
+            volumeLabel = 'Data'
+            blockSize = 4096
+        }
+    )
+
+    my_vm_config.ps1
+    ================
+    
+    resource 'POSHOrigin_vSphere:VM' 'VM01' @{
+        ensure = 'present'
+        description = 'Test VM'
+        ###
+        # Other options omitted for brevity
+        ###
+        disks = Get-POSHDefault 'standard_disks'
+    }
+
+KEYWORDS
+    POSHOrigin
+
+SEE ALSO
+    about_POSHOrigin
+    about_POSHOrigin_Configuration_File
+    about_POSHOrigin_Defaults_File
+    about_POSHOrigin_Executing_Configurations
+    about_POSHOrigin_Loading_Configurations
+    about_POSHOrigin_Resolver_PSCredential
+    about_POSHOrigin_Resolver_PasswordState
+    about_POSHOrigin_Resolver_ProtectedData
+    about_POSHOrigin_Testing_Configurations
+    about_POSHOrigin_Using_Credentials
+    aboot_POSHOrigin_Using_Resolvers
+    https://github.com/devblackops/POSHOrigin/wiki
+    
