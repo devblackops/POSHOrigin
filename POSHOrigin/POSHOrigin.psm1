@@ -20,6 +20,13 @@ $moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
     Where-Object { -not ($_.ProviderPath.ToLower().Contains(".tests.")) } |
     ForEach-Object { . $_.ProviderPath }
 
+# This gets executing when the module is removed from the session
+$MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
+    Remove-Variable -Name credentialCache -Scope Script
+    Remove-Variable -Name modulesToProcess -Scope Script
+    Remove-Variable -Name resourceCache -Scope Script         
+}  
+
 #Export-ModuleMember -Function *POSH*
 New-Alias -Name gpoc -Value Get-POSHOriginConfig
 New-Alias -Name secret -Value Get-POSHOriginSecret
