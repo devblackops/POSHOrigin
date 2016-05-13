@@ -6,7 +6,10 @@ properties {
 task default -depends Analyze, Test
 
 task Analyze {
-    $saResults = Invoke-ScriptAnalyzer -Path $sut -Severity Error -Recurse -Verbose:$false
+    $excludedRules = (
+        'PSAvoidUsingConvertToSecureStringWithPlainText'
+    )
+    $saResults = Invoke-ScriptAnalyzer -Path $sut -Severity Error -ExcludeRule $excludedRules -Recurse -Verbose:$false
     if ($saResults) {
         $saResults | Format-Table  
         Write-Error -Message 'One or more Script Analyzer errors/warnings where found. Build cannot continue!'        
