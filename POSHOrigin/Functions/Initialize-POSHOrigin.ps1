@@ -43,7 +43,7 @@ function Initialize-POSHOrigin {
             
             Initialize-POSHOrigin -Repository 'c:\poshorigin' -ConfigsPath 'c:\myconfigs' -Verbose
     #>
-    [cmdletbinding()]
+    [cmdletbinding(HelpUri='https://github.com/devblackops/POSHOrigin/wiki/Initialize-POSHOrigin')]
     param(
         [string]$Repository = (Join-Path -path $env:USERPROFILE -ChildPath '.poshorigin'),
 

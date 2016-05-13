@@ -39,7 +39,10 @@ function Invoke-POSHOrigin {
             
             Invoke-POSHOrigin -ConfigData $myConfig -Verbose -MakeItSo
     #>
-    [cmdletbinding(SupportsShouldProcess, DefaultParameterSetName='Path')]
+    [cmdletbinding(
+        SupportsShouldProcess,
+        DefaultParameterSetName='Path',
+        HelpUri='https://github.com/devblackops/POSHOrigin/wiki/Invoke-POSHOrigin')]
     param(
         [parameter(ParameterSetName='Path')]
         [parameter(ParameterSetName='InputObject')]

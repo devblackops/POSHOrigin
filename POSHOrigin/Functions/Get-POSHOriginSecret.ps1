@@ -22,7 +22,7 @@ function Get-POSHOriginSecret {
                 }
             }
     #>
-    [cmdletbinding()]
+    [cmdletbinding(HelpUri='https://github.com/devblackops/POSHOrigin/wiki/Get-POSHOriginSecret')]
     param(
         [parameter(Mandatory, Position=0)]
         [string]$Resolver,

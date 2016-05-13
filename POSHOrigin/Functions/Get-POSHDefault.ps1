@@ -24,7 +24,7 @@ function Get-POSHDefault {
                 disks = Get-POSHDefault 'standard_disks'
             }
     #>
-    [cmdletbinding()]
+    [cmdletbinding(HelpUri='https://github.com/devblackops/POSHOrigin/wiki/Get-POSHDefault')]
     param(
         [Parameter(Mandatory, Position=0)]
         [string]$Configuration = [string]::empty,

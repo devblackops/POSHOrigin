@@ -25,7 +25,7 @@ function Get-POSHOriginConfig {
             Recursively read the configurations contained in the folder my_configs.
             $configs = '.\MyConfigs' | Get-POSHOriginConfig -Recurse -Verbose
     #>
-    [cmdletbinding()]
+    [cmdletbinding(HelpUri='https://github.com/devblackops/POSHOrigin/wiki/Get-POSHOriginConfig')]
     param(
         [parameter(ValueFromPipeline)]
         [string[]]$Path = (Get-Location).Path,
