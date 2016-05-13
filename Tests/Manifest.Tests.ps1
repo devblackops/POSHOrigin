@@ -4,7 +4,6 @@ $root = Split-Path -Path $here -Parent
 $modulePath = Join-Path -Path $root -ChildPath $moduleName
 $manifestPath = Join-Path -Path $modulePath -Child "$moduleName.psd1"
 $changelogPath = Join-Path -Path $root -Child "CHANGELOG.md"
-$manifestExists = (Test-Path -Path $manifestPath)
 
 Describe 'Module manifest' {
     Context 'Validation' {
@@ -48,7 +47,7 @@ Describe 'Module manifest' {
         }
         
         # Only for DSC modules
-        It 'exports DSC resources' -Skip {
+        It 'exports DSC resources' {
             $dscResources = ($Manifest.psobject.Properties | Where Name -eq 'ExportedDscResources').Value
             @($dscResources).Count | Should Not Be 0
         }
