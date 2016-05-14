@@ -1,0 +1,35 @@
+TOPIC
+    about_POSHOrigin_Loading_Configurations
+    
+SHORT DESCRIPTION
+    You load POSHOrigin configurations by calling the Get-POSHOriginConfig function and specifying the file, files, or folder to process
+    
+LONG DESCRIPTION
+    You load POSHOrigin configurations by calling the Get-POSHOriginConfig function and specifying the file, files, or folder to process. You can
+    recursively process subfolders as well. Get-POSHOriginConfig returns one or more custom objects that can then be converted into DSC
+    configurations.
+    
+EXAMPLES    
+    $myConfig = Get-POSHOriginConfig -Path .\myFolder.ps1 -Verbose
+
+    $myConfigs = '.\myfile1.ps1', 'myfile2.ps1' | Get-POSHOriginConfig -Verbose
+
+    $myConfigs = Get-POSHOriginConfig -Path . -Recurse -Verbose
+
+KEYWORDS
+    POSHOrigin
+
+SEE ALSO
+    about_POSHOrigin
+    about_POSHOrigin_Configuration_File
+    about_POSHOrigin_Defaults_File
+    about_POSHOrigin_Executing_Configurations
+    about_POSHOrigin_Resolver_PSCredential
+    about_POSHOrigin_Resolver_PasswordState
+    about_POSHOrigin_Resolver_ProtectedData
+    about_POSHOrigin_Sharing_Configurations
+    about_POSHOrigin_Testing_Configurations
+    about_POSHOrigin_Using_Credentials
+    aboot_POSHOrigin_Using_Resolvers
+    https://github.com/devblackops/POSHOrigin/wiki
+    

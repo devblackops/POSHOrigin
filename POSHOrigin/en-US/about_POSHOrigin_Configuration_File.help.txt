@@ -1,0 +1,71 @@
+TOPIC
+    about_POSHOrigin_Configuration_File
+    
+SHORT DESCRIPTION
+    The POSHOrigin configuration file is where you define your resources to be evaluated by POSHOrigin.
+    
+LONG DESCRIPTION
+    The POSHOrigin configuration file is where you define your resources to be evaluated by POSHOrigin. These configuration files will be read and
+    translated into DSC configurations that get applied either to your local machine, or to a provisioning machine in order to provision
+    infrastructure.
+    
+    The **resource** function is really an alias for the function New-POSHOriginResource that has **three** required parameters:
+
+    | resource  | 'POSHOrigin:POSHFolder'    | 'folder01'       | @{...}
+    |-----------|----------------------------|------------------|----------------------------------|
+    | Function  | Type of resource to create | Name of resource | Hashtable of options for resource
+
+    The resource function will evaluate the parameters given to it, merge default options if specified, resolve any secrets listed into PowerShell
+    credentials, and return one or more PowerShell custom objects. When you run **Get-POSHOriginConfig** (or **gpoc**) against a configuration file
+    or folder, the resultant collection of PowerShell custom objects will be returned back to you. This array of objects can then be converted into
+    a DSC configuration by passing them to **Invoke-POSHOrigin** or (**ipo**)
+
+    $myConfigs = Get-POSHOriginConfig -Path .\myFolder.ps1 -Verbose
+    $myConfigs | Invoke-POSHOrigin -Verbose
+    
+EXAMPLES
+    You define your resources in the configuration file by adding a **resource** block for each resource you want to provision.
+
+    my_folder.ps1
+    =============
+
+    resource 'POSHOrigin:POSHFolder' 'folder01' @{
+        description = 'this is an example folder'
+        ensure = 'present'
+        path = 'c:\'
+    }
+    
+    Defining multiple resources in the same file is supported as well.
+
+    create_folders.ps1
+    ==================
+
+    resource 'POSHOrigin:POSHFolder' 'folder01' @{
+        description = 'this is an example folder'
+        ensure = 'present'
+        path = 'c:\'
+    }
+
+    resource 'POSHOrigin:POSHFolder' 'folder02' @{
+        description = 'this is another example folder'
+        ensure = 'present'
+        path = 'c:\'
+    }
+    
+KEYWORDS
+    POSHOrigin
+
+SEE ALSO
+    about_POSHOrigin
+    about_POSHOrigin_Defaults_File
+    about_POSHOrigin_Executing_Configurations
+    about_POSHOrigin_Loading_Configurations
+    about_POSHOrigin_Resolver_PSCredential
+    about_POSHOrigin_Resolver_PasswordState
+    about_POSHOrigin_Resolver_ProtectedData
+    about_POSHOrigin_Sharing_Configurations
+    about_POSHOrigin_Testing_Configurations
+    about_POSHOrigin_Using_Credentials
+    aboot_POSHOrigin_Using_Resolvers
+    https://github.com/devblackops/POSHOrigin/wiki
+    

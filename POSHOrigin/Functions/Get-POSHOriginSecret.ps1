@@ -1,5 +1,28 @@
 function Get-POSHOriginSecret {
-    [cmdletbinding()]
+    <#
+        .SYNOPSIS
+            Returns a PowerShell credential object using a given resolver name and options.
+        .DESCRIPTION
+            Returns a PowerShell credential object using a given resolver name and options.
+        .PARAMETER Resolver
+            The name of the credential resolver to use
+        .PARAMETER Options
+            Hashtable of options that the resolver will use to translate into a credential object
+        .EXAMPLE
+            Read the configuration contained in vm_config.ps1 into a variable.
+            
+            resource 'POSHOrigin_vSphere:VM' 'VM01' @{
+                defaults = '.\defaults.psd1'
+                ###
+                # Other options omitted for brevity
+                ###
+                vcenterCredentials = Get-POSHOriginSecret 'pscredential' @{
+                    username = 'svcvcenter'
+                    password = 'password123!'
+                }
+            }
+    #>
+    [cmdletbinding(HelpUri='https://github.com/devblackops/POSHOrigin/wiki/Get-POSHOriginSecret')]
     param(
         [parameter(Mandatory, Position=0)]
         [string]$Resolver,

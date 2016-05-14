@@ -1,0 +1,68 @@
+TOPIC
+    about_POSHOrigin_Resolver_ProtectedData
+    
+SHORT DESCRIPTION
+    Resolves a credential object using Dave Wyatt's ProtectedData PowerShell module.
+    
+LONG DESCRIPTION
+    Resolves a credential object using Dave Wyatt's ProtectedData PowerShell module.
+        
+    Parameters
+    ==========
+    
+    Name	    Type	Required	Description
+    -----------------------------------------------------------------------------------------------------------------------------------
+    Path	    string	True	    The path to the exported credential XML file that has been protected using the ProtectedData module
+    Certificate	string	False	    The thumbprint of the certificate that can decrypt the credential XML file
+    Password	string	False	    The password that can decrypt the credential XML file
+
+    You must define either the Credential or Password parameter when using this resolver.
+        
+EXAMPLES    
+    vm01.ps1
+    ========
+    
+    resource 'POSHOrigin_vSphere:VM' 'VM01' @{
+        ensure = 'present'
+        description = 'Test VM'
+        ###
+        # Other options omitted for brevity
+        ###
+        vCenterCredentials = Get-POSHOriginSecret 'ProtectedData' @{
+            path = '.\mycred.xml'
+            certificate = '39E79A87089CBE26C3B1D36A7D20A96398D07CF9'
+        }
+    }
+    
+    vm02.ps1
+    ========
+    
+    resource 'POSHOrigin_vSphere:VM' 'VM02' @{
+        ensure = 'present'
+        description = 'Another test VM'
+        ###
+        # Other options omitted for brevity
+        ###
+        guestCredentials = Get-POSHOriginSecret 'ProtectedData' @{
+            path = '.\mycred.xml'
+            password = 'K33p1T53cr3TK33p1T5@F3'
+        }
+    }
+
+KEYWORDS
+    POSHOrigin
+
+SEE ALSO
+    about_POSHOrigin
+    about_POSHOrigin_Configuration_File
+    about_POSHOrigin_Defaults_File
+    about_POSHOrigin_Executing_Configurations
+    about_POSHOrigin_Loading_Configurations
+    about_POSHOrigin_Resolver_PasswordState
+    about_POSHOrigin_Resolver_PSCredential
+    about_POSHOrigin_Sharing_Configurations
+    about_POSHOrigin_Testing_Configurations
+    aboot_POSHOrigin_Using_Credentials
+    aboot_POSHOrigin_Using_Resolvers
+    https://github.com/devblackops/POSHOrigin/wiki
+    

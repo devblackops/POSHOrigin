@@ -1,5 +1,30 @@
+
 function Get-POSHDefault {
-    [cmdletbinding()]
+    <#
+        .SYNOPSIS
+            Retrieves a POSHOrigin configuration snippet
+        .DESCRIPTION
+            Retrieves a POSHOrigin configuration snippet as a hashtable that will be merged with the calling configuration resource.
+            Useful for re-using partial configuration options across resources. Configuration snippets are hashtables saved with a .psd1 file
+            extension.
+        .PARAMETER Configuration
+            Name of configuration snippet to retrieve. Do not include the file extension (.psd1)
+        .PARAMETER Path
+            Path to folder that holds the configuration snippets. Default value is retrieved from the configs_path parameter stored in
+            $env:USERPROFILE.poshorigin\options.json
+        .EXAMPLE
+            Use the value from the configuration snippet 'standard_disks' in the [disks] parameter.
+            
+            resource 'POSHOrigin_vSphere:VM' 'VM01' @{
+                ensure = 'present'
+                description = 'Test VM'
+                ###
+                # Other options omitted for brevity
+                ###
+                disks = Get-POSHDefault 'standard_disks'
+            }
+    #>
+    [cmdletbinding(HelpUri='https://github.com/devblackops/POSHOrigin/wiki/Get-POSHDefault')]
     param(
         [Parameter(Mandatory, Position=0)]
         [string]$Configuration = [string]::empty,

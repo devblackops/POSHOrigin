@@ -1,3 +1,9 @@
+## Unreleased
+  - Added comment-based help to functions
+  - Added about_POSHOrigin_* help documents
+  - Modified Get-POSHOriginConfig to accept pipeline input from Get-ChildItem
+  - Validate the InputObject to Invoke-POSHOrigin is of type POSHOrigin.Resource
+
 ## 1.5.11 (May 10, 2016)
   - Fix bug dealing with -WhatIf support in `Invoke-POSHOrigin`
 

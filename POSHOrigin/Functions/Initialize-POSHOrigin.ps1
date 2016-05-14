@@ -1,5 +1,49 @@
 function Initialize-POSHOrigin {
-    [cmdletbinding()]
+    <#
+        .SYNOPSIS
+            Initializes the POSHOrigin configuration repository, configures the LCM, and adjusts WSMan settings.
+        .DESCRIPTION
+            - Initializes the POSHOrigin configuration repository that will hold default values for cmdlet parameters.
+            - Configures the DSC Local Configuration Manager on the local host for PUSH mode.
+            - Sets WSMan TrustedHosts to '*' in order to allow PowerShell remoting to a machine by IP address.
+        .PARAMETER Repository
+            Path to folder that will store POSHOrigin configuration options. 
+            
+            Default value is $env:USERPROFILE\.poshorigin\
+            
+        .PARAMETER DscServer            
+            Unused. Reserved for future implementation.
+        
+        .PARAMETER ProvisioningServer
+            Computer name of provisioning server. DSC configurations will be applied to this machine and executed there. 
+            
+            Default is localhost
+        
+        .PARAMETER ProvisioningServerCertPath
+            Unused. Reserved for future implementation.
+            
+        .PARAMETER SmtpServer
+            Unused. Reserved for future implementation.
+        
+        .PARAMETER SmtpPort
+            Unused. Reserved for future implementation.
+                
+        .PARAMETER ConfigsPath
+            Path to folder that will hold the configuration snippets.
+            
+            Default value is $env:USERPROFILE\.poshorigin\configs      
+            
+        .EXAMPLE
+            Initialize POSHOrigin with default values.
+            
+            Initialize-POSHOrigin -Verbose
+            
+        .EXAMPLE
+            Initialize POSHOrigin by setting the repository path to c:\poshorigin\ and the configuration snippets path to c:\myconfigs\.       
+            
+            Initialize-POSHOrigin -Repository 'c:\poshorigin' -ConfigsPath 'c:\myconfigs' -Verbose
+    #>
+    [cmdletbinding(HelpUri='https://github.com/devblackops/POSHOrigin/wiki/Initialize-POSHOrigin')]
     param(
         [string]$Repository = (Join-Path -path $env:USERPROFILE -ChildPath '.poshorigin'),
 

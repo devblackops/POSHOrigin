@@ -1,4 +1,4 @@
-<# 
+<#
     .summary
         Test that describes code.
 
@@ -97,9 +97,9 @@ if (($NewModulePath.Split(';') | Select-Object -First 1) -ne $moduleRoot)
 try
 {
     Describe 'Text files formatting' {
-    
+
         $allTextFiles = Get-TextFilesList $RepoRoot
-    
+
         Context 'Files encoding' {
 
             It "Doesn't use Unicode encoding" {
@@ -131,7 +131,7 @@ try
     }
 
     Describe 'PowerShell DSC resource modules' {
-    
+
         # PSScriptAnalyzer requires PowerShell 5.0 or higher
         if ($PSVersion.Major -ge 5)
         {
@@ -142,14 +142,17 @@ try
                     # Using ErrorAction SilentlyContinue not to cause it to fail due to parse errors caused by unresolved resources.
                     # Many of our examples try to import different modules which may not be present on the machine and PSScriptAnalyzer throws parse exceptions even though examples are valid.
                     # Errors will still be returned as expected.
-                    $PSScriptAnalyzerErrors = Invoke-ScriptAnalyzer -path $RepoRoot -Severity Error -Recurse -ErrorAction SilentlyContinue
+                    $excludedRules = (
+                        'PSAvoidUsingConvertToSecureStringWithPlainText'
+                    )
+                    $PSScriptAnalyzerErrors = Invoke-ScriptAnalyzer -path $RepoRoot -Severity Error -Recurse -ErrorAction SilentlyContinue -ExcludeRule $excludedRules
                     if ($PSScriptAnalyzerErrors -ne $null) {
                         Write-Warning -Message 'There are PSScriptAnalyzer errors that need to be fixed:'
                         @($PSScriptAnalyzerErrors).Foreach( { Write-Warning -Message "$($_.Scriptname) (Line $($_.Line)): $($_.Message)" } )
                         Write-Warning -Message  'For instructions on how to run PSScriptAnalyzer on your own machine, please go to https://github.com/powershell/psscriptAnalyzer/'
                         $PSScriptAnalyzerErrors.Count | Should Be $null
                     }
-                }      
+                }
             }
         }
 
@@ -184,9 +187,9 @@ try
                     param(
                         [Parameter(ValueFromPipeline=$True,Mandatory=$True)]
                         [string]$fileName
-                    )    
+                    )
 
-                    $tokens = $null 
+                    $tokens = $null
                     $errors = $null
                     $ast = [System.Management.Automation.Language.Parser]::ParseFile($fileName, [ref] $tokens, [ref] $errors)
                     return $errors
@@ -195,7 +198,7 @@ try
 
                 It 'all .psm1 files don''t have parse errors' {
                     $errors = @()
-                    $psm1Files | ForEach-Object { 
+                    $psm1Files | ForEach-Object {
                         $localErrors = Get-ParseErrors $_.FullName
                         if ($localErrors) {
                             Write-Warning "There are parsing errors in $($_.FullName)"
@@ -207,7 +210,7 @@ try
                 }
             }
 
-            foreach ($psm1file in $psm1Files) 
+            foreach ($psm1file in $psm1Files)
             {
                 Context "Schema Validation of $($psm1file.BaseName)" {
 

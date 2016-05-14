@@ -1,4 +1,41 @@
 function Invoke-POSHOriginNEW {
+    <#
+        .SYNOPSIS
+            Invokes a POSHOrigin configuration directly by calling Invoke-DscResource.
+            
+            ** THIS IS AN EXPERIMENTAL CMDLET AND MAY BE SIGNIFICANTLY MODIFIED IN FUTURE VERSIONS **
+        .DESCRIPTION
+            Invokes a POSHOrigin configuration directly by calling Invoke-DscResource. The custom object(s) passed into this function will be
+            translated into a hashtable suitable for Invoke-DscResource.
+            
+            ** THIS IS AN EXPERIMENTAL CMDLET AND MAY BE SIGNIFICANTLY MODIFIED IN FUTURE VERSIONS **
+        .PARAMETER Resource
+            One or more custom objects containing the required options for the DSC resource to be provisioned.
+        .PARAMETER NoTranslate
+            Do not call the Invoke.ps1 script from the DSC resource module. Instead pass the object directly to Invoke-DscResource without translation.
+        .PARAMETER WhatIf
+            Only execute the TEST functionality of DSC.
+            
+            NO RESOURCES WILL BE MODIFIED.
+        .PARAMETER Confirm
+            Prompts you for confirmation before running the cmdlet.
+        .PARAMETER PassThru
+            Return the result of the DSC run.
+        .EXAMPLE
+            Compiles and invokes a POSHOrigin configuration. Infrastructure resources defined in $myConfig will be tested for compliance and as
+            necessary created, deleted, or modified.
+            
+            Invoke-POSHOriginNEW -Resource $myConfig -Verbose
+        .EXAMPLE
+            Compiles and tests a POSHOrigin configuration. This will only test the DSC resources for compliance.
+            NO RESOURCES WILL BE CREATED, DELETED, OR MODIFIED
+            
+            Invoke-POSHOrigin -Resource $myConfig -Verbose -WhatIf
+        .EXAMPLE
+            Pass the options from the POSHOrigin resource directly to Invoke-DscResource.
+            
+            $myConfig | Invoke-POSHOriginNEW -NoTranslate -Verbose
+    #>
     [cmdletbinding()]
     param(
         [parameter(Mandatory,ValueFromPipeline)]

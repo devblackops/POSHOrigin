@@ -15,8 +15,7 @@ FunctionsToExport = @(
     'Invoke-POSHOrigin',
     'Invoke-POSHOriginNew',
     'New-POSHOriginResource',
-    'New-POSHOriginResourceFromModule',
-    'Write-POSHScreen'
+    'New-POSHOriginResourceFromModule'
 )
 AliasesToExport = @(
     'gpoc',
@@ -26,15 +25,14 @@ AliasesToExport = @(
     'iponew',
     'secret'
     'resource',
-    'module',
-    'wps'
+    'module'
 )
 DscResourcesToExport = @(
     'POSHFile',
     'POSHFolder'
 )
-TypesToProcess = @('POSHOrigin.Resource.ps1xml')
-FormatsToProcess = @('POSHOrigin.Resource.format.ps1xml')
+#TypesToProcess = @('POSHOrigin.Resource.ps1xml')
+#FormatsToProcess = @('POSHOrigin.Resource.format.ps1xml')
 PrivateData = @{
     PSData = @{
         Tags = 'DesiredStateConfiguration', 'DSC', 'POSHOrigin', 'InfrastructureasCode', 'IaC'

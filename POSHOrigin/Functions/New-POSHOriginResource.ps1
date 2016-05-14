@@ -1,4 +1,29 @@
 function New-POSHOriginResource {
+    <#
+        .SYNOPSIS
+            Returns a POSHOrigin resource containing the options specified.
+        .DESCRIPTION
+            Returns a POSHOrigin resource containing the options specified.
+        .PARAMETER ResourceType
+            The module name and DSC resource name this POSHOrigin resource represents.
+            
+            Format:
+            <module_name>:<dsc_resource_name>
+        .PARAMETER Name
+            The name of the resource
+        .PARAMETER Options
+            Hashtable of options for the resource
+        .EXAMPLE
+            Returns a POSHOrigin resource with the necessary options to create a new folder
+            
+            The alias 'resource' is usually used instead of the full cmdlet name New-POSHOriginResource. 
+
+            resource 'poshorigin:poshfolder' 'folder01' @{
+                description = 'this is an exmaple folder'
+                ensure = 'present'
+                path = 'c:\'
+            }
+    #>
     param(
         [parameter(mandatory, position = 0)]
         $ResourceType,

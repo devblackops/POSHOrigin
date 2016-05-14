@@ -1,5 +1,48 @@
 function Invoke-POSHOrigin {
-    [cmdletbinding(SupportsShouldProcess, DefaultParameterSetName='Path')]
+    <#
+        .SYNOPSIS
+            Compiles and invokes a POSHOrigin configuration.
+        .DESCRIPTION
+            Compiles and invokes a POSHOrigin configuration. The custom object(s) passed into this function will be translated into DSC resource(s)
+            and a DSC configuration will be compiled and executed.
+        .PARAMETER InputObject
+            One or more custom objects containing the required options for the DSC resource to be provisioned.
+        .PARAMETER Path
+            The path to a folder containing the POSHOrigin configuration file(s) to process or to a individual POSHOrigin file.
+        .PARAMETER ProvisioningServer
+            The name of the provisioning computer the DSC configuration will be applied to. Default value is retrieved from the provisioning_server
+            parameter stored in $env:USERPROFILE.poshorigin\options.json. Normally this will be localhost unless manually changed.
+        .PARAMETER Confirm
+            Prompts you for confirmation before running the cmdlet.
+        .PARAMETER PassThru
+            Return the result of the DSC run.
+        .PARAMETER WhatIf
+            Only execute the TEST functionality of DSC.
+            
+            NO RESOURCES WILL BE MODIFIED.
+        .PARAMETER KeepMOF
+            Switch to denote if the MOF file should NOT be deleted after DSC runs.
+        .PARAMETER MakeItSo
+            Injects a 'snoverism'
+        .EXAMPLE
+            Compiles and invokes a POSHOrigin configuration. Infrastructure resources defined in $myConfig will be tested for compliance and as
+            necessary created, deleted, or modified.
+            
+            Invoke-POSHOrigin -ConfigData $myConfig -Verbose
+        .EXAMPLE
+            Compiles and tests a POSHOrigin configuration. This will only test the DSC resources for compliance.
+            NO RESOURCES WILL BE CREATED, DELETED, OR MODIFIED
+            
+            Invoke-POSHOrigin -ConfigData $myConfig -Verbose -WhatIf
+        .EXAMPLE
+            Make it so Number One.
+            
+            Invoke-POSHOrigin -ConfigData $myConfig -Verbose -MakeItSo
+    #>
+    [cmdletbinding(
+        SupportsShouldProcess,
+        DefaultParameterSetName='Path',
+        HelpUri='https://github.com/devblackops/POSHOrigin/wiki/Invoke-POSHOrigin')]
     param(
         [parameter(ParameterSetName='Path')]
         [parameter(ParameterSetName='InputObject')]
@@ -9,7 +52,8 @@ function Invoke-POSHOrigin {
         [string]$Path,
         
         [Parameter(mandatory, position=0, ValueFromPipeline, ParameterSetName='InputObject')]
-        [psobject[]]$InputObject,
+        [ValidateScript({ $_.PSObject.TypeNames[0] -eq 'POSHOrigin.Resource' })]
+        [psobject]$InputObject,
         
         [parameter(ParameterSetName='Path')]
         [parameter(ParameterSetName='InputObject')]
