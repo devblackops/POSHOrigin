@@ -52,7 +52,8 @@ function Invoke-POSHOrigin {
         [string]$Path,
         
         [Parameter(mandatory, position=0, ValueFromPipeline, ParameterSetName='InputObject')]
-        [psobject[]]$InputObject,
+        [ValidateScript({ $_.PSObject.TypeNames[0] -eq 'POSHOrigin.Resource' })]
+        [psobject]$InputObject,
         
         [parameter(ParameterSetName='Path')]
         [parameter(ParameterSetName='InputObject')]
