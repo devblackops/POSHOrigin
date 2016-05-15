@@ -232,7 +232,7 @@ function Invoke-POSHOriginNEW {
                                 }
                             }
                         }
-                                                
+                        
                         if (-Not $testResult.InDesiredState) {
                             Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Set
                             try {
