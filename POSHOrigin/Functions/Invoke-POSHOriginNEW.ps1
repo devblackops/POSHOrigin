@@ -54,8 +54,9 @@ function Invoke-POSHOriginNEW {
                             Write-Host -Object "Setting resource "  -ForegroundColor Cyan -NoNewLine
                         }
                     }
-                    Write-Host -Object "$Resource" -ForegroundColor Magenta -NoNewLine
-                    Write-Host -Object '-' -ForegroundColor Gray -NoNewLine
+                    Write-Host -Object "[$Resource]" -ForegroundColor Magenta -NoNewLine
+                    #Write-Host -Object "$Resource" -ForegroundColor Magenta -NoNewLine
+                    #Write-Host -Object '-' -ForegroundColor Gray -NoNewLine
                     Write-Host -Object $Name -ForegroundColor Green
                 } else {
                     if (-Not $PSBoundParameters.ContainsKey('Complete')) {
@@ -231,6 +232,7 @@ function Invoke-POSHOriginNEW {
                                 }
                             }
                         }
+                                                
                         if (-Not $testResult.InDesiredState) {
                             Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Set
                             try {
