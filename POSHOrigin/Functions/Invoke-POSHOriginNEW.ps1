@@ -171,34 +171,36 @@ function Invoke-POSHOriginNEW {
                     # Just test the resource
                     Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
                     $testResult = $null
-                    $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference 4>&1 | foreach {
-                        $msg = Parse-DSCVerboseOutput -line $_
-                        if ($msg) {
-                            if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
-                                Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
-                            }
-                            if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
-                                Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
-                            }
-                        }
-                    }
+                    $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference -InformationAction $InformationPreference
+                    # $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference 4>&1 | foreach {
+                    #     $msg = Parse-DSCVerboseOutput -line $_
+                    #     if ($msg) {
+                    #         if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
+                    #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
+                    #         }
+                    #         if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
+                    #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
+                    #         }
+                    #     }
+                    # }
 
                     if ($PSBoundParameters.ContainsKey('PassThru')) {
                         $result = "" | Select Resource, InDesiredState
                         Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Get
 
                         $getResult = $null
-                        $getResult = Invoke-DscResource -Method Get @params -Verbose:$VerbosePreference 4>&1 | foreach {
-                            $msg = Parse-DSCVerboseOutput -line $_
-                            if ($msg) {
-                                if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
-                                    Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
-                                }
-                                if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
-                                    Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
-                                }
-                            }
-                        }
+                        $getResult = Invoke-DscResource -Method Get @params -Verbose:$VerbosePreference
+                        # $getResult = Invoke-DscResource -Method Get @params -Verbose:$VerbosePreference 4>&1 | foreach {
+                        #     $msg = Parse-DSCVerboseOutput -line $_
+                        #     if ($msg) {
+                        #         if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
+                        #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
+                        #         }
+                        #         if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
+                        #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
+                        #         }
+                        #     }
+                        # }
                         $result.Resource = $getResult
                         $result.InDesiredState = $testResult.InDesiredState
                         $results += $result
@@ -221,32 +223,34 @@ function Invoke-POSHOriginNEW {
                         # Test and invoke the resource
                         $testResult = $null
                         Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
-                        $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference -InformationAction $InformationPreference 4>&1 | foreach {
-                            $msg = Parse-DSCVerboseOutput -line $_
-                            if ($msg) {
-                                if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
-                                    Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
-                                }
-                                if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
-                                    Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
-                                }
-                            }
-                        }
+                        $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference -InformationAction $InformationPreference
+                        # $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference -InformationAction $InformationPreference 4>&1 | foreach {
+                        #     $msg = Parse-DSCVerboseOutput -line $_
+                        #     if ($msg) {
+                        #         if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
+                        #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
+                        #         }
+                        #         if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
+                        #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
+                        #         }
+                        #     }
+                        # }
                         
                         if (-Not $testResult.InDesiredState) {
                             Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Set
                             try {
-                                $setResult = Invoke-DscResource -Method Set @params -Verbose:$VerbosePreference -InformationAction $InformationPreference 4>&1 | foreach {
-                                    $msg = Parse-DSCVerboseOutput -line $_
-                                    if ($msg) {
-                                        if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
-                                            Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
-                                        }
-                                        if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
-                                            Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
-                                        }
-                                    }
-                                }
+                                $setResult = Invoke-DscResource -Method Set @params -Verbose:$VerbosePreference -InformationAction $InformationPreference
+                                # $setResult = Invoke-DscResource -Method Set @params -Verbose:$VerbosePreference -InformationAction $InformationPreference 4>&1 | foreach {
+                                #     $msg = Parse-DSCVerboseOutput -line $_
+                                #     if ($msg) {
+                                #         if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
+                                #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
+                                #         }
+                                #         if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
+                                #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
+                                #         }
+                                #     }
+                                # }
                             } catch {
                                 Write-Error -Message 'There was a problem setting the resource'
                                 Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"
