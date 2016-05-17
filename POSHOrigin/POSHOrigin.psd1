@@ -39,7 +39,12 @@ PrivateData = @{
         LicenseUri = 'https://raw.githubusercontent.com/devblackops/POSHOrigin/master/LICENSE'
         ProjectUri = 'https://github.com/devblackops/POSHOrigin'
         IconUri = 'https://raw.githubusercontent.com/devblackops/POSHOrigin/master/Media/POSHOrigin_256.png'
-        ReleaseNotes = 'Fix bug dealing with -WhatIf support in Invoke-POSHOrigin'
+        ReleaseNotes = "
+- Fix bug dealing with -WhatIf support in Invoke-POSHOrigin
+- Added comment-based help to functions
+- Added about_POSHOrigin_* help documents
+- Modified Get-POSHOriginConfig to accept pipeline input from Get-ChildItem
+- Validate the InputObject to Invoke-POSHOrigin is of type POSHOrigin.Resource"
     }
 }
 }
