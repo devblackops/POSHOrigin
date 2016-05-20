@@ -9,7 +9,7 @@ function Invoke-POSHOriginNEW {
             translated into a hashtable suitable for Invoke-DscResource.
             
             ** THIS IS AN EXPERIMENTAL CMDLET AND MAY BE SIGNIFICANTLY MODIFIED IN FUTURE VERSIONS **
-        .PARAMETER Resource
+        .PARAMETER InputObject
             One or more custom objects containing the required options for the DSC resource to be provisioned.
         .PARAMETER NoTranslate
             Do not call the Invoke.ps1 script from the DSC resource module. Instead pass the object directly to Invoke-DscResource without translation.
