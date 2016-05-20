@@ -48,22 +48,11 @@ function Get-POSHOriginConfig {
         foreach ($item in $Path) {
             # Load in the configurations
             $item = Resolve-Path $item
-            if (Test-Path -Path $item) {
-<<<<<<< HEAD
-                $configData = @(_LoadConfig -Path $item -Recurse:$Recurse)
-                
-                if ($configData) {
-                    Write-Verbose -Message ([string]::Empty)
-                    Write-Verbose -Message ("Created $($configData.Count) resource objects")
-                    Write-Verbose -Message ([string]::Empty)
-                    return _SortByDependency -Objects $configData    
-                }
-=======
+            if (Test-Path -Path $item) {                
                 $configData = @(_LoadConfig -Path $item -Recurse:$Recurse) | _SortByDependency
                 Write-Verbose -Message ([string]::Empty)
                 Write-Verbose -Message ("Created $($configData.Count) resource objects")
                 return $configData
->>>>>>> dynamic-resources
             } else {
                 Write-Error -Message ($msgs.invalid_path -f $path)
             }
