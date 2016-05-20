@@ -49,6 +49,7 @@ function Get-POSHOriginConfig {
             # Load in the configurations
             $item = Resolve-Path $item
             if (Test-Path -Path $item) {
+<<<<<<< HEAD
                 $configData = @(_LoadConfig -Path $item -Recurse:$Recurse)
                 
                 if ($configData) {
@@ -57,6 +58,12 @@ function Get-POSHOriginConfig {
                     Write-Verbose -Message ([string]::Empty)
                     return _SortByDependency -Objects $configData    
                 }
+=======
+                $configData = @(_LoadConfig -Path $item -Recurse:$Recurse) | _SortByDependency
+                Write-Verbose -Message ([string]::Empty)
+                Write-Verbose -Message ("Created $($configData.Count) resource objects")
+                return $configData
+>>>>>>> dynamic-resources
             } else {
                 Write-Error -Message ($msgs.invalid_path -f $path)
             }

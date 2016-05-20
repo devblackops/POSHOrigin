@@ -61,7 +61,7 @@ function New-POSHOriginResource {
         # Merge this resource with the defaults specified
         $merged = _MergeHashtables -Primary $Options -Secondary $defaults -Verbose
 
-        # Trip out the 'defaults' parameter
+        # Strip out the 'defaults' parameter
         $merged.Remove('defaults')
 
         # If 'DependsOn' is a single string, change it to a string[]

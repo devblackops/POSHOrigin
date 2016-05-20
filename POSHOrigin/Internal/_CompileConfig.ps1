@@ -63,6 +63,13 @@ function _CompileConfig {
                 if (-Not $dscResource) {
                     $dscResource = Get-DscResource -Name $resource -Module 'POSHOrigin' -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
                 }
+                
+                # TODO
+                # Compare the DSC resource properties against the POSHOrigin config
+                # and dynamically create a Configuratino{} block so we don't have to have 
+                # that stupid Invoke.ps1 script in each DSC resource.
+                # This will allow POSHOrigin to be able to invoke ANY DSC resource
+                # without custom code inside the resource.  
 
                 # Dot source the configuration
                 if ($dscResource) {

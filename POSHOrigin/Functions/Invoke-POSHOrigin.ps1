@@ -53,7 +53,11 @@ function Invoke-POSHOrigin {
         
         [Parameter(mandatory, position=0, ValueFromPipeline, ParameterSetName='InputObject')]
         [ValidateScript({ $_.PSObject.TypeNames[0] -eq 'POSHOrigin.Resource' })]
+<<<<<<< HEAD
         [psobject]$InputObject,
+=======
+        [psobject[]]$InputObject,
+>>>>>>> dynamic-resources
         
         [parameter(ParameterSetName='Path')]
         [parameter(ParameterSetName='InputObject')]
