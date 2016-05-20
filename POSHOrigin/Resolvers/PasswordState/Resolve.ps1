@@ -35,15 +35,15 @@ process {
                     return $cred
                 }
             } else {
-                Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
+                Write-Error -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
             }
         } catch {
-            Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
+            Write-Error -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
             Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"
             write-Error $_
         }
     } else {
-        Write-Debug -Message $msgs.rslv_passwordstate_mod_missing
+        Write-Error -Message $msgs.rslv_passwordstate_mod_missing
     }
 }
 

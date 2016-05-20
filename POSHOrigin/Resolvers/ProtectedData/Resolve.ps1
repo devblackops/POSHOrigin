@@ -32,7 +32,7 @@ process {
                     throw 'Unable to decrypt credential with options provided'
                 }
             } catch {
-                Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
+                Write-Error -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
                 Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"
                 write-Error $_
             }
