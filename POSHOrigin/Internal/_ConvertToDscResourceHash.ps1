@@ -44,6 +44,7 @@ function _ConvertToDscResourceHash {
                     
                     # We have a matching property, now we need to validate the type
                     $dscPropType = $dscProp.PropertyType
+                                        
                     Write-Debug "        DSC type is $dscPropType"
                     
                     if ($dscProp.Name -eq 'DependsOn' ) {
@@ -51,7 +52,11 @@ function _ConvertToDscResourceHash {
                     } else {
                         $poPropType = "[$($poProp.GetType().Name)]"
                     }
-                    Write-Debug "        POSHOrigin type is $dscPropType"
+                    if ($poPropType -eq '[Boolean]') {
+                        $poPropType = '[bool]'
+                    }
+                    Write-Debug "        POSHOrigin type is $poPropType"
+                   
 
                     if ($poPropType -eq $dscPropType) {
                         $hash.($dscProp.Name) = $item.Options.($dscProp.Name)
