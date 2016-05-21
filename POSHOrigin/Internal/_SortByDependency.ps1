@@ -15,10 +15,13 @@ function _SortByDependency {
     }
     
     process {
-        $set += $Objects
+        foreach ($item in $objects) {
+            $set += $item    
+        }
     }
     
     end {
+        Write-Debug "Objects to sort: $($set.Count)"
         $edgeList = @{}
         $set | ForEach-Object {
             $edgeList.Add($_.FullName, $_)
@@ -90,8 +93,11 @@ function _SortByDependency {
 
         $result = @()
         foreach ($item in $topologicallySortedElements) {
-            $result += $edgeList[$item]
+            if ($null -ne $edgeList[$item]) {
+                $result += $edgeList[$item]    
+            }
         }
+        Write-Debug "Objects sorted: $($result.Count)"
         return $result
     }   
 }
