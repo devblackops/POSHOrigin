@@ -13,6 +13,9 @@ function Get-TargetResource {
         [parameter(Mandatory)]
         [pscredential]$Credential,
         
+        [ValidateSet('Incremental', 'Complete')]
+        [string]$DeploymentType = 'Incremental',
+        
         [parameter(Mandatory)]
         [string]$Version,
         
@@ -47,6 +50,9 @@ function Set-TargetResource {
         
         [parameter(Mandatory)]
         [pscredential]$Credential,
+        
+        [ValidateSet('Incremental', 'Complete')]
+        [string]$DeploymentType = 'Incremental',
 
         [parameter(Mandatory)]
         [string]$Version,
@@ -75,9 +81,9 @@ function Set-TargetResource {
                     $json | Out-File -FilePath $tempFile -Force
                     Write-Verbose -Message "ARM deployment temp file [$($tempFile.Fullname)]"
                     
-                    Test-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroup -TemplateFile $tempFile -ErrorAction Stop
+                    Test-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroup -Mode $DeploymentType -TemplateFile $tempFile -ErrorAction Stop
                     Write-Verbose -Message 'ARM deployment validated'
-                    New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroup -TemplateFile $tempFile
+                    New-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroup -Mode $DeploymentType -TemplateFile $tempFile
                     Remove-Item $tempFile -Force
                 } catch {
                     Write-Error -Message 'ARM template does not validate!'
@@ -107,6 +113,9 @@ function Test-TargetResource {
         
         [parameter(Mandatory)]
         [pscredential]$Credential,
+        
+        [ValidateSet('Incremental', 'Complete')]
+        [string]$DeploymentType = 'Incremental',
 
         [parameter(Mandatory)]
         [string]$Version,

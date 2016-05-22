@@ -1,12 +1,14 @@
 
-[ClassVersion("1.0"), FriendlyName("ARMDeployment")]
+[ClassVersion("1.0.0.0"), FriendlyName("ARMDeployment")]
 class POSHOrigin_ARMDeployment : OMI_BaseResource
 {
-    [Key] String Name;
-    [Required, ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
-    [Required, EmbeddedInstance("MSFT_Credential")] string Credential;    
-    [Required] String Version;
-    [Required] String ResourceGroup;
-    [Required] String Resources;
-    [Write] String Variables;
+    [Key, Description("Name of the ARM deployment")] String Name;
+    [Required, Description("Ensure that the ARM deployment matches"), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Required, EmbeddedInstance("MSFT_Credential"), Description("Credential to connect to Azure Resource Manager")] String Credential;
+    [Required, Description("Version of the ARM template")] String Version;
+    [Required, Description("Resource group to deploy ARM template to")] String ResourceGroup;    
+    [Required, Description("JSON string of resources to deploy")] String Resources;
+    [Write, Description("ARM deployment type"), ValueMap{"Incremental","Complete"}, Values{"Incremental","Complete"}] String DeploymentType;
+    [Write, Description("JSON string of variables to use in deployment")] String Variables;
 };
+
