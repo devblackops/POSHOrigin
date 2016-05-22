@@ -44,6 +44,8 @@ function Invoke-POSHOriginNEW {
         [psobject[]]$InputObject,
 
         [switch]$NoTranslate,
+        
+        [switch]$PrettyPrint,
 
         [switch]$WhatIf,
 
@@ -118,7 +120,7 @@ function Invoke-POSHOriginNEW {
             Invoke-Command -ScriptBlock $cmd
         }
 
-        function Parse-DSCVerboseOutput([string]$line) {
+        function Convert-DSCVerboseOutput([string]$line) {
             # Write line to log file
             Out-File -Encoding utf8 -Append -FilePath $outputFile -Inputobject $_
 
@@ -207,37 +209,44 @@ function Invoke-POSHOriginNEW {
                 if ($PSBoundParameters.ContainsKey('WhatIf')) {
                     # Just test the resource
                     Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
-                    $testResult = $null
-                    $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference -InformationAction $InformationPreference
-                    # $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference 4>&1 | foreach {
-                    #     $msg = Parse-DSCVerboseOutput -line $_
-                    #     if ($msg) {
-                    #         if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
-                    #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
-                    #         }
-                    #         if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
-                    #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
-                    #         }
-                    #     }
-                    # }
-
+                    $testResult = $null                    
+                    if ($PSBoundParameters.ContainsKey('PrettyPrint')) {
+                        Invoke-DscResource -Method Test @params -OutVariable testResult -Verbose:$VerbosePreference 4>&1 | foreach {
+                            $msg = Convert-DSCVerboseOutput -line $_
+                            if ($msg) {
+                                if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
+                                    Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
+                                }
+                                if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
+                                    Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
+                                }
+                            }
+                        }    
+                    } else {
+                        $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference -InformationAction $InformationPreference    
+                    }
+                    
                     if ($PSBoundParameters.ContainsKey('PassThru')) {
                         $result = "" | Select Resource, InDesiredState
                         Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Get
 
-                        $getResult = $null
-                        $getResult = Invoke-DscResource -Method Get @params -Verbose:$VerbosePreference
-                        # $getResult = Invoke-DscResource -Method Get @params -Verbose:$VerbosePreference 4>&1 | foreach {
-                        #     $msg = Parse-DSCVerboseOutput -line $_
-                        #     if ($msg) {
-                        #         if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
-                        #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
-                        #         }
-                        #         if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
-                        #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
-                        #         }
-                        #     }
-                        # }
+                        $getResult = $null                        
+                        if ($PSBoundParameters.ContainsKey('PrettyPrint')) {
+                            Invoke-DscResource -Method Get @params -OutVariable getResult -Verbose:$VerbosePreference 4>&1 | foreach {
+                                $msg = Convert-DSCVerboseOutput -line $_
+                                if ($msg) {
+                                    if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
+                                        Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
+                                    }
+                                    if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
+                                        Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
+                                    }
+                                }
+                            }    
+                        } else {
+                            $getResult = Invoke-DscResource -Method Get @params -Verbose:$VerbosePreference    
+                        }
+                        
                         $result.Resource = $getResult
                         $result.InDesiredState = $testResult.InDesiredState
                         $results += $result
@@ -248,7 +257,7 @@ function Invoke-POSHOriginNEW {
                     $continue = $true
                     $dependenciesExist = @(($item.DependsOn).Count -gt 0)
                     if ($dependenciesExist) {
-                        if ($dependency -inotin $executedResources.Keys) {
+                        if ($dependency -inotin $executedResources.Keys) {                            
                             $continue = $false
                         }
                     } else {
@@ -260,34 +269,41 @@ function Invoke-POSHOriginNEW {
                         # Test and invoke the resource
                         $testResult = $null
                         Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
-                        $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference -InformationAction $InformationPreference
-                        # $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference -InformationAction $InformationPreference 4>&1 | foreach {
-                        #     $msg = Parse-DSCVerboseOutput -line $_
-                        #     if ($msg) {
-                        #         if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
-                        #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
-                        #         }
-                        #         if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
-                        #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
-                        #         }
-                        #     }
-                        # }
+                        
+                        If ($PSBoundParameters.ContainsKey('PrettyPrint')) {
+                            Invoke-DscResource -Method Test @params -OutVariable testResult -Verbose:$VerbosePreference -InformationAction $InformationPreference 4>&1 | foreach {
+                                $msg = Convert-DSCVerboseOutput -line $_
+                                if ($msg) {
+                                    if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
+                                        Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
+                                    }
+                                    if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
+                                        Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
+                                    }
+                                }
+                            }    
+                        } else {
+                            $testResult = Invoke-DscResource -Method Test @params -Verbose:$VerbosePreference -InformationAction $InformationPreference    
+                        }
                         
                         if (-Not $testResult.InDesiredState) {
                             Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Set
                             try {
-                                $setResult = Invoke-DscResource -Method Set @params -Verbose:$VerbosePreference -InformationAction $InformationPreference
-                                # $setResult = Invoke-DscResource -Method Set @params -Verbose:$VerbosePreference -InformationAction $InformationPreference 4>&1 | foreach {
-                                #     $msg = Parse-DSCVerboseOutput -line $_
-                                #     if ($msg) {
-                                #         if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
-                                #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
-                                #         }
-                                #         if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
-                                #             Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
-                                #         }
-                                #     }
-                                # }
+                                if ($PSBoundParameters.ContainsKey('PrettyPrint')) {
+                                    Invoke-DscResource -Method Set @params -OutVariable setResult -Verbose:$VerbosePreference -InformationAction $InformationPreference 4>&1 | foreach {
+                                        $msg = Convert-DSCVerboseOutput -line $_
+                                        if ($msg) {
+                                            if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
+                                                Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message
+                                            }
+                                            if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
+                                                Write-ResourceStatus -Resource $msg.resource -Name $item.Name -Inner -Message $msg.message -Complete
+                                            }
+                                        }
+                                    }    
+                                } else {
+                                    $setResult = Invoke-DscResource -Method Set @params -Verbose:$VerbosePreference -InformationAction $InformationPreference    
+                                }
                             } catch {
                                 Write-Error -Message 'There was a problem setting the resource'
                                 Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"
