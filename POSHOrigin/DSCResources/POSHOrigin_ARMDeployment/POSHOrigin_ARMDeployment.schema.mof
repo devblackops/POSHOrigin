@@ -1,0 +1,12 @@
+
+[ClassVersion("1.0"), FriendlyName("ARMDeployment")]
+class POSHOrigin_ARMDeployment : OMI_BaseResource
+{
+    [Key] String Name;
+    [Required, ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Required, EmbeddedInstance("MSFT_Credential")] string Credential;    
+    [Required] String Version;
+    [Required] String ResourceGroup;
+    [Required] String Resources;
+    [Write] String Variables;
+};
