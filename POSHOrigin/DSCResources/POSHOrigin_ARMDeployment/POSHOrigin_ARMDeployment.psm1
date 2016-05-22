@@ -118,7 +118,6 @@ function Test-TargetResource {
     return $false
 }
 
-
 function Connect-AzureRm {
     param(
         [parameter(Mandatory)]
