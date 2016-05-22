@@ -43,7 +43,7 @@ function Invoke-POSHOriginNEW {
         [Alias('Resource')]
         [psobject[]]$InputObject,
 
-        [switch]$NoTranslate,
+        #[switch]$NoTranslate,
         
         [switch]$PrettyPrint,
 
