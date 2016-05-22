@@ -325,7 +325,7 @@ function Invoke-POSHOriginNEW {
         }
 
         # Stop stopwatch
-        Write-Verbose -Message "Command finished in $($sw.elapsed.seconds) seconds"
+        Write-Verbose -Message "Command finished in $($sw.Elapsed.TotalSeconds) seconds"
         $sw.stop()
     }
 }
