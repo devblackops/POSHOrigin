@@ -67,7 +67,7 @@ function Set-TargetResource {
             $template = New-ArmTemplate -Version $Version -Resources $Resources -Variables $Variables            
             Write-Verbose -Message "Getting resource group [$resourceGroup]"
             $resGroup = Get-AzureRmResourceGroup -Name $ResourceGroup -WarningAction SilentlyContinue -ErrorAction SilentlyContinue
-            if ($resourceGroup) {
+            if ($resGroup) {
                 Write-Verbose -Message "Resource group exists"
                 try {                    
                     $tempFile = New-TemporaryFile
