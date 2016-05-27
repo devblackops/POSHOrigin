@@ -1,4 +1,9 @@
 
+# 1.6.0 (May 26, 2016)
+  - Add Azure ARM template DSC resource
+  - Add `PrettyPrint` switch to Invoke-POSHOriginNEW
+  - Fix elapsed time display
+  
 ## 1.5.11 (May 10, 2016)
   - Fix bug dealing with -WhatIf support in `Invoke-POSHOrigin`
   - Added comment-based help to functions
