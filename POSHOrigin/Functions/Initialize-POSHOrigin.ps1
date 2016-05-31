@@ -72,7 +72,7 @@ function Initialize-POSHOrigin {
         }
 
         if (-not (Test-Path -Path $Repository -Verbose:$false)) {
-            Write-Verbose -Message $msgs.init_create_repo -f $Repository
+            Write-Verbose -Message ($msgs.init_create_repo -f $Repository)
 
             New-Item -ItemType Directory -Path $Repository -Verbose:$false | Out-Null
             New-Item -ItemType Directory -Path (Join-Path -Path $Repository -ChildPath 'configs') | Out-Null
