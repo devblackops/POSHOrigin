@@ -1,5 +1,6 @@
 # Unreleased
   - Bug fix with verbose log statement in Initialize-POSHOrigin
+  - Add HTTP(s) as possible paths for ProtectedData resolver
 
 # 1.6.0 (May 26, 2016)
   - Add Azure ARM template DSC resource
