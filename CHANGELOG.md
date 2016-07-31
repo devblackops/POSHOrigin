@@ -1,4 +1,4 @@
-# Unreleased
+# 1.7.0
   - Bug fix with verbose log statement in Initialize-POSHOrigin
   - Add HTTP(s) as possible paths for ProtectedData resolver
 
