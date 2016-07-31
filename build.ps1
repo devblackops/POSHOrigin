@@ -8,4 +8,4 @@ if (!(Get-Module -Name psake -ListAvailable)) { Install-Module -Name psake -Scop
 if (!(Get-Module -Name PSDeploy -ListAvailable)) { Install-Module -Name PSDeploy -Scope CurrentUser }
 if (!(Get-Module -Name PSScriptAnalyzer -ListAvailable)) { Install-Module -Name PSDeploy -Scope CurrentUser }
 
-Invoke-psake -buildFile "$PSScriptRoot\psakeBuild.ps1" -taskList $Task -nologo -Verbose:$VerbosePreference
+Invoke-psake -buildFile "$PSScriptRoot\psake.ps1" -taskList $Task -nologo -Verbose:$VerbosePreference
