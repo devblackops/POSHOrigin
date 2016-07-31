@@ -1,9 +1,11 @@
-Deploy POSHOrigin {
-    By PSGalleryModule ToPSGallery {
-        FromSource '.\POSHOrigin'
-        To 'PSGallery'
-        WithOptions @{
-            ApiKey = $env:PSGALLERY_API_KEY
+if($ENV:BHProjectName -and $ENV:BHProjectName.Count -eq 1) {
+    Deploy Module {
+        By PSGalleryModule {
+            FromSource $ENV:BHProjectName
+            To PSGallery
+            WithOptions @{
+                ApiKey = $ENV:PSGalleryApiKey
+            }
         }
     }
 }
