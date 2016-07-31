@@ -68,7 +68,7 @@ PrivateData = @{
   - Added new credential resolver 'ProtectedData'
   - Added experimental cmdlet Invoke-POSHOriginConfigNew (alias: iponew) that 
     will invoke DSC resources directly using Invoke-DscResource rather than
-	compiling and appliying a MOF using Start-DscConfiguration
+    compiling and appliying a MOF using Start-DscConfiguration
 
 ## 1.5.8 (Jan 18, 2016)
   - Added experimental support for resuable modules
