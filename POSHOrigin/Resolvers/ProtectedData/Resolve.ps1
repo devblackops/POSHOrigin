@@ -11,10 +11,19 @@ begin {
 process {
     if (Get-Module -ListAvailable -Name 'ProtectedData' -Verbose:$false) {
         Import-Module -Name 'ProtectedData' -Verbose:$false
+        $xmlPath = $Options.Path
+        $output = $null
 
-        if (Test-Path -Path $Options.Path) {
+        if (($xmlPath.StartsWith('http://')) -or ($xmlPath.StartsWith('https://'))) {
+            $filename = $xmlPath.SubString($xmlPath.LastIndexOf('/') + 1)
+            $output = "$($ENV:Temp)\$filename"
+            Invoke-WebRequest -Uri $xmlPath -OutFile $output
+            $xmlPath = $output
+        }
+        
+        if (Test-Path -Path $xmlPath) {
             try {
-                $encypted = Import-Clixml -Path $Options.Path -Verbose:$false
+                $encypted = Import-Clixml -Path $xmlPath -Verbose:$false
 
                 if ($Options.Password) {
                     $secPassword = $Options.Password | ConvertTo-SecureString -AsPlainText -Force
@@ -26,18 +35,18 @@ process {
                 }
 
                 if ($decrypted) {
-                    Write-Debug -Message ($msgs.rslv_protecteddata_got_cred -f $options.Path)
+                    Write-Debug -Message ($msgs.rslv_protecteddata_got_cred -f $xmlPath)
                     return $decrypted
                 } else {
                     throw 'Unable to decrypt credential with options provided'
                 }
             } catch {
-                Write-Error -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
+                Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
                 Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"
                 write-Error $_
             }
         } else {
-            throw "Unable to find file $($options.Path)"
+            throw "Unable to find file $($xmlPath)"
         }
     }
 }
