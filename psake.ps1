@@ -10,7 +10,7 @@ properties {
     $psVersion = $PSVersionTable.PSVersion.Major
 }
 
-task default -depends Test
+task default -depends Deploy
 
 task Init {
     "`nSTATUS: Testing with PowerShell $psVersion"
@@ -49,7 +49,7 @@ task Pester {
     }
 }
 
-task Deploy -depends Analyze, Test {
+task Deploy -depends Test {
     # Gate deployment
     if( $ENV:BHBuildSystem -ne 'Unknown' -and
         $ENV:BHBranchName -eq "master" -and
