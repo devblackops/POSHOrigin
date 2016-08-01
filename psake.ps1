@@ -25,12 +25,28 @@ task Init {
 task Test -Depends Init, Analyze, Pester
 
 task Analyze {
+    # Modify PSModulePath of the current PowerShell session.
+    # We want to make sure we always test the development version of the resource
+    # in the current build directory.
+    $origModulePath = $env:PSModulePath
+    $newModulePath = $origModulePath
+    if (($newModulePath.Split(';') | Select-Object -First 1) -ne $projectRoot) {
+        # Add the project root to the beginning if it is not already at the front.
+        $env:PSModulePath = "$projectRoot;$env:PSModulePath"
+    }
+
     $excludedRules = (
         'PSAvoidUsingConvertToSecureStringWithPlainText'
     )
     $saResults = Invoke-ScriptAnalyzer -Path $sut -Severity Error -ExcludeRule $excludedRules -Recurse -Verbose:$false
+
+    # Restore PSModulePath
+    if ($origModulePath -ne $env:PSModulePath) {
+        $env:PSModulePath = $origModulePath
+    }
+
     if ($saResults) {
-        $saResults | Format-Table  
+        $saResults | Format-Table
         Write-Error -Message 'One or more Script Analyzer errors/warnings where found. Build cannot continue!'
     }
 }
