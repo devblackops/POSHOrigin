@@ -1,5 +1,5 @@
 @{
-ModuleVersion = '1.7.0'
+ModuleVersion = '1.7.1'
 RootModule = 'POSHOrigin.psm1'
 GUID = '4eb54734-8088-46bb-bddf-f0eb2e437970'
 Author = 'Brandon Olin'
