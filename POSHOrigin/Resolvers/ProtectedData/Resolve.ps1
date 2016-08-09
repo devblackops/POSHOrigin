@@ -12,13 +12,13 @@ process {
     if (Get-Module -ListAvailable -Name 'ProtectedData' -Verbose:$false) {
         Import-Module -Name 'ProtectedData' -Verbose:$false
         $xmlPath = $Options.Path
-        $output = $null
+        $tempFile = $null
 
         if (($xmlPath.StartsWith('http://')) -or ($xmlPath.StartsWith('https://'))) {
             $filename = $xmlPath.SubString($xmlPath.LastIndexOf('/') + 1)
-            $output = "$($ENV:Temp)\$filename"
-            Invoke-WebRequest -Uri $xmlPath -OutFile $output
-            $xmlPath = $output
+            $tempFile = "$($ENV:Temp)\$filename"
+            Invoke-WebRequest -Uri $xmlPath -OutFile $tempFile
+            $xmlPath = $tempFile
         }
         
         if (Test-Path -Path $xmlPath) {
@@ -36,13 +36,17 @@ process {
 
                 if ($decrypted) {
                     Write-Debug -Message ($msgs.rslv_protecteddata_got_cred -f $xmlPath)
-                    Remove-Item -Path $xmlPath -Force
+                    if ($tempFile) {
+                        Remove-Item -Path $tempFile -Force
+                    }
                     return $decrypted
                 } else {
                     throw 'Unable to decrypt credential with options provided'
                 }
             } catch {
-                Remove-Item -Path $xmlPath -Force
+                if ($tempFile) {
+                    Remove-Item -Path $tempFile -Force
+                }                
                 Write-Debug -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
                 Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"
                 write-Error $_
