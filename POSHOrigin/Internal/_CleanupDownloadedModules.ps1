@@ -8,7 +8,7 @@ function _CleanupDownloadedModules.ps1 {
         foreach ($moduleSource in $script:gitModulesProcessed.Keys) {
             $modulePath = $script:gitModulesProcessed[$ModuleSource]
             $parent = Split-Path -Path $modulePath -Parent
-            Write-Debug -Message "Removing temporary module path [$parent] for module [$moduleSource]"                    
+            Write-Verbose -Message "Removing temporary module path [$parent] for module [$moduleSource]"                    
             Remove-Item -Path $parent -Force -Recurse
         }
     }

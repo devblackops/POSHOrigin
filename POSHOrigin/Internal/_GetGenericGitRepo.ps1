@@ -15,7 +15,8 @@ function _GetGenericGitRepo {
         # Use git to clone repo to temp directory
         $tempDir =  _NewTempDir
         Write-Debug -Message "Temp dir created: [($tempDir.FullName)]"
-        Write-Verbose -Message "Cloning repo [$url] to [$($tempDir.FullName)]"    
+        Write-Verbose -Message "  Cloning repo [$url]"
+        Write-Debug -Message "Module cloned to [$($tempDir.FullName)]"    
 
         # Files to redirect stdout/err to when calling 'git.exe'
         $stdOutPath = Join-Path -Path $tempDir -ChildPath 'stdOut.txt'
