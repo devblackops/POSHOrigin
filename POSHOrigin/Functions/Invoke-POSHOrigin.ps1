@@ -131,6 +131,9 @@ function Invoke-POSHOrigin {
             # Reset the progress bar preference
             $global:ProgressPreference = $oldProgPref
 
+            # Remove any downloaded git-based modules
+            _CleanupDownloadedModules.ps1
+
             Write-Debug -Message $msgs.ipo_end
         } else {
             Write-Error -Message $msgs.ipo_mof_failure

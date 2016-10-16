@@ -60,6 +60,10 @@ function Get-POSHOriginConfig {
     }
 
     end {
+
+        # Remove any downloaded git-based modules
+        _CleanupDownloadedModules.ps1        
+        
         $script:credentialCache = @{}
         $script:modulesToProcess = @{}
         $script:resourceCache = @{}
