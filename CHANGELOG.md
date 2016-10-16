@@ -1,6 +1,9 @@
+# 1.8.0 (Unreleased)
+  * Add support for using a git repository as the source of a POSHOrigin module
+
 # 1.7.1
   - Fix bug in ProtectedData resolver where it was always deleting the source XML file.
-  It should only delete the XML file if it downloads it from a URL to a temp file.
+    It should only delete the XML file if it downloads it from a URL to a temp file.
 
 # 1.7.0
   - Bug fix with verbose log statement in Initialize-POSHOrigin

@@ -1,5 +1,5 @@
 @{
-ModuleVersion = '1.7.1'
+ModuleVersion = '1.8.0'
 RootModule = 'POSHOrigin.psm1'
 GUID = '4eb54734-8088-46bb-bddf-f0eb2e437970'
 Author = 'Brandon Olin'
@@ -40,6 +40,13 @@ PrivateData = @{
         ProjectUri = 'https://github.com/devblackops/POSHOrigin'
         IconUri = 'https://raw.githubusercontent.com/devblackops/POSHOrigin/master/Media/POSHOrigin_256.png'
         ReleaseNotes = "
+# 1.8.0 (Unreleased)
+  * Add support for using a git repository as the source of a POSHOrigin module
+
+# 1.7.1
+  - Fix bug in ProtectedData resolver where it was always deleting the source XML file.
+    It should only delete the XML file if it downloads it from a URL to a temp file.
+
 # 1.7.0
   - Bug fix with verbose log statement in Initialize-POSHOrigin
   - Add HTTP(s) as possible paths for ProtectedData resolver
@@ -68,7 +75,7 @@ PrivateData = @{
   - Added new credential resolver 'ProtectedData'
   - Added experimental cmdlet Invoke-POSHOriginConfigNew (alias: iponew) that 
     will invoke DSC resources directly using Invoke-DscResource rather than
-    compiling and appliying a MOF using Start-DscConfiguration
+	compiling and appliying a MOF using Start-DscConfiguration
 
 ## 1.5.8 (Jan 18, 2016)
   - Added experimental support for resuable modules
