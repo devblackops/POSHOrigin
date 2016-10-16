@@ -27,6 +27,7 @@ $moduleRoot = Split-Path -Path $MyInvocation.MyCommand.Path
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = {
     Remove-Variable -Name credentialCache -Scope Script
     Remove-Variable -Name modulesToProcess -Scope Script
+    Remove-Variable -Name gitModulesProcessed -Scope Script
     Remove-Variable -Name resourceCache -Scope Script         
 }  
 
@@ -39,9 +40,3 @@ New-Alias -Name ipo -Value Invoke-POSHOrigin
 New-Alias -Name iponew -Value Invoke-POSHOriginNEW
 New-Alias -Name resource -Value New-POSHOriginResource
 New-Alias -Name module -Value New-POSHOriginResourceFromModule
-#Export-ModuleMember -Alias gpoc
-#Export-ModuleMember -Alias gpos
-#Export-ModuleMember -Alias gpd
-#Export-ModuleMember -Alias ipo
-#Export-ModuleMember -Alias iponew
-#Export-ModuleMember -Alias resource
