@@ -10,6 +10,9 @@ $script:credentialCache = @{}
 # cache of modules to process
 $script:modulesToProcess = @{}
 
+# Cache of git-based modules we've processed
+$script:gitModulesProcessed = @{}
+
 # cache of resource names 
 $script:resourceCache = @{}
 
