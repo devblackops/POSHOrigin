@@ -38,9 +38,10 @@ function _ConvertToDscResourceHash {
                 
                 # Get patching POSHOrigin resource property
                 $poProp = ($item.Options.($dscProp.Name))
+                #$poProp = $item.Options | Get-Member -MemberType NoteProperty | where Name -eq $dscProp.Name
 
                 # Create a new hashtable of only matching properties
-                if ($poProp) {
+                if ($null -ne $poProp) {                
                     
                     # We have a matching property, now we need to validate the type
                     $dscPropType = $dscProp.PropertyType
