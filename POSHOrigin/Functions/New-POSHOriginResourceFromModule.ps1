@@ -51,7 +51,7 @@ function New-POSHOriginResourceFromModule {
     if ($Options.ContainsKey('Source')) {
 
         # Is Source a git url?
-        if ($Options.source -match '^git://*') {
+        if ($Options.Source -match '((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?') {
 
             # See if we've all ready downloaded this module as part of this POSHOrigin execution
             # If so, just use the previously downloaded location
