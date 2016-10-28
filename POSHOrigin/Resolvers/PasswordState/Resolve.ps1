@@ -29,11 +29,19 @@ process {
             if ($null -ne $entry) {
                 $cred = $null
                 $pass = $entry.Password | ConvertTo-SecureString -AsPlainText -Force
-                $cred = New-Object System.Management.Automation.PSCredential -ArgumentList ($entry.UserName, $pass)
-                if ($null -ne $cred) {
-                    Write-Debug -Message ($msgs.rslv_passwordstate_got_cred -f $options.passwordId, $entry.Username )
-                    return $cred
-                }
+
+                # Guard against username from Passwordstate being empty
+                # We can't create a valid PS credential object without one                 
+                if (($entry.Username -eq [string]::Empty) -or ($null -eq $entry.Username)) {
+                    Write-Error 'Entry from PasswordState did not have a value for [Username]. Can not create a valid PowerShell credential object without one.'
+                    return
+                } else {
+                    $cred = New-Object System.Management.Automation.PSCredential -ArgumentList ($entry.UserName, $pass)
+                    if ($null -ne $cred) {
+                        Write-Debug -Message ($msgs.rslv_passwordstate_got_cred -f $options.passwordId, $entry.Username )
+                        return $cred
+                    }
+                }                
             } else {
                 Write-Error -Message ($msgs.rslv_passwordstate_fail -f $options.passwordId, $entry.Username )
             }
