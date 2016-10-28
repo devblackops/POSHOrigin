@@ -8,9 +8,11 @@ function Get-POSHOriginSecret {
             The name of the credential resolver to use
         .PARAMETER Options
             Hashtable of options that the resolver will use to translate into a credential object
+        .PARAMETER Force
+            Force POSHOrigin to resolve the credential and store it again in the cache.
         .EXAMPLE
             Read the configuration contained in vm_config.ps1 into a variable.
-            
+
             resource 'POSHOrigin_vSphere:VM' 'VM01' @{
                 defaults = '.\defaults.psd1'
                 ###
@@ -28,7 +30,9 @@ function Get-POSHOriginSecret {
         [string]$Resolver,
 
         [parameter(Mandatory, Position=1)]
-        [hashtable]$Options
+        [hashtable]$Options,
+
+        [switch]$Force
     )
 
     # Let's avoid repeatadly calling the resolver if we're getting the same credential
@@ -40,11 +44,20 @@ function Get-POSHOriginSecret {
         $json = ConvertTo-Json -InputObject $options
         $hash = _getHash -Text $json
         if ($script:credentialCache.ContainsKey($hash)) {
-            $cred = $script:credentialCache.$hash
-            Write-Verbose -Message ($msgs.gpos_cache_hit -f $hash)
+
+            if ($PSBoundParameters.ContainsKey('Force')) {
+                $cred = & "$resolverPath\Resolve.ps1" -Options $options
+            } else {
+                $cred = $script:credentialCache.$hash
+                Write-Verbose -Message ($msgs.gpos_cache_hit -f $hash)
+            }
         } else {
             $cred = & "$resolverPath\Resolve.ps1" -Options $options
-            $script:credentialCache.Add($hash, $cred)
+
+            # Only cache credential if it's valid
+            if ($cred) {
+                $script:credentialCache.Add($hash, $cred)
+            }
         }
         return $cred
     } else {
