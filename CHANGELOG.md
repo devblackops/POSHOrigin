@@ -1,5 +1,6 @@
 # 1.8.0 (Unreleased)
   * Add support for using a git repository as the source of a POSHOrigin module
+  * Fix bug when calling 'Invoke.ps1' when multple versions of the DSC module are installed
 
 # 1.7.1
   - Fix bug in ProtectedData resolver where it was always deleting the source XML file.

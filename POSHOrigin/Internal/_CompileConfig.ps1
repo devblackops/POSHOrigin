@@ -73,7 +73,9 @@ function _CompileConfig {
 
                 # Dot source the configuration
                 if ($dscResource) {
-                    $invokePath = Join-Path -Path $dscResource.ParentPath -ChildPath 'Invoke.ps1'
+                    # Make sure we only execute 'Invoke.ps1' from the latest version of the module
+                    $latestModuleVersion = $dscResource | Sort -Property Version -Descending | Select -First 1
+                    $invokePath = Join-Path -Path $latestModuleVersion.ParentPath -ChildPath 'Invoke.ps1'
                     Write-Verbose -Message ( $msgs.cc_generating_config -f $_.Resource, $_.Name)
                     #Write-Verbose -Message ($msgs.cc_dot_sourcing_config -f $dscResource.Name, $invokePath)
                     . $invokePath -Options $_ -Direct:$false
