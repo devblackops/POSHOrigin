@@ -220,7 +220,10 @@ function Invoke-POSHOriginNEW {
 
                 $params = @{
                     Name = $dscResource.Name
-                    ModuleName = $dscResource.ModuleName
+                    ModuleName = @{
+                        ModuleName = $dscResource.ModuleName
+                        ModuleVersion = $dscResource.Version
+                    }
                     Property = $hash
                 }
 
