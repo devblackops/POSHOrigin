@@ -52,6 +52,8 @@ function Invoke-POSHOriginNEW {
 
     begin {
 
+        $PrettyPrint = $PSBoundParameters.ContainsKey('PrettyPrint')
+
         # Start stopwatch
         $sw = [diagnostics.stopwatch]::StartNew()
 
@@ -175,17 +177,21 @@ function Invoke-POSHOriginNEW {
             )
 
             $result = $null
-            Invoke-DscResource -Method $Method @params -OutVariable result -Verbose:$VerbosePreference 4>&1 | foreach {
-                $msg = Convert-DSCVerboseOutput -line $_
-                if ($msg) {
-                    if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
-                        Write-ResourceStatus -Resource $msg.resource -Name $ResourceName -Inner -Message $msg.message
-                    }
-                    if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
-                        Write-ResourceStatus -Resource $msg.resource -Name $ResourceName -Inner -Message $msg.message -Complete
+            if ($PrettyPrint) {
+                Invoke-DscResource -Method $Method @params -OutVariable result 4>&1 | foreach {
+                    $msg = Convert-DSCVerboseOutput -line $_
+                    if ($msg) {
+                        if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
+                            Write-ResourceStatus -Resource $msg.resource -Name $ResourceName -Inner -Message $msg.message
+                        }
+                        if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
+                            Write-ResourceStatus -Resource $msg.resource -Name $ResourceName -Inner -Message $msg.message -Complete
+                        }
                     }
                 }
-            }
+            } else {
+                Invoke-DscResource -Method $Method @params -OutVariable result
+            }            
 
             return $result
         }
@@ -231,33 +237,19 @@ function Invoke-POSHOriginNEW {
 
                 Write-Debug ($params.Property | Format-List -Property * | Out-String)
 
-                #$outputFile = 'C:\temp\runlog.log'
                 $outPutFile = New-TemporaryFile -Verbose:$false -Debug:$false
                 Write-Debug -Message "Temp file: $($outPutFile.FullName)"
-                #if (-not (Test-Path -Path $outputFile)) {
-                #    New-Item -Path $outputFile -Type File -Force
-                #}
 
                 if ($PSBoundParameters.ContainsKey('WhatIf')) {
                     # Just test the resource
                     Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
-                    $testResult = $null
-                    if ($PSBoundParameters.ContainsKey('PrettyPrint')) {
-                        $testResult = Invoke-DscResourcePrettyPrint -Method Test -params $params -OutVariable testResult
-                    } else {
-                        $testResult = Invoke-DscResource -Method Test @params
-                    }
+                    $testResult = Invoke-DscResourcePrettyPrint -Method Test -params $params
 
                     if ($PSBoundParameters.ContainsKey('PassThru')) {
                         $result = "" | Select Resource, InDesiredState
                         Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Get
 
-                        $getResult = $null
-                        if ($PSBoundParameters.ContainsKey('PrettyPrint')) {
-                            Invoke-DscResourcePrettyPrint -Method Get -params $params -OutVariable getResult
-                        } else {
-                            $getResult = Invoke-DscResource -Method Get @params
-                        }
+                        $getResult = Invoke-DscResourcePrettyPrint -Method Get -Params $params
 
                         $result.Resource = $getResult
                         $result.InDesiredState = $testResult.InDesiredState
@@ -281,23 +273,14 @@ function Invoke-POSHOriginNEW {
                         $testResult = $null
                         Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
 
-                        If ($PSBoundParameters.ContainsKey('PrettyPrint')) {
-                            $testResult = Invoke-DscResourcePrettyPrint -Method Test -params $params
-                        } else {
-                            $testResult = Invoke-DscResource -Method Test @params
-                        }
+                        $testResult = Invoke-DscResourcePrettyPrint -Method Test -params $params
 
                         #write-verbose ($testResult | fl * | out-string)
 
                         if (-Not $testResult.InDesiredState) {
                             Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Set
                             try {
-                                if ($PSBoundParameters.ContainsKey('PrettyPrint')) {
-                                    $setResult = $null
-                                    $setResult = Invoke-DscResourcePrettyPrint -Method Set -params $params
-                                } else {
-                                    Invoke-DscResource -Method Set @params
-                                }
+                                $setResult = Invoke-DscResourcePrettyPrint -Method Set -params $params
                             } catch {
                                 Write-Error -Message 'There was a problem setting the resource'
                                 Write-Error -Message "$($_.InvocationInfo.ScriptName)($($_.InvocationInfo.ScriptLineNumber)): $($_.InvocationInfo.Line)"
@@ -313,21 +296,10 @@ function Invoke-POSHOriginNEW {
                     if ($PSBoundParameters.ContainsKey('PassThru')) {
                         Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
 
-                        $testResult = $null
-                        if ($PSBoundParameters.ContainsKey('PrettyPrint')) {
-                            $testResult = Invoke-DscResourcePrettyPrint -Method Test -params $params
-                        } else {
-                            $testResult = Invoke-DscResource -Method Test @params
-                        }
+                        $testResult = Invoke-DscResourcePrettyPrint -Method Test -Params $params
 
                         Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Get
-                        $getResult = $null
-
-                        if ($PSBoundParameters.ContainsKey('PrettyPrint')) {
-                            $getResult = Invoke-DscResourcePrettyPrint -Method Get -params $params
-                        } else {
-                            $getResult = Invoke-DscResource -Method Get @params
-                        }
+                        $getResult = Invoke-DscResourcePrettyPrint -Method Get -Params $params
 
                         $result.Resource = $getResult
                         $result.InDesiredState = $testResult.InDesiredState
