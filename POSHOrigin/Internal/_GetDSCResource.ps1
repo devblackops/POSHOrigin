@@ -13,6 +13,7 @@ function _GetDscResource {
         $dscResource = Get-DscResource -Name $Resource -Module 'POSHOrigin' -ErrorAction SilentlyContinue -WarningAction SilentlyContinue -Verbose:$false
     }
     if ($dscResource) {
-        return $dscResource
+        $latestModuleVersion = $dscResource | Sort -Property Version -Descending | Select -First 1
+        return $latestModuleVersion
     }
 }

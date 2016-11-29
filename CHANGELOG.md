@@ -1,7 +1,7 @@
 # 1.8.0 (Unreleased)
   * Add support for using a git repository as the source of a POSHOrigin module
-  * Fix bug when calling 'Invoke.ps1' when multple versions of the DSC module are installed
-  * Remove legacy code that when resolving secrets, if a secret is called 'guest', to format the UserName property of the credential. This code has been moved to the POSHOrigin_vSphere module
+  * When looking for the DSC resource, only return the latest module version
+  * Remove legacy code that when resolving secrets, if a secret is called 'guest', to format the UserName property of the credential. This code has been moved to the POSHOrigin_vSphere module  
 
 # 1.7.1
   - Fix bug in ProtectedData resolver where it was always deleting the source XML file.
