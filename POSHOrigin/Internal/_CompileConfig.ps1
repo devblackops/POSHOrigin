@@ -56,13 +56,8 @@ function _CompileConfig {
                 # and try to find the DSC resource
                 $module = $_.Resource.Split(':')[0]
                 $resource = $_.Resource.Split(':')[1]
-                $dscResource = Get-DscResource -Name $resource -Module $module -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
-                if (-Not $dscResource) {
-                    $dscResource = Get-DscResource -Name $resource -Module "POSHOrigin_$module" -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
-                }
-                if (-Not $dscResource) {
-                    $dscResource = Get-DscResource -Name $resource -Module 'POSHOrigin' -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
-                }
+                
+                $dscResource = _GetDscResource -Module $module -Resource $resource
                 
                 # TODO
                 # Compare the DSC resource properties against the POSHOrigin config
@@ -73,9 +68,7 @@ function _CompileConfig {
 
                 # Dot source the configuration
                 if ($dscResource) {
-                    # Make sure we only execute 'Invoke.ps1' from the latest version of the module
-                    $latestModuleVersion = $dscResource | Sort -Property Version -Descending | Select -First 1
-                    $invokePath = Join-Path -Path $latestModuleVersion.ParentPath -ChildPath 'Invoke.ps1'
+                    $invokePath = Join-Path -Path $dscResource.ParentPath -ChildPath 'Invoke.ps1'
                     Write-Verbose -Message ( $msgs.cc_generating_config -f $_.Resource, $_.Name)
                     #Write-Verbose -Message ($msgs.cc_dot_sourcing_config -f $dscResource.Name, $invokePath)
                     . $invokePath -Options $_ -Direct:$false

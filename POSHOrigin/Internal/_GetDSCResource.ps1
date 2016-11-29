@@ -1,5 +1,6 @@
 # Tries to resolve the given DSC resource
 function _GetDscResource {
+    [cmdletbinding()]
     param(
         [string]$Resource,
         [string]$Module
