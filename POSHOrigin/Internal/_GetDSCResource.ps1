@@ -6,15 +6,23 @@ function _GetDscResource {
         [string]$Module
     )
 
-    $dscResource = Get-DscResource -Name $Resource -Module $Module -ErrorAction SilentlyContinue -WarningAction SilentlyContinue -Verbose:$false
+    $params = @{
+        Name = $Resource
+        Module = $Module
+        ErrorAction =  'SilentlyContinue'
+        WarningAction = 'SilentlyContinue'
+        Verbose = $false
+    }
+
+    $dscResource = Get-DscResource @params
     if (-Not $dscResource) {
-        $dscResource = Get-DscResource -Name $Resource -Module "POSHOrigin_$Module" -ErrorAction SilentlyContinue -WarningAction SilentlyContinue -Verbose:$false
+        $params.Module = "POSHOrigin_$Module"
+        $dscResource = Get-DscResource @params
     }
     if (-Not $dscResource) {
-        $dscResource = Get-DscResource -Name $Resource -Module 'POSHOrigin' -ErrorAction SilentlyContinue -WarningAction SilentlyContinue -Verbose:$false
+        $params.module = 'POSHOrigin'
+        $dscResource = Get-DscResource @params
     }
-    if ($dscResource) {
-        $latestModuleVersion = $dscResource | Sort -Property Version -Descending | Select -First 1
-        return $latestModuleVersion
-    }
+    
+    return $dscResource | Sort -Property Version -Descending | Select -First 1
 }
