@@ -56,16 +56,16 @@ function _LoadConfig {
                         }
                         $secrets.$key.credential = $cred
 
-                        # If the guest credential doesn't have a domain or computer name
-                        # as part of the username, make sure to add it
-                        # THIS SHOULD MOVED INTO THE POSHORIGIN_VSPHERE MODULE
-                        if ($key -eq 'guest') {
-                            if ($cred.UserName -notcontains '\') {
-                                $userName = "$($resource.Name)`\$($cred.UserName)"
-                                $tCred = New-Object System.Management.Automation.PSCredential -ArgumentList ($userName, $cred.Password)
-                                $secrets.$key.credential = $tCred
-                            }
-                        }
+                        # # If the guest credential doesn't have a domain or computer name
+                        # # as part of the username, make sure to add it
+                        # # THIS SHOULD MOVED INTO THE POSHORIGIN_VSPHERE MODULE
+                        # if ($key -eq 'guest') {
+                        #     if ($cred.UserName -notcontains '\') {
+                        #         $userName = "$($resource.Name)`\$($cred.UserName)"
+                        #         $tCred = New-Object System.Management.Automation.PSCredential -ArgumentList ($userName, $cred.Password)
+                        #         $secrets.$key.credential = $tCred
+                        #     }
+                        # }
                     }
                 }
 
