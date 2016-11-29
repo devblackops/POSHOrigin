@@ -16,13 +16,14 @@ function _ConvertToDscResourceHash {
             $moduleName = $item.Resource.Split(':')[0]
             $resourceName = $item.Resource.Split(':')[1]
             
-            $dscRes = Get-DscResource -name $resourceName -Module $moduleName -ErrorAction SilentlyContinue -WarningAction SilentlyContinue            
-            if (-Not $dscRes) {
-                $dscRes = Get-DscResource -Name $resourceName -Module "POSHOrigin_$moduleName" -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
-            }
-            if (-Not $dscRes) {
-                $dscRes = Get-DscResource -Name $resourceName -Module 'POSHOrigin' -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
-            }            
+            $dscRes = _GetDscResource -Module $moduleName -Resource $resourceName
+            # $dscRes = Get-DscResource -name $resourceName -Module $moduleName -ErrorAction SilentlyContinue -WarningAction SilentlyContinue            
+            # if (-Not $dscRes) {
+            #     $dscRes = Get-DscResource -Name $resourceName -Module "POSHOrigin_$moduleName" -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+            # }
+            # if (-Not $dscRes) {
+            #     $dscRes = Get-DscResource -Name $resourceName -Module 'POSHOrigin' -Verbose:$false -ErrorAction SilentlyContinue -WarningAction SilentlyContinue
+            # }            
             
             if (-not $dscRes) {
                 throw "Unable to find DSC resource [$moduleName] in module [$resourceName]"    
