@@ -47,7 +47,7 @@ switch ($type) {
                     [psobject]$ResourceOptions
                 )
 
-                Import-DscResource -Name POSHFile -ModuleName POSHOrigin
+                Import-DscResource -Name POSHFile -ModuleName POSHOrigin -ModuleVersion 1.8.0
 
                 if ($ResourceOptions.options.Name) {
                     $name = $ResourceOptions.options.name
