@@ -220,17 +220,13 @@ function Invoke-POSHOriginNEW {
                 }
 
                 # Our params and hash to be splatted to Invoke-DscResource
-                $params = @{}
-                #$hash = _GetDscResourcePropertyHash -DSCResource $dscResource -Resource $item -NoTranslate ($PSBoundParameters.ContainsKey('NoTranslate'))
-                $hash = $item | _ConvertToDscResourceHash
-
                 $params = @{
                     Name = $dscResource.Name
                     ModuleName = @{
                         ModuleName = $dscResource.ModuleName
                         ModuleVersion = $dscResource.Version
                     }
-                    Property = $hash
+                    Property = ($item | _ConvertToDscResourceHash)
                     Verbose = $VerbosePreference
                     InformationAction = $InformationPreference
                 }
