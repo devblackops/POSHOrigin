@@ -16,7 +16,7 @@ function _ConvertToDscResourceHash {
             $moduleName = $item.Resource.Split(':')[0]
             $resourceName = $item.Resource.Split(':')[1]
             
-            $dscRes = _GetDscResource -Module $moduleName -Resource $resourceName      
+            $dscRes = _GetDscResource -Module $moduleName -Resource $resourceName
             
             if (-not $dscRes) {
                 throw "Unable to find DSC resource [$moduleName] in module [$resourceName]"    
