@@ -118,9 +118,6 @@ function Invoke-POSHOriginNEW {
         }
 
         function Convert-DSCVerboseOutput([string]$line) {
-            # Write line to log file
-            Out-File -Encoding utf8 -Append -FilePath $outputFile -Inputobject $_
-
             # Try and extract the information we want from the line
             $line = $line | select-string -Pattern '^.*?:'
             $msg = $null
@@ -227,9 +224,6 @@ function Invoke-POSHOriginNEW {
 
                 Write-Debug ($params.Property | Format-List -Property * | Out-String)
 
-                $outPutFile = New-TemporaryFile -Verbose:$false -Debug:$false
-                Write-Debug -Message "Temp file: $($outPutFile.FullName)"
-
                 if ($PSBoundParameters.ContainsKey('WhatIf')) {
                     # Just test the resource
                     Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
@@ -310,9 +304,6 @@ function Invoke-POSHOriginNEW {
         if ($PSBoundParameters.ContainsKey('PassThru')) {
             $results
         }
-
-        # Remove temp file
-        Remove-Item -Path $outPutFile.FullName -Force
 
         # Stop stopwatch
         Write-Verbose -Message "Command finished in $($sw.Elapsed.TotalSeconds) seconds"
