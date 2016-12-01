@@ -41,8 +41,6 @@ function Invoke-POSHOriginNEW {
         [Alias('Resource')]
         [psobject[]]$InputObject,
 
-        #[switch]$NoTranslate,
-
         [switch]$PrettyPrint,
 
         [switch]$WhatIf,
@@ -65,10 +63,6 @@ function Invoke-POSHOriginNEW {
         # NOTE
         # This doesn't validate that the dependent service is in the desired state. Only that the "Set" function was executed
         $executedResources = @()
-
-        if ($PSBoundParameters.ContainsKey('NoTranslate')) {
-            Write-Verbose -Message "NoTranslate specified. No property translation will be attempted"
-        }
 
         function Write-ResourceStatus {
             [cmdletbinding()]
