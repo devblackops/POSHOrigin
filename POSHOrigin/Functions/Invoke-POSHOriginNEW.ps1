@@ -226,7 +226,7 @@ function Invoke-POSHOriginNEW {
                         ModuleName = $dscResource.ModuleName
                         ModuleVersion = $dscResource.Version
                     }
-                    Property = ($item | _ConvertToDscResourceHash)
+                    Property = ($item | _ConvertToDscResourceHash -DscResource $dscResource)
                     Verbose = $VerbosePreference
                     InformationAction = $InformationPreference
                 }
