@@ -25,10 +25,8 @@ function _ConvertDSCVerboseOutput {
             $msg = $null
 
             if ($line -split ']: ') {
-                $machine = ($line -split ']: ')[0].TrimStart(1,'[')
-            }
-
-            $message = [string]::Empty
+                $machine = (($line -split ']: ')[0] -Split ': \[')[1]
+            }           
 
             # Pull out the current stage (get,test,set), state (start, end), and resource name
             if ($line -match 'LCM:\s\s\[\s') {
@@ -41,19 +39,15 @@ function _ConvertDSCVerboseOutput {
                 }
 
                 # The DSC resource name and unique instance name
-                if ($line -match '\[\[') {
-                    $resource = ($line -split '\[\[')[1].Split(']')[0]
-                    $resourceName = ($line -split '\[\[')[1].Split(']')[1]
+                if ($line -match '\[\[.*?\].*?\]') {
+                    $resource = ($matches[0] -split '\[\[').Split(']')[1]
+                    $resourceName = ($matches[0] -split '\[\[').Split(']')[2]
                 }
             }
 
-            if ($line -match '\[\[.*\].*\]') {
-                $message = ($line -split '\[\[.*\].*\]')[1].Trim()
-            } else {
-                if ($line -notmatch '[ Start  Compare ]') {
-                    $message = ($line -split 'LCM:\s\s\[\sEnd\s\s\s\sSet\s\s\s\s\s\s]')[1].Trim()
-                }
-            }
+            $message = [string]::Empty
+            $message = ($line -split '\[\[.*?\].*?\]')[1]
+            if ($message) { $message = $message.Trim() }
 
             $msg = [pscustomobject]@{
                 Machine = $machine
