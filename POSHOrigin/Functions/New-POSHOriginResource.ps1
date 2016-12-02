@@ -28,6 +28,13 @@ function New-POSHOriginResource {
     #>
     param(
         [parameter(mandatory, position = 0)]
+        [ValidateScript({
+            If ($_ -match '.+:.+') {
+                $true
+            } else {
+                throw "The resource type must be in the format of <ModuleName>:<ResourceType>"
+            }
+        })]
         $ResourceType,
         
         [parameter(mandatory, position = 1)]
@@ -37,7 +44,7 @@ function New-POSHOriginResource {
         [hashtable]$Options,
 
         [switch]$Force
-    )
+    )   
 
     $fullName = "[" + $ResourceType.Split(':')[1] + "]" + $Name
 
