@@ -7,7 +7,7 @@ function _LoadConfig {
         [switch]$Recurse
     )
 
-    $configs = @()
+    $configs = New-Object -TypeName System.Collections.ArrayList
     $item = Get-Item -Path $Path
     if ($item.PSIsContainer) {
         $files = Get-ChildItem -Path $item -Filter '*.ps1' -Recurse:$Recurse
@@ -69,11 +69,12 @@ function _LoadConfig {
                     }
                 }
 
-                $obj = _ConvertFrom-Hashtable -hashtable $resource -combine -recurse
-                $obj.PSObject.TypeNames.Insert(0,'POSHOrigin.Resource')
-                $obj.Options.PSObject.TypeNames.Insert(0,'POSHOrigin.Resource.Options')
+                # $obj = _ConvertFrom-Hashtable -hashtable $resource -combine -recurse
+                # $obj.PSObject.TypeNames.Insert(0,'POSHOrigin.Resource')
+                # $obj.Options.PSObject.TypeNames.Insert(0,'POSHOrigin.Resource.Options')
 
-                $configs += $obj
+                $configs.Add($resource) | Out-Null
+                #$configs += $resource
             }
         }
         Write-Verbose -Message ([string]::Empty)

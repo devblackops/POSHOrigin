@@ -13,6 +13,8 @@ function New-POSHOriginResource {
             The name of the resource
         .PARAMETER Options
             Hashtable of options for the resource
+        .PARAMETER Force
+            Force recreation of the resource even if the resource was found in the resource cache
         .EXAMPLE
             Returns a POSHOrigin resource with the necessary options to create a new folder
             
@@ -32,15 +34,20 @@ function New-POSHOriginResource {
         $Name,
         
         [parameter(mandatory, position = 2)]
-        [hashtable]$Options
+        [hashtable]$Options,
+
+        [switch]$Force
     )
 
     $fullName = "[" + $ResourceType.Split(':')[1] + "]" + $Name
 
-    Write-Verbose -Message "    Creating resource $fullName"
+    Write-Verbose -Message "  Creating resource $fullName"
 
-    if (-not $resourceCache.ContainsKey($fullName)) {
-        $script:resourceCache.Add($fullName, $fullName)
+    if ($PSBoundParameters.ContainsKey('Force') -or (-not $resourceCache.ContainsKey($fullName))) {
+
+        if (-not $resourceCache.ContainsKey($fullName)) {
+            $script:resourceCache.Add($fullName, $fullName)
+        }        
 
         $defaults = @{}
         if ($Options.ContainsKey('Defaults')) {
@@ -95,8 +102,11 @@ function New-POSHOriginResource {
             DependsOn = $merged.DependsOn
             Options = $merged
         }
-        return $wrapper
+        $obj = _ConvertFrom-Hashtable -hashtable $wrapper -combine -recurse
+        $obj.PSObject.TypeNames.Insert(0,'POSHOrigin.Resource')
+        $obj.Options.PSObject.TypeNames.Insert(0,'POSHOrigin.Resource.Options')
+        return $obj
     } else {
-        Write-Warning -Message "Resource $fullName is already defined and will not be defined again"
+        Write-Warning -Message "Resource $fullName is already defined and will not be defined again. Use the -Force switch to recreate the resource."
     }
 }
