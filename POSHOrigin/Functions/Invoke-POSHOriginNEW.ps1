@@ -220,7 +220,7 @@ function Invoke-POSHOriginNEW {
                     }
                     Property = ($item | _ConvertToDscResourceHash -DscResource $dscResource)
                     Verbose = $VerbosePreference
-                }
+                }                
 
                 Write-Debug ($params.Property | Format-List -Property * | Out-String)
 
