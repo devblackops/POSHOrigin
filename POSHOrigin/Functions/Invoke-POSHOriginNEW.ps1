@@ -68,99 +68,6 @@ function Invoke-POSHOriginNEW {
         # This doesn't validate that the dependent service is in the desired state. Only that the "Set" function was executed
         $executedResources = @()
 
-        function Write-ResourceStatus {
-            [cmdletbinding()]
-            param (
-                [string]$Resource,
-                [string]$Name,
-                [ValidateSet('Test', 'Get', 'Set')]
-                [string]$State,
-                [switch]$Inner,
-                [switch]$Complete,
-                [string]$Message
-            )
-            $cmd = {
-                if (-Not $PSBoundParameters.ContainsKey('Inner')) {
-                    switch ($State) {
-                        'Test' {
-                            Write-Host -Object "Testing resource "  -ForegroundColor Cyan -NoNewLine
-                        }
-                        'Get' {
-                            Write-Host -Object "Getting resource "  -ForegroundColor Cyan -NoNewLine
-                        }
-                        'Set' {
-                            Write-Host -Object "Setting resource "  -ForegroundColor Cyan -NoNewLine
-                        }
-                    }
-                    Write-Host -Object "[$Resource]" -ForegroundColor Magenta -NoNewLine
-                    #Write-Host -Object "$Resource" -ForegroundColor Magenta -NoNewLine
-                    #Write-Host -Object '-' -ForegroundColor Gray -NoNewLine
-                    Write-Host -Object $Name -ForegroundColor Green
-                } else {
-                    if (-Not $PSBoundParameters.ContainsKey('Complete')) {
-                        Write-Host -Object "  - $Message" -ForegroundColor Green
-                    } else {
-
-                        # Get the true/false and time result
-                        $r = ($Message -split ' ')[0].Trim()
-                        $time = ($message -split 'in')[1].Trim()
-                        Write-Host -Object "Tested: " -ForegroundColor Cyan -NoNewline
-                        if ($r -eq 'True') {
-                            Write-Host -Object "[$r]" -ForegroundColor Green -NoNewline
-                        } else {
-                            Write-Host -Object "[$r]" -ForegroundColor Red -NoNewline
-                        }
-                        Write-Host -Object " in " -ForegroundColor Cyan -NoNewline
-                        Write-Host -Object "$time" -ForegroundColor Green
-                    }
-                }
-            }
-
-            If ($VerbosePreference -eq 'Continue') {
-                Invoke-Command -ScriptBlock $cmd
-            }
-        }
-
-        function Convert-DSCVerboseOutput([string]$line) {
-            # Try and extract the information we want from the line
-            $line = $line | select-string -Pattern '^.*?:'
-            $msg = $null
-            if ($line) {
-                $action = $type = $resName = $null
-                #Write-Verbose $line
-
-                $machine = ($line -split ']: ')[0].TrimStart(1,'[')
-                $type = $resName = $null
-                $message = [string]::Empty
-                if ($line -match 'LCM:\s\s\[\s') {
-                    $action = ($line -split '(LCM:\s\s\[)(\s)(.*?\s)(\s*.*?\s)')[3].Trim()
-                    $type = ($line -split '(LCM:\s\s\[)(\s)(.*?\s)(\s*.*?\s)')[4].Trim()
-
-                    #$action = ($line -split 'LCM:\s\s\[\s')[1].Split(' ')[0]
-                    #$type = (($line -split 'LCM:\s\s\[\s')[1] -Split ']')[0].Split(' ')[2]
-                    #$type = ((($line -split 'LCM:\s\s\[\s')[1] -Split ']')[0] -split '\s.*')[1]
-                    if ($line -match '\[\[') {
-                        $resName = ($line -split '\[\[')[1].Split(']')[0]
-                    }
-                }
-                if ($line -match 'DirectResourceAccess\]') {
-                    $message = ($line -split 'DirectResourceAccess\]')[1].Trim()
-                } else {
-                    $message = ($line -split 'LCM:\s\s\[\sEnd\s\s\s\sSet\s\s\s\s\s\s]')[1].Trim()
-                }
-
-                $msg = [pscustomobject]@{
-                    machine = $machine
-                    action = $action
-                    type = $type
-                    resource = $resName
-                    message = $message
-                }
-                return $msg
-                #Write-Host ($msg | ft -AutoSize | out-string)
-            }
-        }
-
         function Invoke-DscResourcePrettyPrint {
             [cmdletbinding()]
             param(
@@ -173,15 +80,12 @@ function Invoke-POSHOriginNEW {
 
             $result = $null
             if ($PrettyPrint) {
-                Invoke-DscResource -Method $Method @params -OutVariable result 4>&1 | foreach {
-                    $msg = Convert-DSCVerboseOutput -line $_
-                    if ($msg) {
-                        if (($msg.message -ne [string]::Empty) -and ($msg.action -ne 'end')) {
-                            Write-ResourceStatus -Resource $msg.resource -Name $ResourceName -Inner -Message $msg.message
-                        }
-                        if ($msg.action -eq 'end' -and $msg.type -eq 'test') {
-                            Write-ResourceStatus -Resource $msg.resource -Name $ResourceName -Inner -Message $msg.message -Complete
-                        }
+                Invoke-DscResource -Method $Method @params -OutVariable result 4>&1 | _ConvertDscVerboseOutput | foreach {
+                    if (($_.message -ne [string]::Empty) -and ($_.State -ne 'End')) {
+                        _WriteResourceStatus -Resource $_.resource -Name $ResourceName -Inner -Message $_.message
+                    }
+                    if ($_.State -eq 'End' -and $_.Stage -eq 'test') {
+                        _WriteResourceStatus -Resource $_.resource -Name $ResourceName -Inner -Message $_.message -Complete
                     }
                 }
             } else {
@@ -226,12 +130,12 @@ function Invoke-POSHOriginNEW {
 
                 if ($PSBoundParameters.ContainsKey('WhatIf')) {
                     # Just test the resource
-                    Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
+                    _WriteResourceStatus -Resource $dscResource.Name -Name $item.Name -Stage Test
                     $testResult = Invoke-DscResourcePrettyPrint -Method Test -params $params
 
                     if ($PSBoundParameters.ContainsKey('PassThru')) {
                         $result = "" | Select Resource, InDesiredState
-                        Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Get
+                        _WriteResourceStatus -Resource $dscResource.Name -Name $item.Name -Stage Get
 
                         $getResult = Invoke-DscResourcePrettyPrint -Method Get -Params $params
 
@@ -255,14 +159,14 @@ function Invoke-POSHOriginNEW {
                     if ($continue) {
                         # Test and invoke the resource
                         $testResult = $null
-                        Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
+                        _WriteResourceStatus -Resource $dscResource.Name -Name $item.Name -Stage Test
 
                         $testResult = Invoke-DscResourcePrettyPrint -Method Test -params $params
 
                         #write-verbose ($testResult | fl * | out-string)
 
                         if (-Not $testResult.InDesiredState) {
-                            Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Set
+                            _WriteResourceStatus -Resource $dscResource.Name -Name $item.Name -Stage Set
                             try {
                                 $setResult = Invoke-DscResourcePrettyPrint -Method Set -params $params
                             } catch {
@@ -278,11 +182,11 @@ function Invoke-POSHOriginNEW {
                     }
 
                     if ($PSBoundParameters.ContainsKey('PassThru')) {
-                        Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Test
+                        _WriteResourceStatus -Resource $dscResource.Name -Name $item.Name -Stage Test
 
                         $testResult = Invoke-DscResourcePrettyPrint -Method Test -Params $params
 
-                        Write-ResourceStatus -Resource $dscResource.Name -Name $item.Name -State Get
+                        _WriteResourceStatus -Resource $dscResource.Name -Name $item.Name -Stage Get
                         $getResult = Invoke-DscResourcePrettyPrint -Method Get -Params $params
 
                         $result.Resource = $getResult
