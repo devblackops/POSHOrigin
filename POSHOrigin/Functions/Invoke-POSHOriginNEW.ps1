@@ -52,6 +52,10 @@ function Invoke-POSHOriginNEW {
 
         $PrettyPrint = $PSBoundParameters.ContainsKey('PrettyPrint')
 
+        # Temporarily disable the PowerShell progress bar
+        $oldProgPref = $global:ProgressPreference
+        $global:ProgressPreference = 'SilentlyContinue'
+
         # Start stopwatch
         $sw = [diagnostics.stopwatch]::StartNew()
 
@@ -188,10 +192,7 @@ function Invoke-POSHOriginNEW {
         }
     }
 
-    process {
-        # Temporarily disable the PowerShell progress bar
-        $oldProgPref = $global:ProgressPreference
-        $global:ProgressPreference = 'SilentlyContinue'
+    process {        
 
         foreach ($item in $InputObject) {
 
