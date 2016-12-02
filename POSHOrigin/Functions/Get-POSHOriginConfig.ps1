@@ -49,7 +49,7 @@ function Get-POSHOriginConfig {
             # Load in the configurations
             $item = Resolve-Path $item
             if (Test-Path -Path $item) {                
-                $configData = @(_LoadConfig -Path $item -Recurse:$Recurse) | _SortByDependency
+                $configData = @(@(_LoadConfig -Path $item -Recurse:$Recurse) | _SortByDependency)
                 Write-Verbose -Message ([string]::Empty)
                 Write-Verbose -Message ("Created $($configData.Count) resource objects")
                 return $configData
