@@ -5,7 +5,7 @@ function _CompileConfig {
 
         [Parameter(Mandatory)]
         $ConfigData
-        
+
         #$Certificate = "$(Join-Path -path $env:USERPROFILE -ChildPath '.poshorigin')\$($ProvisioningServer.Split('.')[0]).cer"
 
         #[string]$ProvisioningServerGuid = 'e7f0b61a-b833-466d-afc8-daf043ab8b9f'
@@ -24,11 +24,11 @@ function _CompileConfig {
                         NodeName = "*"
                         #CertificateFile = "$repo\$($ProvisioningServer.Split('.')[0]).cer"
                         #Thumbprint = '6B63F5A78E990B04F2240874476CF45C8FBB19CA'
-                        
-                        # This is bad and should be removed at some point. We'll probably 
+
+                        # This is bad and should be removed at some point. We'll probably
                         # want to require a valid certificate be setup to encrypt the MOF.
                         PSDscAllowPlainTextPassword = $true
-                        
+
                         PSDscAllowDomainUser = $true
                     }
                     @{
@@ -56,22 +56,26 @@ function _CompileConfig {
                 # and try to find the DSC resource
                 $module = $_.Resource.Split(':')[0]
                 $resource = $_.Resource.Split(':')[1]
-                
+
                 $dscResource = _GetDscResource -Module $module -Resource $resource
-                
+
                 # TODO
                 # Compare the DSC resource properties against the POSHOrigin config
-                # and dynamically create a Configuratino{} block so we don't have to have 
+                # and dynamically create a Configuratino{} block so we don't have to have
                 # that stupid Invoke.ps1 script in each DSC resource.
                 # This will allow POSHOrigin to be able to invoke ANY DSC resource
-                # without custom code inside the resource.  
+                # without custom code inside the resource.
 
                 # Dot source the configuration
                 if ($dscResource) {
                     $invokePath = Join-Path -Path $dscResource.ParentPath -ChildPath 'Invoke.ps1'
                     Write-Verbose -Message ( $msgs.cc_generating_config -f $_.Resource, $_.Name)
                     #Write-Verbose -Message ($msgs.cc_dot_sourcing_config -f $dscResource.Name, $invokePath)
-                    . $invokePath -Options $_ -Direct:$false
+                    if (Test-Path -Path $invokePath) {
+                        . $invokePath -Options $_ -Direct:$false
+                    } else {
+                        Write-Error -Message "Unable to find Invoke.ps1 script in DSC resource location [$invokePath]"
+                    }
                 }
             }
 
@@ -80,7 +84,7 @@ function _CompileConfig {
 
                 Node $AllNodes.NodeName {
                     $Node.Config | ForEach {
-                        
+
                         Write-Debug -Message ($_.Options | Format-List -Property * | Out-String)
 
                         # Call the appropriate resource configuration
@@ -96,7 +100,7 @@ function _CompileConfig {
             $repo = (Join-Path -path $env:USERPROFILE -ChildPath '.poshorigin')
             $source = POSHOrigin -ConfigurationData $DSCConfigData -OutputPath $repo -Verbose:$VerbosePreference
 
-            return $source   
+            return $source
         }
     }
 
