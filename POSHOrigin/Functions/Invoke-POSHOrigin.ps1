@@ -110,27 +110,32 @@ function Invoke-POSHOrigin {
 
             # Publish MOF to provisioning server if not local.
             # Otherwise, start DSC configuration locally
-            $executeRemote = ($ProvisioningServer -ne 'localhost' -and $ProvisioningServer -ne '.' -and $ProvisioningServer -ne $env:COMPUTERNAME)
-            if ($executeRemote) {
-                Publish-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -ComputerName $ProvisioningServer -Confirm:$false
-                if ($PSCmdlet.ShouldProcess($msgs.ipo_should_msg)) {
-                    $results = _InvokeDscConfiguration -ComputerName $ProvisioningServer -PrettyPrint $PrettyPrint
-                } else {
-                    $results = _InvokeDscConfiguration -ComputerName $ProvisioningServer -PrettyPrint $PrettyPrint -TestOnly $true
-                }
-            } else {
-                if ($PSCmdlet.ShouldProcess($msgs.ipo_should_msg)) {
-                    $results = _InvokeDscConfiguration -Path (Split-Path -Path $mofPath -Parent) -PrettyPrint $PrettyPrint
-                } else {
-                    $results = _InvokeDscConfiguration -Path (Split-Path -Path $mofPath -Parent) -PrettyPrint $PrettyPrint -TestOnly $true
-                }
-            }
 
-            # Cleanup
-            if (-Not $PSBoundParameters.ContainsKey('KeepMOF')) {
-                Remove-Item -Path $mofPath -Force -Confirm:$false -WhatIf:$false
+            try {
+                $executeRemote = ($ProvisioningServer -ne 'localhost' -and $ProvisioningServer -ne '.' -and $ProvisioningServer -ne $env:COMPUTERNAME)
+                if ($executeRemote) {
+                    Publish-DscConfiguration -Path (Split-Path -Path $mofPath -Parent) -ComputerName $ProvisioningServer -Confirm:$false
+                    if ($PSCmdlet.ShouldProcess($msgs.ipo_should_msg)) {
+                        $results = _InvokeDscConfiguration -ComputerName $ProvisioningServer -PrettyPrint $PrettyPrint
+                    } else {
+                        $results = _InvokeDscConfiguration -ComputerName $ProvisioningServer -PrettyPrint $PrettyPrint -TestOnly $true
+                    }
+                } else {
+                    if ($PSCmdlet.ShouldProcess($msgs.ipo_should_msg)) {
+                        $results = _InvokeDscConfiguration -Path (Split-Path -Path $mofPath -Parent) -PrettyPrint $PrettyPrint
+                    } else {
+                        $results = _InvokeDscConfiguration -Path (Split-Path -Path $mofPath -Parent) -PrettyPrint $PrettyPrint -TestOnly $true
+                    }
+                }
+            } catch {
+                Write-Error $_
+            } finally {
+                # Cleanup
+                if (-Not $PSBoundParameters.ContainsKey('KeepMOF')) {
+                    Remove-Item -Path $mofPath -Force -Confirm:$false -WhatIf:$false
+                }
+                Remove-DscConfigurationDocument -Stage Current, Pending -Force -Confirm:$false
             }
-            Remove-DscConfigurationDocument -Stage Current, Pending -Force -Confirm:$false
 
             # Reset the progress bar preference
             $global:ProgressPreference = $oldProgPref

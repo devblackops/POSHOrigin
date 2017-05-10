@@ -1,3 +1,7 @@
+
+# 1.8.1 (Unreleased)
+* Ensure MOF file is always removed (unless told not too) after DSC run.
+
 # 1.8.0 (Unreleased)
   * Add support for using a git repository as the source of a POSHOrigin module
   * When looking for the DSC resource, only return the latest module version
@@ -16,7 +20,7 @@
   - Add Azure ARM template DSC resource
   - Add `PrettyPrint` switch to Invoke-POSHOriginNEW
   - Fix elapsed time display
-  
+
 ## 1.5.11 (May 10, 2016)
   - Fix bug dealing with -WhatIf support in `Invoke-POSHOrigin`
   - Added comment-based help to functions
@@ -34,7 +38,7 @@
 
 ## 1.5.9 (Feb 2, 2016)
   - Added new credential resolver 'ProtectedData'
-  - Added experimental cmdlet Invoke-POSHOriginConfigNew (alias: iponew) that 
+  - Added experimental cmdlet Invoke-POSHOriginConfigNew (alias: iponew) that
     will invoke DSC resources directly using Invoke-DscResource rather than
 	compiling and appliying a MOF using Start-DscConfiguration
 
