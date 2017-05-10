@@ -6,7 +6,7 @@
 <#
     .SYNOPSIS Creates a new nuspec file for nuget package.
         Will create $packageName.nuspec in $destinationPath
-    
+
     .EXAMPLE
         New-Nuspec -packageName "TestPackage" -version 1.0.1 -licenseUrl "http://license" -packageDescription "description of the package" -tags "tag1 tag2" -destinationPath C:\temp
 #>
@@ -34,7 +34,7 @@ function New-Nuspec
 
     $year = (Get-Date).Year
 
-    $content += 
+    $content +=
 "<?xml version=""1.0""?>
 <package xmlns=""http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd"">
   <metadata>
@@ -84,11 +84,11 @@ function New-Nuspec
     .SYNOPSIS
         Will attempt to download the module from PowerShellGallery using
         Nuget package and return the module.
-        
+
         If already installed will return the module without making changes.
 
         If module could not be downloaded it will return null.
-    
+
     .PARAMETER Force
         Used to force any installations to occur without confirming with
         the user.
@@ -134,27 +134,27 @@ function Install-ModuleFromPowerShellGallery {
         # Module is already installed - report it.
         Write-Host -Object (`
             'Version {0} of the {1} module is already installed.' `
-                -f $($module.Version -join ', '),$moduleName            
+                -f $($module.Version -join ', '),$moduleName
         ) -ForegroundColor:Yellow
         # Could check for a newer version available here in future and perform an update.
         # Return only the latest version of the module
         return $module `
             | Sort-Object -Property Version -Descending `
-            | Select-Object -First 1        
+            | Select-Object -First 1
     }
 
     Write-Verbose -Message (`
         'The {0} module is not installed.' `
             -f $moduleName
     )
-   
+
     $OutputDirectory = "$(Split-Path -Path $modulePath -Parent)\"
 
     # Use Nuget directly to download the module
     $nugetPath = 'nuget.exe'
 
     # Can't assume nuget.exe is available - look for it in Path
-    if ((Get-Command $nugetPath -ErrorAction SilentlyContinue) -eq $null) 
+    if ((Get-Command $nugetPath -ErrorAction SilentlyContinue) -eq $null)
     {
         # Is it in temp folder?
         $nugetPath = Join-Path -Path $ENV:Temp -ChildPath $nugetPath
@@ -180,7 +180,7 @@ function Install-ModuleFromPowerShellGallery {
                     'Nuget.exe was not installed. {0} module can not be installed automatically.' `
                         -f $moduleName
                 )
-                return $null    
+                return $null
             }
         }
         else
@@ -188,7 +188,7 @@ function Install-ModuleFromPowerShellGallery {
             Write-Verbose -Message 'Using Nuget.exe found in Temp folder.'
         }
     }
-        
+
     $nugetSource = 'https://www.powershellgallery.com/api/v2'
     If ($Force -or $PSCmdlet.ShouldProcess(( `
         "Download and install the {0} module from '{1}' using Nuget" `
@@ -212,7 +212,7 @@ function Install-ModuleFromPowerShellGallery {
         }
         Write-Host -Object (`
             'The {0} module was installed using Nuget.' `
-                -f $moduleName            
+                -f $moduleName
         ) -ForegroundColor:Yellow
     }
     else
@@ -231,7 +231,7 @@ function Install-ModuleFromPowerShellGallery {
     .SYNOPSIS
         Initializes an enviroment for running unit or integration tests
         on a DSC resource.
-        
+
         This includes the following things:
         1. Creates a temporary working folder.
         2. Updates the $env:PSModulePath to ensure the correct module is tested.
@@ -239,10 +239,10 @@ function Install-ModuleFromPowerShellGallery {
            the resource.
         4. Produces a test object containing any parameters that may be used
            for testing as well as storing the backed up settings.
-           
+
         The above changes are reverted by calling the Restore-TestEnvironment
         function. This includes deleteing the temporary working folder.
-    
+
     .PARAMETER DSCModuleName
         The name of the DSC Module containing the resource that the tests will be
         run on.
@@ -260,24 +260,24 @@ function Install-ModuleFromPowerShellGallery {
         Returns a test environment object which must be passed to the
         Restore-TestEnvironment function to allow it to restore the system
         back to the original state as well as clean up and working/temp files.
-        
+
     .EXAMPLE
         $TestEnvironment = Inialize-TestEnvironment `
             -DSCModuleName 'xNetworking' `
             -DSCResourceName 'MSFT_xFirewall' `
             -TestType Unit
-            
+
         This command will initialize the test enviroment for Unit testing
-        the MSFT_xFirewall DSC resource in the xNetworking DSC module.      
+        the MSFT_xFirewall DSC resource in the xNetworking DSC module.
 
     .EXAMPLE
         $TestEnvironment = Inialize-TestEnvironment `
             -DSCModuleName 'xNetworking' `
             -DSCResourceName 'MSFT_xFirewall' `
             -TestType Integration
-            
+
         This command will initialize the test enviroment for Integration testing
-        the MSFT_xFirewall DSC resource in the xNetworking DSC module.    
+        the MSFT_xFirewall DSC resource in the xNetworking DSC module.
 #>
 function Initialize-TestEnvironment
 {
@@ -288,7 +288,7 @@ function Initialize-TestEnvironment
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [String] $DSCModuleName,
-        
+
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [String] $DSCResourceName,
@@ -297,7 +297,7 @@ function Initialize-TestEnvironment
         [ValidateSet('Unit','Integration')]
         [String] $TestType
     )
-    
+
     Write-Host -Object (`
         'Initializing Test Environment for {0} testing of {1} in module {2}.' `
             -f $TestType,$DSCResourceName,$DSCModuleName) -ForegroundColor:Yellow
@@ -313,19 +313,19 @@ function Initialize-TestEnvironment
     # Unique Temp Working Folder - always gets removed on completion
     # The tests can put anything in here and it will get cleaned up.
     [String] $RandomFileName = [System.IO.Path]::GetRandomFileName()
-    [String] $WorkingFolder = Join-Path -Path $env:Temp -ChildPath "$DSCResourceName_$RandomFileName" 
+    [String] $WorkingFolder = Join-Path -Path $env:Temp -ChildPath "$DSCResourceName_$RandomFileName"
     # Create the working folder if it doesn't exist (it really shouldn't anyway)
     if (-not (Test-Path -Path $WorkingFolder))
     {
         New-Item -Path $WorkingFolder -ItemType Directory
-    } 
-    
+    }
+
     # The folder where this module is found
     [String] $moduleRoot = Split-Path -Parent (Split-Path -Parent $Script:MyInvocation.MyCommand.Path)
-    
+
     # The folder that all tests will find this module in
     [string] $modulesFolder = Split-Path -Parent $moduleRoot
-        
+
     # Import the Module
     $Splat = @{
         Path = $moduleRoot
@@ -334,16 +334,16 @@ function Initialize-TestEnvironment
         ErrorAction = 'Stop'
     }
     $DSCModuleFile = Get-Item -Path (Join-Path @Splat)
-    
+
     # Remove all copies of the module from memory so an old one is not used.
     if (Get-Module -Name $DSCModuleFile.BaseName -All)
     {
         Get-Module -Name $DSCModuleFile.BaseName -All | Remove-Module
     }
-    
+
     # Import the Module to test.
     Import-Module -Name $DSCModuleFile.FullName -Force
-    
+
     # Set the PSModulePath environment variable so that the module path this module is in
     # appears first because the LCM will use this path to try and locate modules when integration
     # tests are called. This is to ensure the correct module is tested.
@@ -357,14 +357,14 @@ function Initialize-TestEnvironment
     $NewModulePath = "$modulesFolder;$NewModulePath"
     $env:PSModulePath = $NewModulePath
     [System.Environment]::SetEnvironmentVariable('PSModulePath',$NewModulePath,[System.EnvironmentVariableTarget]::Machine)
-    
+
     # Preserve and set the execution policy so that the DSC MOF can be created
     $OldExecutionPolicy = Get-ExecutionPolicy
     if ($OldExecutionPolicy -ne 'Unrestricted')
     {
         Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Force
     }
-    
+
     # Generate the test environment object that will be returned
     $TestEnvironment = @{
         DSCModuleName = $DSCModuleName
@@ -373,32 +373,32 @@ function Initialize-TestEnvironment
         RelativeModulePath = $RelativeModulePath
         WorkingFolder = $WorkingFolder
         OldModulePath = $OldModulePath
-        OldExecutionPolicy = $OldExecutionPolicy     
+        OldExecutionPolicy = $OldExecutionPolicy
     }
-    
-    return $TestEnvironment  
+
+    return $TestEnvironment
 }
 
 <#
     .SYNOPSIS
         Restores the enviroment after running unit or integration tests
         on a DSC resource.
-        
+
         This restores the following changes made by calling
         Initialize-TestEnvironemt:
         1. Deletes the Working folder.
         2. Restores the $env:PSModulePath if it was changed.
         3. Restores any settings that were changed to test the resource.
-    
+
     .PARAMETER TestEnvironment
         This is the object created by the Initialize-TestEnvironment
         cmdlet.
-      
+
     .EXAMPLE
         Restore-TestEnvironment -TestEnvironment $TestEnvironment
-            
+
         This command will initialize the test enviroment for Unit testing
-        the MSFT_xFirewall DSC resource in the xNetworking DSC module.      
+        the MSFT_xFirewall DSC resource in the xNetworking DSC module.
 #>
 function Restore-TestEnvironment
 {
@@ -413,19 +413,19 @@ function Restore-TestEnvironment
     Write-Verbose -Message (`
         'Cleaning up Test Environment after {0} testing of {1} in module {2}.' `
             -f $TestEnvironment.TestType,$TestEnvironment.DSCResourceName,$TestEnvironment.DSCModuleName)
-    
+
     # Restore PSModulePath
     if ($TestEnvironment.OldModulePath -ne $env:PSModulePath)
     {
         $env:PSModulePath = $TestEnvironment.OldModulePath
         [System.Environment]::SetEnvironmentVariable('PSModulePath',$env:PSModulePath,[System.EnvironmentVariableTarget]::Machine)
     }
-    
+
     # Restore the Execution Policy
     if ($TestEnvironment.OldExecutionPolicy -ne (Get-ExecutionPolicy))
     {
         Set-ExecutionPolicy -ExecutionPolicy $TestEnvironment.OldExecutionPolicy -Force
-    }   
+    }
 
     # Cleanup Working Folder
     if (Test-Path -Path $TestEnvironment.WorkingFolder)

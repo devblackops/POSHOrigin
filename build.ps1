@@ -14,20 +14,19 @@ function Resolve-Module {
         foreach ($ModuleName in $Name) {
             $Module = Get-Module -Name $ModuleName -ListAvailable
             Write-Verbose -Message "Resolving Module [$($ModuleName)]"
-            
+
             if ($Module) {
                 $Version = $Module | Measure-Object -Property Version -Maximum | Select-Object -ExpandProperty Maximum
-                $GalleryVersion = Find-Module -Name $ModuleName -Repository PSGallery -Verbose:$false | 
-                    Measure-Object -Property Version -Maximum | 
+                $GalleryVersion = Find-Module -Name $ModuleName -Repository PSGallery -Verbose:$false |
+                    Measure-Object -Property Version -Maximum |
                     Select-Object -ExpandProperty Maximum
 
-                if ($Version -lt $GalleryVersion) {                                        
+                if ($Version -lt $GalleryVersion) {
                     Write-Verbose -Message "$($ModuleName) Installed Version [$($Version.tostring())] is outdated. Installing Gallery Version [$($GalleryVersion.tostring())]"
-                    
+
                     Install-Module -Name $ModuleName -Verbose:$false -Force
                     Import-Module -Name $ModuleName -Verbose:$false -Force -RequiredVersion $GalleryVersion
-                }
-                else {
+                } else {
                     Write-Verbose -Message "Module Installed, Importing [$($ModuleName)]"
                     Import-Module -Name $ModuleName -Verbose:$false -Force -RequiredVersion $Version
                 }
@@ -46,7 +45,7 @@ Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 
 'BuildHelpers', 'psake' | Resolve-Module
 
-Set-BuildEnvironment
+Set-BuildEnvironment -Force
 
 Invoke-psake -buildFile "$PSScriptRoot\psake.ps1" -taskList $Task -nologo -Verbose:$VerbosePreference
 exit ( [int]( -not $psake.build_success ) )
