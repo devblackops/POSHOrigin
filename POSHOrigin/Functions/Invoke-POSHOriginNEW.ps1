@@ -11,6 +11,8 @@ function Invoke-POSHOriginNEW {
             ** THIS IS AN EXPERIMENTAL CMDLET AND MAY BE SIGNIFICANTLY MODIFIED IN FUTURE VERSIONS **
         .PARAMETER InputObject
             One or more custom objects containing the required options for the DSC resource to be provisioned.
+        .PARAMETER PrettyPrint
+            Parse the verbose output and display in an easier to ready format.
         .PARAMETER WhatIf
             Only execute the TEST functionality of DSC.
 
@@ -90,13 +92,13 @@ function Invoke-POSHOriginNEW {
                 }
             } else {
                 Invoke-DscResource -Method $Method @params -OutVariable result
-            }            
+            }
 
             return $result
         }
     }
 
-    process {        
+    process {
 
         foreach ($item in $InputObject) {
 
@@ -124,7 +126,7 @@ function Invoke-POSHOriginNEW {
                     }
                     Property = ($item | _ConvertToDscResourceHash -DscResource $dscResource)
                     Verbose = $VerbosePreference
-                }                
+                }
 
                 Write-Debug ($params.Property | Format-List -Property * | Out-String)
 
