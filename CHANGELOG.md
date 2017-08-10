@@ -1,5 +1,5 @@
 
-# 1.8.1 (Unreleased)
+# 1.8.1 (August 09, 2017)
 * Ensure MOF file is always removed (unless told not too) after DSC run.
 
 # 1.8.0 (Unreleased)

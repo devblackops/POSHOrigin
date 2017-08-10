@@ -40,7 +40,7 @@ PrivateData = @{
         ProjectUri = 'https://github.com/devblackops/POSHOrigin'
         IconUri = 'https://raw.githubusercontent.com/devblackops/POSHOrigin/master/Media/POSHOrigin_256.png'
         ReleaseNotes = "
-# 1.8.1 (Unreleased)
+# 1.8.1 (August 09, 2017)
 * Ensure MOF file is always removed (unless told not too) after DSC run.
 
 # 1.8.0 (Unreleased)
@@ -81,7 +81,7 @@ PrivateData = @{
   - Added new credential resolver 'ProtectedData'
   - Added experimental cmdlet Invoke-POSHOriginConfigNew (alias: iponew) that
     will invoke DSC resources directly using Invoke-DscResource rather than
-    compiling and appliying a MOF using Start-DscConfiguration
+	compiling and appliying a MOF using Start-DscConfiguration
 
 ## 1.5.8 (Jan 18, 2016)
   - Added experimental support for resuable modules
